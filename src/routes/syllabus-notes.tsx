@@ -1239,38 +1239,17 @@ function ChapterDoc({
                     <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
                       I really think using this site helped me secure my top grades
                     </span>{" "}
-                    in science and maths. You really did elevate my exams! Thank you."
+                    in science and maths. You really did save my exams! Thank you."
                   </div>
                   <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 leading-relaxed">
                     "This website is soooo useful and I can't ever thank you enough for organising questions by topic like this.{" "}
                     <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
-                      It literally transformed my revision with ExamGlow!
+                      It literally did SAVE MY EXAMS!
                     </span>"
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Bottom Topic Navigation matching Save My Exams */}
-          <div className="mt-12 pt-6 border-t border-[#D8E0D2] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <button
-              type="button"
-              onClick={onPrev}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-[#D8E0D2] bg-white text-xs sm:text-sm font-semibold text-[#173128] hover:bg-[#F0F2E4] transition-all cursor-pointer shadow-2xs"
-            >
-              <ArrowLeft className="size-4" />
-              <span>Previous Topic</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={onNext}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#233831] text-xs sm:text-sm font-semibold text-white hover:bg-[#2C443C] transition-all cursor-pointer shadow-xs"
-            >
-              <span>Next Topic</span>
-              <ArrowRight className="size-4" />
-            </button>
           </div>
         </article>
 
@@ -1756,64 +1735,64 @@ export function SyllabusNotesPage() {
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "topics", "cie")}
-              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all text-left cursor-pointer"
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-11 rounded-xl bg-blue-50 font-bold text-xs flex items-center justify-center text-blue-700 shrink-0 border border-blue-200/80">
+                <div className="size-10 rounded-xl bg-[#E2EBDE] font-bold text-xs flex items-center justify-center text-[#173128] shrink-0 border border-[#CBD5C6]">
                   CIE
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-blue-600 transition-colors">
-                    Cambridge (CIE) IGCSE {selectedSubject.name} Revision Notes
+                  <h3 className="font-bold text-sm sm:text-base text-[#0D170C] group-hover:text-[#233831]">
+                    CIE IGCSE {selectedSubject.name} Revision Notes
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    0610 / 0970 Complete syllabus specification with chapter breakdown and molecular diagrams
+                  <p className="text-xs text-[#5B6E62] mt-0.5">
+                    Complete syllabus specification with chapter breakdown and diagrams
                   </p>
                 </div>
               </div>
-              <ChevronRight className="size-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="size-5 text-[#8E9F93] group-hover:text-[#233831] group-hover:translate-x-1 transition-all" />
             </button>
 
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "topics", "edexcel")}
-              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all text-left cursor-pointer"
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-11 rounded-xl bg-blue-50 font-bold text-xs flex items-center justify-center text-blue-700 shrink-0 border border-blue-200/80">
+                <div className="size-10 rounded-xl bg-[#E2EBDE] font-bold text-xs flex items-center justify-center text-[#173128] shrink-0 border border-[#CBD5C6]">
                   EDX
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-blue-600 transition-colors">
-                    Edexcel International IGCSE {selectedSubject.name} Revision Notes
+                  <h3 className="font-bold text-sm sm:text-base text-[#0D170C] group-hover:text-[#233831]">
+                    Edexcel IGCSE {selectedSubject.name} Revision Notes
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    4BI1 Specification with essential definitions and core practicals
+                  <p className="text-xs text-[#5B6E62] mt-0.5">
+                    Tailored core content with essential formulas and test strategies
                   </p>
                 </div>
               </div>
-              <ChevronRight className="size-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="size-5 text-[#8E9F93] group-hover:text-[#233831] group-hover:translate-x-1 transition-all" />
             </button>
 
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "topics", "a-level")}
-              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all text-left cursor-pointer"
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-11 rounded-xl bg-blue-50 font-bold text-xs flex items-center justify-center text-blue-700 shrink-0 border border-blue-200/80">
+                <div className="size-10 rounded-xl bg-[#E2EBDE] font-bold text-xs flex items-center justify-center text-[#173128] shrink-0 border border-[#CBD5C6]">
                   AL
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-blue-600 transition-colors">
+                  <h3 className="font-bold text-sm sm:text-base text-[#0D170C] group-hover:text-[#233831]">
                     International A-Level {selectedSubject.name} Revision Notes
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    9700 Advanced module breakdown for AS and A2 examinations
+                  <p className="text-xs text-[#5B6E62] mt-0.5">
+                    Advanced module breakdown for AS and A2 examinations
                   </p>
                 </div>
               </div>
-              <ChevronRight className="size-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="size-5 text-[#8E9F93] group-hover:text-[#233831] group-hover:translate-x-1 transition-all" />
             </button>
           </div>
         </div>
@@ -1852,7 +1831,7 @@ export function SyllabusNotesPage() {
           </header>
 
           <section className="mb-12">
-            <h2 className="text-xl font-bold text-slate-900 mb-5">
+            <h2 className="text-xl font-bold text-[#0D170C] mb-5">
               IGCSE {selectedSubject.name} Revision Resources
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1860,16 +1839,16 @@ export function SyllabusNotesPage() {
               <button
                 type="button"
                 onClick={() => goTo(selectedSubject.id, undefined, "boards")}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-xs border border-blue-200/60">
-                  <BookOpen className="size-4.5" />
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <BookOpen className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">Revision Notes</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Revision Notes</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1878,16 +1857,16 @@ export function SyllabusNotesPage() {
               <button
                 type="button"
                 onClick={() => void navigate({ to: "/test" })}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-xs border border-blue-200/60">
-                  <HelpCircle className="size-4.5" />
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <HelpCircle className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">Exam Questions</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Exam Questions</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1895,17 +1874,17 @@ export function SyllabusNotesPage() {
               {/* Flashcards Card */}
               <button
                 type="button"
-                onClick={() => void navigate({ to: "/flashcards" })}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                onClick={() => goTo(selectedSubject.id, 1)}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-xs border border-blue-200/60">
-                  <Layers className="size-4.5" />
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <Layers className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">Flashcards</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Flashcards</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1914,29 +1893,29 @@ export function SyllabusNotesPage() {
               <button
                 type="button"
                 onClick={() => void navigate({ to: "/test" })}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-blue-500 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-xs border border-blue-200/60">
-                  <FileText className="size-4.5" />
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <FileText className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">Mock Exams</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Mock Exams</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
             </div>
           </section>
 
-          {/* Student Resource Articles Section (Real clickable guides, no cartoon emojis) */}
+          {/* Student Resource Articles Section (Real clickable guides) */}
           <section>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold text-slate-900">
+              <h2 className="text-xl font-bold text-[#0D170C]">
                 Articles and resources for IGCSE {selectedSubject.name} students
               </h2>
-              <span className="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full cursor-default">
+              <span className="text-xs font-semibold text-[#5B6E62] bg-[#E2EBDE] border border-[#CBD5C6] px-3 py-1 rounded-full cursor-default">
                 Latest
               </span>
             </div>
@@ -1947,28 +1926,28 @@ export function SyllabusNotesPage() {
                   key={article.id}
                   type="button"
                   onClick={() => goTo(selectedSubject.id, undefined, "article", undefined, article.id)}
-                  className="group rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs hover:border-blue-500 hover:shadow-sm transition-all text-left cursor-pointer flex flex-col gap-3"
+                  className="group rounded-2xl border border-[#D8E0D2] bg-white p-4 shadow-2xs hover:border-[#233831] hover:shadow-sm transition-all text-left cursor-pointer flex flex-col gap-3"
                 >
-                  {/* Thumbnail Banner */}
-                  <div className="w-full h-28 rounded-xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-100 flex flex-col justify-between p-3 shrink-0 border border-slate-200/60">
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-blue-700 bg-white/90 w-fit px-2 py-0.5 rounded shadow-2xs">
+                  {/* Thumbnail */}
+                  <div className="w-full h-28 rounded-xl bg-gradient-to-br from-[#E2EBDE] to-[#D5DEC9] flex flex-col justify-between p-3 shrink-0 border border-[#CBD5C6]">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#173128] bg-white/70 w-fit px-1.5 py-0.5 rounded">
                       {article.category}
                     </span>
-                    <span className="text-xs font-extrabold text-slate-900 leading-tight line-clamp-2">
+                    <span className="text-xs font-extrabold text-[#0D170C] leading-tight line-clamp-2">
                       {article.title}
                     </span>
                   </div>
 
                   <div className="flex-1 space-y-1">
-                    <h3 className="font-bold text-sm text-slate-900 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    <h3 className="font-bold text-sm text-[#0D170C] leading-snug line-clamp-2">
                       {article.title}
                     </h3>
                     <div className="flex items-center justify-between pt-1">
-                      <span className="text-[11px] font-medium text-slate-500">
+                      <span className="text-[11px] font-medium text-[#5B6E62]">
                         {article.readTime} read
                       </span>
-                      <span className="text-[11px] font-semibold text-blue-600 group-hover:translate-x-0.5 transition-all">
-                        Read guide →
+                      <span className="text-[11px] font-semibold text-[#173128] group-hover:text-[#233831] transition-colors">
+                        Read →
                       </span>
                     </div>
                   </div>

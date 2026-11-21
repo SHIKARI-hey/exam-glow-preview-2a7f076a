@@ -1065,7 +1065,7 @@ export const DIAGRAM_MAP: Record<string, string> = {
   </g>
 
   <!-- Watermark -->
-  <text x="450" y="670" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © ExamGlow. All Rights Reserved</text>
+  <text x="450" y="670" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © Save My Exams. All Rights Reserved</text>
 </svg>`,
   "condensation-reaction.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 420" width="100%" height="auto">
   <!-- Section 1: Written equation -->
@@ -1168,7 +1168,7 @@ export const DIAGRAM_MAP: Record<string, string> = {
   </g>
 
   <!-- Watermark -->
-  <text x="425" y="405" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © ExamGlow. All Rights Reserved</text>
+  <text x="425" y="405" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © Save My Exams. All Rights Reserved</text>
 </svg>`,
 
   "covalent-bonds-table.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 460" width="100%" height="auto">
@@ -1258,7 +1258,7 @@ export const DIAGRAM_MAP: Record<string, string> = {
   </g>
 
   <!-- Watermark -->
-  <text x="425" y="448" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © ExamGlow. All Rights Reserved</text>
+  <text x="425" y="448" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © Save My Exams. All Rights Reserved</text>
 </svg>`,
 
   "hydrolysis-reaction.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 420" width="100%" height="auto">
@@ -1356,7 +1356,7 @@ export const DIAGRAM_MAP: Record<string, string> = {
   </g>
 
   <!-- Watermark -->
-  <text x="425" y="405" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © ExamGlow. All Rights Reserved</text>
+  <text x="425" y="405" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © Save My Exams. All Rights Reserved</text>
 </svg>`,
 
   "glucose-ring-structures.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="100%" height="auto" class="w-full max-w-4xl h-auto block mx-auto">
@@ -2135,7 +2135,7 @@ export const DIAGRAM_MAP: Record<string, string> = {
   </g>
 
   <!-- Watermark -->
-  <text x="460" y="605" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © ExamGlow. All Rights Reserved</text>
+  <text x="460" y="605" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © Save My Exams. All Rights Reserved</text>
 </svg>`,
 
 

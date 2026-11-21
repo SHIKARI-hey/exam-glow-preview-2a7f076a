@@ -1,277 +1,312 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
+  ArrowUpRight,
   ChevronRight,
-  Pencil,
-  Plus,
-  Zap,
+  GraduationCap,
+  Search,
 } from "lucide-react";
 
-import { readProfile, type OnboardingProfile } from "@/lib/onboarding";
-import { PaywallModal } from "@/components/paywall-modal";
-import { SaveMyExamsNavbar } from "@/components/save-my-exams-navbar";
-import { SaveMyExamsSidebar } from "@/components/save-my-exams-sidebar";
+import { DashboardSidebar } from "@/components/dashboard-sidebar";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Dashboard | ExamGlow" },
+      { title: "Study Dashboard | ExamGlow" },
       {
         name: "description",
-        content: "Welcome to your ExamGlow account and launchpad to stress-free and effective study.",
+        content: "Course search made smarter and simpler. Find courses with high admission chances.",
       },
+      { property: "og:title", content: "Study Dashboard | ExamGlow" },
+      {
+        property: "og:description",
+        content: "Explore new opportunities, courses, destinations and university partnerships.",
+      },
+      { property: "og:type", content: "website" },
     ],
   }),
-  component: SaveMyExamsDashboardPage,
+  component: HomePage,
 });
 
-export function SaveMyExamsDashboardPage() {
-  const navigate = useNavigate();
-  const [profile, setProfile] = useState<OnboardingProfile>({});
-  const [paywallOpen, setPaywallOpen] = useState(false);
+const courses = [
+  {
+    title: "Doctoral Certificate in Applied Computer Science",
+    price: "$10,280",
+    university: "Westcliff University, US",
+  },
+  {
+    title: "PhD Health Economics",
+    price: "$11,584",
+    university: "University of Colorado Denver, US",
+  },
+  {
+    title: "Doctoral Certificate in Applied Computer Science",
+    price: "$18,343",
+    university: "University of North Carolina at Gree...",
+  },
+];
 
-  useEffect(() => {
-    try {
-      setProfile(readProfile());
-    } catch {}
-  }, []);
+const destinations = [
+  {
+    country: "Canada",
+    sub: "Your best destination",
+    img: "https://images.unsplash.com/photo-1562774053-701939374585?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Oxford",
+    sub: "Your best destination",
+    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Colorado",
+    sub: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Texas",
+    sub: "Your best destination",
+    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
+  },
+];
 
-  const userName = profile.name || "Heue";
+const partnerships = [
+  {
+    name: "University of Colorado",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=100&auto=format&fit=crop&q=80",
+    highlight: true,
+  },
+  {
+    name: "University of Texas",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=100&auto=format&fit=crop&q=80",
+    highlight: false,
+  },
+  {
+    name: "University of Canada",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&auto=format&fit=crop&q=80",
+    highlight: false,
+  },
+  {
+    name: "University of Toronto",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=100&auto=format&fit=crop&q=80",
+    highlight: false,
+  },
+];
+
+function HomePage() {
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex flex-col h-dvh bg-[#f8fafc] font-sans text-slate-900 overflow-hidden">
-      {/* ── 1. Top Navbar (Save My Exams with mega dropdowns) ── */}
-      <SaveMyExamsNavbar />
+    <div className="flex h-dvh overflow-hidden app-frame">
+      {/* Restored application sidebar */}
+      <DashboardSidebar />
 
-      {/* ── 2. Body: Left Sidebar + Main Content ── */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar (Clean Save My Exams sidebar) */}
-        <SaveMyExamsSidebar />
-
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto bg-[#f8fafc] p-5 sm:p-8 lg:p-10">
-          <div className="mx-auto max-w-6xl space-y-7">
-            {/* Greeting Header */}
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Hi, {userName}
-              </h1>
-              <p className="mt-1 text-xs sm:text-sm text-slate-500 font-normal">
-                Welcome to your ExamGlow account and launchpad to stress-free and effective study.
-              </p>
+      {/* Main right-hand panel matching the screenshot design */}
+      <main className="app-panel min-w-0 flex-1 overflow-y-auto bg-white">
+        <div className="mx-auto max-w-[1200px] p-5 sm:p-7 lg:p-8">
+          {/* Top Bar: Search & User Header */}
+          <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
+            <div className="relative w-full max-w-sm">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className="w-full bg-[#F4F5F7] rounded-full pl-9 pr-4 py-2 text-xs text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 transition"
+              />
             </div>
+          </header>
 
-            {/* 2-Column Main Dashboard Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Column (8 cols): My Courses */}
-              <div className="lg:col-span-8 space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold text-slate-900 tracking-tight">
-                    My courses
-                  </h2>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => void navigate({ to: "/syllabus-notes" })}
-                      className="size-8 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-colors cursor-pointer"
-                      title="Edit courses"
-                    >
-                      <Pencil className="size-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void navigate({ to: "/syllabus-notes" })}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[#155dfc] hover:bg-[#004ce6] text-white px-4 py-1.5 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
-                    >
-                      <Plus className="size-3.5" />
-                      <span>Add course</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Continue Revising Active Course Card */}
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-slate-800">Continue revising</span>
-                    <button
-                      type="button"
-                      onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", view: "hub" } })}
-                      className="text-slate-400 hover:text-slate-700 cursor-pointer"
-                    >
-                      <ChevronRight className="size-4" />
-                    </button>
-                  </div>
-
-                  {/* Course Item (Navigates to Subject Hub like savemyexams.com/igcse/biology/) */}
-                  <button
-                    type="button"
-                    onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", view: "hub" } })}
-                    className="w-full flex items-center gap-4 text-left p-2 rounded-xl hover:bg-slate-50 transition-colors group cursor-pointer"
-                  >
-                    {/* Realistic Cobalt Blue Tile with Vector DNA Graphic (No Emojis) */}
-                    <div className="w-18 h-22 sm:w-20 sm:h-24 rounded-2xl bg-gradient-to-br from-[#0052ff] to-[#0042d9] flex flex-col items-center justify-center text-white shrink-0 shadow-xs relative overflow-hidden">
-                      <div className="size-11 rounded-full bg-white/15 backdrop-blur-xs flex items-center justify-center border border-white/20">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="size-6 text-white"
-                        >
-                          <path d="M4 18c2-2 4-5 8-5s6 3 8 5" />
-                          <path d="M4 6c2 2 4 5 8 5s6-3 8-5" />
-                          <path d="M8 9.5v5" />
-                          <path d="M12 7v10" />
-                          <path d="M16 9.5v5" />
-                        </svg>
-                      </div>
-                      <Zap className="size-3 text-white/40 absolute bottom-2 left-2 fill-white/30" />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[11px] font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
-                          IGCSE
-                        </span>
-                        <span className="text-[11px] font-semibold text-[#1c4d16] bg-[#d9f99d] px-2 py-0.5 rounded">
-                          Last viewed
-                        </span>
-                      </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                        Biology
-                      </h3>
-                    </div>
-
-                    <ChevronRight className="size-5 text-slate-300 group-hover:text-slate-800 group-hover:translate-x-1 transition-all" />
-                  </button>
-                </div>
-
-                {/* Got Another Course Prompt Card */}
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-7 text-center shadow-xs space-y-2.5">
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Got another course?
-                  </h3>
-                  <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                    Save your courses for easy access
-                  </p>
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => void navigate({ to: "/syllabus-notes" })}
-                      className="inline-flex items-center justify-center rounded-full bg-[#155dfc] hover:bg-[#004ce6] text-white px-7 py-2 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
-                    >
-                      Add course
-                    </button>
-                  </div>
-                </div>
+          {/* Hero Banner Row: 2 Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mt-1">
+            {/* Yellow Banner (7 cols) */}
+            <div className="lg:col-span-7 bg-[#FFD634] rounded-[24px] p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between shadow-xs">
+              {/* Decorative background student illustration */}
+              <div className="absolute right-0 bottom-0 pointer-events-none opacity-90 translate-x-3 translate-y-3">
+                <svg width="180" height="150" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="90" y="125" width="70" height="14" rx="3" fill="#333333" />
+                  <rect x="85" y="112" width="80" height="13" rx="3" fill="#FFFFFF" stroke="#333" strokeWidth="2" />
+                  <rect x="95" y="100" width="65" height="12" rx="3" fill="#333333" />
+                  <circle cx="130" cy="55" r="14" fill="#333333" />
+                  <path d="M120 70 C120 62 140 62 140 70 L145 105 L115 105 Z" fill="#FFFFFF" stroke="#333" strokeWidth="2" />
+                  <path d="M122 72 L112 50 L118 48 L126 68 Z" fill="#FFFFFF" stroke="#333" strokeWidth="1.5" />
+                  <path d="M112 50 C110 44 115 40 118 43 C120 45 118 50 112 50 Z" fill="#FFE2B8" stroke="#333" strokeWidth="1.5" />
+                  <path d="M165 40 L168 45 L173 48 L168 51 L165 56 L162 51 L157 48 L162 45 Z" fill="#FFFFFF" />
+                  <circle cx="175" cy="70" r="2" fill="#333333" />
+                  <circle cx="90" cy="65" r="1.5" fill="#333333" />
+                </svg>
               </div>
 
-              {/* Right Column (4 cols): Study Plan & Jump Back In */}
-              <div className="lg:col-span-4 space-y-4">
-                {/* 1. Study Plan Card */}
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs relative overflow-hidden">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1">
-                      <span className="text-xs font-semibold text-slate-600 block">Study plan</span>
-                      <h3 className="text-sm font-bold text-slate-900">
-                        Stay on track for your exams
-                      </h3>
-                      <p className="text-xs text-slate-500 leading-relaxed pt-1 max-w-[200px]">
-                        Structured by experienced teachers, tailored to your courses
-                      </p>
-                    </div>
+              <div className="relative z-10 max-w-md">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-950">
+                  Explore new opportunities
+                </h2>
+                <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-gray-800 max-w-[320px]">
+                  Course search made smarter and simpler. Use our magical AI system, to find courses with high admission chances.
+                </p>
+              </div>
 
-                    {/* Hand-Drawn Notebook Vector Illustration (Matches Save My Exams) */}
-                    <div className="shrink-0">
-                      <svg viewBox="0 0 100 85" fill="none" className="w-24 h-20 text-slate-900">
-                        {/* Sparkles */}
-                        <path d="M12 25 L14 18 L16 25 L23 27 L16 29 L14 36 L12 29 L5 27 Z" fill="#2563eb" />
-                        <path d="M78 12 L79 7 L80 12 L85 13 L80 14 L79 19 L78 14 L73 13 Z" fill="#2563eb" />
-                        <path d="M88 40 L89 36 L90 40 L94 41 L90 42 L89 46 L88 42 L84 41 Z" fill="#2563eb" />
-                        {/* 3D Stacked book */}
-                        <path d="M25 45 L50 30 L85 45 L60 60 Z" fill="#1e3a8a" stroke="#0f172a" strokeWidth="2" strokeLinejoin="round" />
-                        <path d="M25 45 L25 55 L60 70 L60 60 Z" fill="#2563eb" stroke="#0f172a" strokeWidth="2" strokeLinejoin="round" />
-                        <path d="M85 45 L85 55 L60 70 L60 60 Z" fill="#3b82f6" stroke="#0f172a" strokeWidth="2" strokeLinejoin="round" />
-                        {/* White bolt on cover */}
-                        <path d="M55 42 L48 48 L52 49 L46 56 L56 48 L51 47 Z" fill="#ffffff" />
-                      </svg>
-                    </div>
-                  </div>
+              <div className="relative z-10 mt-6">
+                <button
+                  type="button"
+                  className="bg-white text-gray-950 font-bold text-xs px-5 py-2.5 rounded-full shadow-xs hover:bg-gray-50 transition cursor-pointer"
+                >
+                  Try now
+                </button>
+              </div>
+            </div>
 
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      onClick={() => void navigate({ to: "/study-plan" })}
-                      className="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700 transition-colors shadow-2xs cursor-pointer"
-                    >
-                      <Plus className="size-3.5" />
-                      <span>Create Study Plan</span>
-                    </button>
+            {/* Black Event Banner (5 cols) */}
+            <div className="lg:col-span-5 bg-[#0D0D0D] rounded-[24px] p-5 sm:p-6 text-white flex items-center justify-between gap-3 relative shadow-xs">
+              <div className="flex-1 min-w-0 pr-1">
+                <span className="text-[11px] font-medium text-gray-400">Up-coming Events</span>
+                <h3 className="mt-1 text-sm font-bold text-white leading-snug">
+                  IETLS Speaking - Part 3- Tow-way discussion
+                </h3>
+                <p className="mt-1 text-[10px] text-gray-400">United Kingdom | 09am - 12am</p>
+                <button
+                  type="button"
+                  className="mt-4 bg-[#FFD634] text-gray-950 font-bold text-xs px-4 py-2 rounded-full hover:bg-amber-300 transition cursor-pointer shadow-xs"
+                >
+                  View Details
+                </button>
+              </div>
+
+              {/* White Flyer Thumbnail Preview */}
+              <div className="relative shrink-0 flex items-center">
+                <div className="w-24 bg-white rounded-2xl p-2.5 text-gray-900 shadow-md text-center">
+                  <p className="text-[8px] font-bold text-gray-400 tracking-wider">✦ Educare</p>
+                  <p className="text-xs font-extrabold text-black mt-0.5">Hello</p>
+                  <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&auto=format&fit=crop&q=80"
+                    alt="Student"
+                    className="size-11 mx-auto rounded-lg object-cover my-1"
+                  />
+                  <p className="text-[7px] text-gray-500 font-medium leading-none">Feels Good to the EVENT</p>
+                  <div className="flex justify-center gap-1 mt-1.5">
+                    <span className="size-1 rounded-full bg-black" />
+                    <span className="size-1 rounded-full bg-gray-300" />
                   </div>
                 </div>
 
-                {/* 2. Jump Back In Card */}
-                <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between pb-1">
-                    <span className="text-xs font-semibold text-slate-800">Jump back in</span>
-                    <button
-                      type="button"
-                      onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", chapter: 1 } })}
-                      className="text-slate-400 hover:text-slate-700 cursor-pointer"
-                    >
-                      <ChevronRight className="size-4" />
-                    </button>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", chapter: 1 } })}
-                    className="w-full text-left group flex items-start justify-between gap-3 p-1 rounded-xl cursor-pointer"
-                  >
-                    <div className="space-y-1 flex-1 min-w-0 pr-2">
-                      <span className="text-xs font-bold text-[#155dfc] block">Revision Notes</span>
-                      <p className="text-xs font-semibold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors">
-                        Biology / The Purpose of Biological Molecules &amp; Carbohydrates
-                      </p>
-                      <span className="text-[11px] text-slate-400 font-medium block">
-                        IGCSE · Cambridge (CIE)
-                      </span>
-                    </div>
-
-                    {/* Realistic Miniature Document Preview with multi-curve chart */}
-                    <div className="relative w-14 h-18 shrink-0">
-                      {/* Back sheet */}
-                      <div className="absolute right-0 top-0 w-11 h-15 rounded-md border border-slate-200 bg-slate-100 rotate-6 shadow-2xs" />
-                      {/* Front sheet */}
-                      <div className="absolute left-0 top-1 w-12 h-16 rounded-md border border-slate-200 bg-white shadow-xs p-1.5 flex flex-col justify-between">
-                        <div>
-                          <div className="h-1 w-6 bg-blue-500 rounded-full mb-1" />
-                          <div className="space-y-0.5">
-                            <div className="h-0.5 w-full bg-slate-200 rounded-full" />
-                            <div className="h-0.5 w-4/5 bg-slate-200 rounded-full" />
-                          </div>
-                        </div>
-                        {/* Mini curve graph */}
-                        <svg viewBox="0 0 40 20" className="w-full h-4">
-                          <line x1="0" y1="18" x2="40" y2="18" stroke="#e2e8f0" strokeWidth="1" />
-                          <line x1="0" y1="0" x2="0" y2="18" stroke="#e2e8f0" strokeWidth="1" />
-                          <path d="M2 17 Q 15 2, 38 6" fill="none" stroke="#f43f5e" strokeWidth="1.2" strokeLinecap="round" />
-                          <path d="M2 17 Q 20 14, 38 2" fill="none" stroke="#06b6d4" strokeWidth="1.2" strokeLinecap="round" />
-                        </svg>
-                      </div>
-                    </div>
-                  </button>
-                </div>
+                {/* Circular Floating Arrow Button */}
+                <button
+                  type="button"
+                  className="absolute -right-3 top-1/2 -translate-y-1/2 size-7 rounded-full bg-white text-black shadow-md flex items-center justify-center hover:scale-105 transition"
+                  aria-label="Next event"
+                >
+                  <ChevronRight className="size-4" />
+                </button>
               </div>
             </div>
           </div>
-        </main>
-      </div>
 
-      {/* Paywall / Upgrade Modal */}
-      {paywallOpen && <PaywallModal onClose={() => setPaywallOpen(false)} />}
+          {/* Courses Section */}
+          <div className="mt-7">
+            <div className="flex items-center justify-between pb-3">
+              <h3 className="text-sm sm:text-base font-bold text-gray-900">Courses</h3>
+              <button type="button" className="text-xs font-medium text-gray-400 hover:text-gray-700 transition">
+                See all
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {courses.map((course, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:border-gray-200 transition"
+                >
+                  <h4 className="text-xs font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[32px]">
+                    {course.title}
+                  </h4>
+                  <p className="mt-2 text-sm font-bold text-gray-950">{course.price}</p>
+                  <div className="mt-3 flex items-center gap-1.5 text-[10px] text-gray-400">
+                    <span className="size-4 rounded-full bg-black text-[#FFD634] flex items-center justify-center shrink-0">
+                      <GraduationCap className="size-2.5" />
+                    </span>
+                    <span className="truncate">{course.university}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom 2-Column: Your destinations & Partnerships */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-7">
+            {/* Destinations Grid (7 cols) */}
+            <div className="lg:col-span-7">
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-gray-900">Your destinations</h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">Providers 120 world class education in 8 countries</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3.5 mt-3">
+                {destinations.map((dest, idx) => (
+                  <div
+                    key={idx}
+                    className="group relative rounded-2xl overflow-hidden aspect-[16/10] bg-gray-100 shadow-xs cursor-pointer"
+                  >
+                    <img
+                      src={dest.img}
+                      alt={dest.country}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-3">
+                      <h4 className="text-xs font-bold text-white leading-tight">{dest.country}</h4>
+                      <p className="text-[10px] text-gray-300 leading-tight mt-0.5">{dest.sub}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Partnerships List (5 cols) */}
+            <div className="lg:col-span-5">
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-gray-900">Partnerships</h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">Partnered over 120 world class University</p>
+              </div>
+
+              <div className="mt-3 space-y-2">
+                {partnerships.map((partner, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-2 rounded-2xl hover:bg-gray-50 transition cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={partner.img}
+                        alt={partner.name}
+                        className="size-10 rounded-xl object-cover shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-semibold text-gray-900 truncate">{partner.name}</h4>
+                        <p className="text-[10px] text-gray-400 truncate">{partner.location}</p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={`size-7 rounded-full flex items-center justify-center shrink-0 transition ${
+                        partner.highlight
+                          ? "bg-black text-white hover:bg-gray-800"
+                          : "bg-[#F4F5F7] text-gray-500 hover:text-gray-900"
+                      }`}
+                      aria-label={`View ${partner.name}`}
+                    >
+                      <ArrowUpRight className="size-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

@@ -515,10 +515,6 @@ export function ProfileAvatar({ className = "" }: { className?: string }) {
   );
 }
 
-import { SaveMyExamsNavbar } from "@/components/save-my-exams-navbar";
-import { SaveMyExamsSidebar } from "@/components/save-my-exams-sidebar";
-import { Sparkles, MessageCircle } from "lucide-react";
-
 export function DashboardLayout({
   crumbs = [],
   children,
@@ -529,34 +525,40 @@ export function DashboardLayout({
   loading?: boolean;
 }) {
   return (
-    <div className="flex flex-col h-dvh bg-[#f8fafc] font-sans text-slate-900 overflow-hidden">
-      {/* ── 1. Full-Width Save My Exams Top Navbar with Mega Dropdowns ── */}
-      <SaveMyExamsNavbar />
-
-      {/* ── 2. Body: Left Save My Exams Sidebar + Main Content ── */}
-      <div className="flex-1 flex overflow-hidden">
-        <SaveMyExamsSidebar />
-
-        <main className="flex-1 overflow-y-auto bg-[#f8fafc] relative flex flex-col">
-          {crumbs.length > 0 && (
-            <div className="border-b border-slate-200/80 bg-white/90 backdrop-blur-xs px-6 py-2.5 flex items-center gap-2 text-xs text-slate-500 shrink-0">
-              {crumbs.map((c, i) => (
-                <span key={c.label} className="flex items-center gap-1.5">
-                  {i > 0 && <span className="text-slate-300">/</span>}
-                  <span className={i === crumbs.length - 1 ? "font-bold text-slate-900" : "hover:text-slate-700"}>
-                    {c.label}
-                  </span>
-                </span>
-              ))}
-            </div>
-          )}
-
-          <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl w-full mx-auto">
-            {loading ? <PageSkeleton /> : children}
-          </div>
-        </main>
-      </div>
+    <div className="flex h-dvh overflow-hidden app-frame">
+      <DashboardSidebar />
+      <main className="app-panel min-w-0 flex-1 overflow-y-auto">
+        <TopBar crumbs={crumbs} />
+        <div className="mx-auto max-w-[1280px] px-4 pb-16 pt-4 sm:px-6 lg:px-8">
+          {loading ? <PageSkeleton /> : children}
+        </div>
+      </main>
     </div>
+  );
+}
+
+function TopBar({ crumbs = [] }: { crumbs?: { label: string; icon?: ReactNode }[] }) {
+  return (
+    <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-border/70 bg-background/85 px-4 py-3 pl-14 backdrop-blur md:pl-6">
+      <nav className="flex min-w-0 items-center gap-2 text-[15px]" aria-label="Breadcrumb">
+        {crumbs.map((crumb, i) => (
+          <span key={crumb.label} className="flex min-w-0 items-center gap-2">
+            {i > 0 && <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
+            <span
+              className={`flex min-w-0 items-center gap-1.5 truncate ${
+                i === crumbs.length - 1 ? "font-semibold" : "text-muted-foreground"
+              }`}
+            >
+              {crumb.icon}
+              <span className="truncate">{crumb.label}</span>
+            </span>
+          </span>
+        ))}
+      </nav>
+
+      <div className="flex shrink-0 items-center gap-2">
+      </div>
+    </header>
   );
 }
 
