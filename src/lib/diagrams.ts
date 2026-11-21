@@ -786,6 +786,491 @@ export const DIAGRAM_MAP: Record<string, string> = {
       <text x="320" y="75" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#475569">XOR (Exclusive OR): outputs 1 ONLY when inputs are different.</text>
     </g>
   </svg>`,
+  "biological-molecules-overview.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 620" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <defs>
+    <filter id="cardShadow" x="-2%" y="-2%" width="104%" height="106%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="880" height="48" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="30" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="800" fill="#0f172a">BIOLOGICAL MOLECULES FOUND IN ALL LIVING ORGANISMS</text>
+
+  <!-- Key / Legend -->
+  <g transform="translate(620, 10)">
+    <rect x="0" y="0" width="230" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="12" y="19" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#475569">KEY:</text>
+    <text x="50" y="19" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#dc2626">MACROMOLECULE</text>
+    <text x="145" y="19" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#16a34a">POLYMER</text>
+  </g>
+
+  <!-- TOP LEFT: LIPID -->
+  <g transform="translate(30, 65)">
+    <rect width="380" height="155" rx="12" fill="#fff" stroke="#fca5a5" stroke-width="2" filter="url(#cardShadow)"/>
+    <rect x="15" y="-12" width="160" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="95" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#dc2626">LIPID (C, H, O)</text>
+
+    <!-- Callout: Lipids are not polymers -->
+    <rect x="20" y="24" width="130" height="42" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="3 3"/>
+    <text x="85" y="40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#334155">NOTE: LIPIDS ARE</text>
+    <text x="85" y="55" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#dc2626">NOT POLYMERS</text>
+    <path d="M150 45 L175 45" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <text x="185" y="48" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#4f46e5">e.g. TRIGLYCERIDE</text>
+
+    <!-- Triglyceride structure -->
+    <!-- Glycerol -->
+    <rect x="185" y="65" width="22" height="75" rx="3" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
+    <text x="196" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#166534" transform="rotate(-90 196 105)">GLYCEROL</text>
+    <text x="215" y="105" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#64748b">+</text>
+
+    <!-- 3 Fatty acids -->
+    <g transform="translate(235, 70)">
+      <path d="M0 8 Q15 0 30 8 T60 8 T90 8 T120 8" fill="none" stroke="#64748b" stroke-width="2.5"/>
+      <path d="M0 38 Q15 30 30 38 T60 38 T90 38 T120 38" fill="none" stroke="#64748b" stroke-width="2.5"/>
+      <path d="M0 68 Q15 60 30 68 T60 68 T90 68 T120 68" fill="none" stroke="#64748b" stroke-width="2.5"/>
+      <rect x="25" y="24" width="80" height="22" rx="4" fill="#f8fafc" stroke="#94a3b8"/>
+      <text x="65" y="39" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#0f172a">FATTY ACIDS</text>
+    </g>
+  </g>
+
+  <!-- TOP RIGHT: NUCLEIC ACID (DNA) -->
+  <g transform="translate(470, 65)">
+    <rect width="380" height="155" rx="12" fill="#fff" stroke="#fca5a5" stroke-width="2" filter="url(#cardShadow)"/>
+    <rect x="15" y="-12" width="160" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="95" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#dc2626">NUCLEIC ACID</text>
+    <text x="180" y="25" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#16a34a">DNA</text>
+
+    <!-- DNA Ladder sketch -->
+    <g transform="translate(25, 38)">
+      <!-- Strand 1 -->
+      <polygon points="20,10 32,2 44,10 39,24 25,24" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <circle cx="10" cy="5" r="7" fill="#f87171" stroke="#dc2626" stroke-width="1.5"/>
+      <rect x="44" y="8" width="55" height="10" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
+
+      <polygon points="20,50 32,42 44,50 39,64 25,64" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <circle cx="10" cy="45" r="7" fill="#f87171" stroke="#dc2626" stroke-width="1.5"/>
+      <rect x="44" y="48" width="55" height="10" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
+
+      <polygon points="20,90 32,82 44,90 39,104 25,104" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <circle cx="10" cy="85" r="7" fill="#f87171" stroke="#dc2626" stroke-width="1.5"/>
+      <rect x="44" y="88" width="55" height="10" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
+
+      <!-- Strand 2 -->
+      <rect x="99" y="8" width="55" height="10" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
+      <polygon points="174,10 162,2 150,10 155,24 169,24" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <circle cx="184" cy="5" r="7" fill="#f87171" stroke="#dc2626" stroke-width="1.5"/>
+
+      <rect x="99" y="48" width="55" height="10" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
+      <polygon points="174,50 162,42 150,50 155,64 169,64" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <circle cx="184" cy="45" r="7" fill="#f87171" stroke="#dc2626" stroke-width="1.5"/>
+
+      <rect x="99" y="88" width="55" height="10" fill="#86efac" stroke="#16a34a" stroke-width="1.5"/>
+      <polygon points="174,90 162,82 150,90 155,104 169,104" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <circle cx="184" cy="85" r="7" fill="#f87171" stroke="#dc2626" stroke-width="1.5"/>
+
+      <!-- Nucleotide callout -->
+      <g transform="translate(205, 10)">
+        <rect x="0" y="0" width="130" height="24" rx="4" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.5"/>
+        <text x="65" y="16" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#0284c7">NUCLEOTIDE</text>
+        <path d="M-15 35 L0 24" stroke="#0284c7" stroke-width="1.5"/>
+        <text x="15" y="45" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">• PHOSPHATE</text>
+        <text x="15" y="60" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">• PENTOSE SUGAR</text>
+        <text x="15" y="75" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">• NITROGENOUS BASE</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- MIDDLE ROW: WATER, PROTEIN, CARBOHYDRATE -->
+  <!-- Water (Inorganic) -->
+  <g transform="translate(30, 240)">
+    <rect width="180" height="170" rx="12" fill="#fff" stroke="#fde68a" stroke-width="2" filter="url(#cardShadow)"/>
+    <rect x="15" y="-12" width="120" height="24" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+    <text x="75" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#b45309">INORGANIC</text>
+
+    <!-- Water molecule -->
+    <g transform="translate(90, 75)">
+      <circle cx="0" cy="0" r="22" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <text x="0" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="16" font-weight="700">O</text>
+      <text x="0" y="-28" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc2626">δ-</text>
+
+      <!-- H1 -->
+      <line x1="-15" y1="15" x2="-35" y2="35" stroke="#0f172a" stroke-width="2.5"/>
+      <circle cx="-42" cy="42" r="14" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <text x="-42" y="47" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700">H</text>
+      <text x="-42" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#dc2626">δ+</text>
+
+      <!-- H2 -->
+      <line x1="15" y1="15" x2="35" y2="35" stroke="#0f172a" stroke-width="2.5"/>
+      <circle cx="42" cy="42" r="14" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+      <text x="42" y="47" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700">H</text>
+      <text x="42" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#dc2626">δ+</text>
+
+      <path d="M-18 20 Q0 30 18 20" fill="none" stroke="#64748b" stroke-width="1.5"/>
+      <text x="0" y="40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">104.5°</text>
+    </g>
+    <text x="90" y="155" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0284c7">WATER</text>
+  </g>
+
+  <!-- Protein (Organic) -->
+  <g transform="translate(230, 240)">
+    <rect width="300" height="170" rx="12" fill="#fff" stroke="#fca5a5" stroke-width="2" filter="url(#cardShadow)"/>
+    <rect x="15" y="-12" width="180" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="105" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#dc2626">PROTEIN (C, H, O, N)</text>
+
+    <text x="150" y="28" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#16a34a">POLYPEPTIDE (POLYMER)</text>
+    <!-- Folded chain of beads -->
+    <g transform="translate(30, 45)">
+      <circle cx="20" cy="15" r="10" fill="#f87171" stroke="#dc2626"/>
+      <line x1="30" y1="15" x2="45" y2="15" stroke="#64748b" stroke-width="2"/>
+      <rect x="45" y="5" width="20" height="20" rx="3" fill="#86efac" stroke="#16a34a"/>
+      <line x1="65" y1="15" x2="80" y2="15" stroke="#64748b" stroke-width="2"/>
+      <polygon points="90,5 80,25 100,25" fill="#38bdf8" stroke="#0284c7"/>
+      <line x1="100" y1="15" x2="115" y2="25" stroke="#64748b" stroke-width="2"/>
+      <ellipse cx="125" cy="30" rx="12" ry="9" fill="#fdba74" stroke="#ea580c"/>
+      <line x1="135" y1="35" x2="150" y2="45" stroke="#64748b" stroke-width="2"/>
+      <circle cx="160" cy="50" r="10" fill="#f87171" stroke="#dc2626"/>
+      <line x1="150" y1="55" x2="135" y2="65" stroke="#64748b" stroke-width="2"/>
+      <polygon points="125,55 115,75 135,75" fill="#38bdf8" stroke="#0284c7"/>
+      <line x1="115" y1="65" x2="95" y2="65" stroke="#64748b" stroke-width="2"/>
+      <rect x="75" y="55" width="20" height="20" rx="3" fill="#86efac" stroke="#16a34a"/>
+    </g>
+
+    <!-- Monomer callout -->
+    <g transform="translate(60, 130)">
+      <rect x="0" y="0" width="180" height="26" rx="6" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+      <polygon points="20,5 12,20 28,20" fill="#38bdf8" stroke="#0284c7"/>
+      <text x="100" y="17" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#166534">AMINO ACID (MONOMER)</text>
+    </g>
+  </g>
+
+  <!-- Carbohydrate (Organic) -->
+  <g transform="translate(550, 240)">
+    <rect width="300" height="170" rx="12" fill="#fff" stroke="#fca5a5" stroke-width="2" filter="url(#cardShadow)"/>
+    <rect x="15" y="-12" width="200" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="115" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#dc2626">CARBOHYDRATE (C, H, O)</text>
+
+    <text x="150" y="28" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#16a34a">POLYSACCHARIDE (POLYMER)</text>
+    <!-- Hexagon chain -->
+    <g transform="translate(25, 45)">
+      <!-- Main chain -->
+      <polygon points="15,20 23,8 37,8 45,20 37,32 23,32" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <line x1="45" y1="20" x2="55" y2="20" stroke="#0284c7" stroke-width="2"/>
+      <polygon points="65,20 73,8 87,8 95,20 87,32 73,32" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <line x1="95" y1="20" x2="105" y2="20" stroke="#0284c7" stroke-width="2"/>
+      <polygon points="115,20 123,8 137,8 145,20 137,32 123,32" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <line x1="145" y1="20" x2="155" y2="20" stroke="#0284c7" stroke-width="2"/>
+      <polygon points="165,20 173,8 187,8 195,20 187,32 173,32" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+      <line x1="195" y1="20" x2="205" y2="20" stroke="#0284c7" stroke-width="2"/>
+      <polygon points="215,20 223,8 237,8 245,20 237,32 223,32" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5"/>
+
+      <!-- Branch -->
+      <line x1="80" y1="8" x2="80" y2="-2" stroke="#0284c7" stroke-width="2"/>
+      <polygon points="80,-5 72,-17 88,-17 96,-5 88,7 72,7" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5" transform="translate(0, -10)"/>
+    </g>
+
+    <!-- Monomer callout -->
+    <g transform="translate(45, 130)">
+      <rect x="0" y="0" width="210" height="26" rx="6" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.5"/>
+      <polygon points="20,13 25,6 35,6 40,13 35,20 25,20" fill="#38bdf8" stroke="#0284c7" stroke-width="1.2"/>
+      <text x="120" y="17" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#0284c7">MONOSACCHARIDE (MONOMER)</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM STRIP: DIVERSITY OF LIVING ORGANISMS -->
+  <g transform="translate(30, 435)">
+    <rect width="820" height="150" rx="14" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+    <text x="410" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#475569">UNIVERSAL TO ALL TAXONOMIC KINGDOMS</text>
+
+    <!-- Icons / sketches of organisms -->
+    <!-- Bacterium -->
+    <g transform="translate(80, 50)">
+      <rect x="0" y="10" width="60" height="30" rx="15" fill="#e0e7ff" stroke="#4f46e5" stroke-width="2"/>
+      <path d="M-10 20 Q-25 15 -35 25" stroke="#4f46e5" stroke-width="1.5" fill="none"/>
+      <path d="M-10 25 Q-25 30 -35 20" stroke="#4f46e5" stroke-width="1.5" fill="none"/>
+      <text x="30" y="60" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Bacteria</text>
+    </g>
+
+    <!-- Amoeba / Protoctist -->
+    <g transform="translate(230, 50)">
+      <path d="M10 15 Q30 0 50 10 T70 30 T50 50 T20 45 Z" fill="#ccfbf1" stroke="#0d9488" stroke-width="2"/>
+      <circle cx="35" cy="28" r="6" fill="#0d9488"/>
+      <text x="40" y="60" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Protoctists</text>
+    </g>
+
+    <!-- Plant -->
+    <g transform="translate(380, 45)">
+      <path d="M25 50 Q25 20 45 5 Q25 10 25 50" fill="#86efac" stroke="#16a34a" stroke-width="2"/>
+      <path d="M25 35 Q5 20 0 5 Q15 15 25 35" fill="#86efac" stroke="#16a34a" stroke-width="2"/>
+      <line x1="25" y1="50" x2="25" y2="5" stroke="#15803d" stroke-width="2"/>
+      <text x="25" y="65" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Plants</text>
+    </g>
+
+    <!-- Fungus -->
+    <g transform="translate(520, 45)">
+      <path d="M10 25 Q25 5 45 5 Q65 5 80 25 Z" fill="#fed7aa" stroke="#c2410c" stroke-width="2"/>
+      <rect x="35" y="25" width="20" height="28" rx="4" fill="#ffedd5" stroke="#c2410c" stroke-width="2"/>
+      <text x="45" y="65" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Fungi</text>
+    </g>
+
+    <!-- Animal (Fish) -->
+    <g transform="translate(680, 50)">
+      <path d="M10 25 Q40 5 70 25 Q40 45 10 25 Z" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+      <polygon points="70,25 90,10 85,25 90,40" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+      <circle cx="25" cy="22" r="3" fill="#0284c7"/>
+      <text x="45" y="60" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Animals</text>
+    </g>
+
+    <!-- Bottom summary banner -->
+    <text x="410" y="132" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-style="italic" font-weight="600" fill="#047857">"Monomers make up polymers, which make up living organisms"</text>
+  </g>
+</svg>`,
+  "condensation-reaction.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 420" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <!-- Title bar -->
+  <rect x="0" y="0" width="850" height="44" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="25" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">CONDENSATION REACTION (DEHYDRATION SYNTHESIS)</text>
+
+  <!-- Section 1: Written equation -->
+  <g transform="translate(30, 60)">
+    <rect x="0" y="0" width="90" height="24" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="45" y="16" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#475569">WRITTEN</text>
+
+    <g transform="translate(20, 50)">
+      <text x="0" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">MONOMER</text>
+      <text x="120" y="0" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#dc2626">+</text>
+      <text x="155" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">MONOMER</text>
+      <text x="275" y="0" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#dc2626">+</text>
+      <text x="310" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">MONOMER</text>
+
+      <path d="M430 -6 L500 -6" stroke="#ea580c" stroke-width="3" marker-end="url(#arrowOrange)"/>
+      <polygon points="500,-11 512,-6 500,-1" fill="#ea580c"/>
+
+      <text x="530" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#16a34a">POLYMER</text>
+      <text x="640" y="0" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#ea580c">+</text>
+      <text x="670" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">2 H₂O</text>
+
+      <!-- Water removal curves -->
+      <path d="M125 15 Q125 45 150 45" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+      <polygon points="148,40 158,45 148,50" fill="#16a34a"/>
+      <text x="165" y="50" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#16a34a">H₂O REMOVED</text>
+
+      <path d="M280 15 Q280 45 305 45" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+      <polygon points="303,40 313,45 303,50" fill="#16a34a"/>
+      <text x="320" y="50" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#16a34a">H₂O REMOVED</text>
+    </g>
+  </g>
+
+  <!-- Divider -->
+  <line x1="30" y1="180" x2="820" y2="180" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <!-- Section 2: Symbolic representation -->
+  <g transform="translate(30, 200)">
+    <rect x="0" y="0" width="90" height="24" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="45" y="16" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#475569">SYMBOLIC</text>
+
+    <g transform="translate(30, 60)">
+      <!-- Monomer 1 -->
+      <text x="0" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">HO —</text>
+      <polygon points="65,0 45,45 85,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+      <text x="65" y="62" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#16a34a">MONOMER</text>
+
+      <!-- Highlighted reactive groups -->
+      <rect x="85" y="8" width="60" height="30" rx="15" fill="#bae6fd" opacity="0.8"/>
+      <text x="95" y="28" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0369a1">— H</text>
+      <text x="120" y="28" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0369a1">+</text>
+      <text x="135" y="28" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0369a1">HO —</text>
+
+      <!-- Monomer 2 -->
+      <polygon points="215,0 195,45 235,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+      <text x="215" y="62" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#16a34a">MONOMER</text>
+      <text x="240" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">— H</text>
+
+      <!-- Water removed arrow -->
+      <path d="M115 42 Q115 75 140 75" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+      <polygon points="138,70 148,75 138,80" fill="#16a34a"/>
+      <text x="155" y="80" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#16a34a">H₂O REMOVED</text>
+
+      <!-- Reaction arrow -->
+      <line x1="310" y1="22" x2="380" y2="22" stroke="#ea580c" stroke-width="3"/>
+      <polygon points="380,17 392,22 380,27" fill="#ea580c"/>
+
+      <!-- Joined Dimer -->
+      <g transform="translate(420, 0)">
+        <text x="0" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">HO —</text>
+        <polygon points="65,0 45,45 85,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+        <!-- Covalent bridge -->
+        <rect x="85" y="12" width="40" height="22" rx="4" fill="#38bdf8" opacity="0.4"/>
+        <line x1="85" y1="22" x2="125" y2="22" stroke="#0284c7" stroke-width="3"/>
+        <polygon points="145,0 125,45 165,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+        <text x="170" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">— H</text>
+        <text x="105" y="58" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#0284c7">COVALENT BOND</text>
+
+        <text x="210" y="25" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#ea580c">+</text>
+        <text x="235" y="25" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#0284c7">H₂O</text>
+      </g>
+    </g>
+  </g>
+</svg>`,
+  "covalent-bonds-table.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 480" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <!-- Table Header -->
+  <rect x="25" y="20" width="800" height="48" rx="8" fill="#0284c7"/>
+  <text x="110" y="50" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff">Organic Molecules</text>
+  <text x="350" y="50" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff">Covalent Bonds</text>
+  <text x="600" y="50" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff">Diagram of Covalent Bond</text>
+
+  <!-- Row 1: Carbohydrates -->
+  <g transform="translate(25, 75)">
+    <rect width="800" height="90" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="30" y="50" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0f172a">carbohydrates</text>
+    <text x="250" y="50" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0284c7">glycosidic</text>
+
+    <!-- Bond sketch: C - O - C -->
+    <g transform="translate(540, 25)">
+      <rect x="-10" y="10" width="90" height="32" rx="16" fill="#38bdf8" opacity="0.3"/>
+      <text x="0" y="32" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0f172a">C</text>
+      <line x1="15" y1="28" x2="32" y2="28" stroke="#0f172a" stroke-width="2.5"/>
+      <text x="36" y="32" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0284c7">O</text>
+      <line x1="53" y1="28" x2="70" y2="28" stroke="#0f172a" stroke-width="2.5"/>
+      <text x="74" y="32" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0f172a">C</text>
+    </g>
+  </g>
+
+  <!-- Row 2: Proteins -->
+  <g transform="translate(25, 170)">
+    <rect width="800" height="95" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="30" y="52" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0f172a">proteins</text>
+    <text x="250" y="52" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0284c7">peptide</text>
+
+    <!-- Bond sketch: O=C - N-H -->
+    <g transform="translate(520, 18)">
+      <rect x="35" y="15" width="60" height="36" rx="6" fill="#38bdf8" opacity="0.3"/>
+      <text x="0" y="40" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#dc2626">O =</text>
+      <text x="40" y="40" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0f172a">C</text>
+      <line x1="58" y1="35" x2="76" y2="35" stroke="#0284c7" stroke-width="3"/>
+      <text x="80" y="40" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0284c7">N</text>
+      <line x1="90" y1="44" x2="90" y2="58" stroke="#0f172a" stroke-width="2"/>
+      <text x="85" y="70" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">H</text>
+    </g>
+  </g>
+
+  <!-- Row 3: Lipids -->
+  <g transform="translate(25, 270)">
+    <rect width="800" height="95" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="30" y="52" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0f172a">lipids</text>
+    <text x="250" y="52" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0284c7">ester</text>
+
+    <!-- Bond sketch: C - O - C = O -->
+    <g transform="translate(520, 20)">
+      <path d="M5 25 L45 25 L45 65" fill="none" stroke="#38bdf8" stroke-width="24" stroke-linecap="round" opacity="0.3"/>
+      <text x="0" y="32" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0f172a">C</text>
+      <line x1="16" y1="27" x2="30" y2="27" stroke="#0f172a" stroke-width="2"/>
+      <text x="34" y="32" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0284c7">O</text>
+      <line x1="50" y1="27" x2="64" y2="27" stroke="#0f172a" stroke-width="2"/>
+      <text x="68" y="32" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0f172a">C</text>
+      <text x="68" y="65" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#dc2626">||</text>
+      <text x="68" y="80" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#dc2626">O</text>
+    </g>
+  </g>
+
+  <!-- Row 4: Nucleic Acids -->
+  <g transform="translate(25, 370)">
+    <rect width="800" height="100" rx="0 0 8 8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="30" y="55" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0f172a">nucleic Acids</text>
+    <text x="250" y="55" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0284c7">phosphodiester</text>
+
+    <!-- Bond sketch: Phosphate bridging two pentose rings -->
+    <g transform="translate(530, 15)">
+      <circle cx="50" cy="40" r="24" fill="#38bdf8" opacity="0.3"/>
+      <circle cx="20" cy="30" r="16" fill="#fff" stroke="#0284c7" stroke-width="1.5"/>
+      <text x="12" y="35" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#0284c7">PO₄²⁻</text>
+      <!-- Pentose 1 -->
+      <polygon points="50,15 62,5 74,15 70,28 54,28" fill="#38bdf8" stroke="#0284c7" stroke-width="1.2"/>
+      <!-- Pentose 2 -->
+      <polygon points="50,65 62,55 74,65 70,78 54,78" fill="#38bdf8" stroke="#0284c7" stroke-width="1.2"/>
+      <line x1="36" y1="30" x2="52" y2="20" stroke="#0f172a" stroke-width="2"/>
+      <line x1="36" y1="35" x2="52" y2="60" stroke="#0f172a" stroke-width="2"/>
+    </g>
+  </g>
+</svg>`,
+  "hydrolysis-reaction.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 420" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <!-- Title bar -->
+  <rect x="0" y="0" width="850" height="44" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="25" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">HYDROLYSIS REACTION (CLEAVAGE WITH WATER)</text>
+
+  <!-- Section 1: Written equation -->
+  <g transform="translate(30, 60)">
+    <rect x="0" y="0" width="90" height="24" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="45" y="16" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#475569">WRITTEN</text>
+
+    <g transform="translate(20, 50)">
+      <text x="0" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#16a34a">POLYMER</text>
+      <text x="110" y="0" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#ea580c">+</text>
+      <text x="135" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">2 H₂O</text>
+
+      <!-- Water added arrow -->
+      <path d="M155 35 Q155 10 170 5" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+      <polygon points="168,0 176,8 166,12" fill="#16a34a"/>
+      <text x="120" y="55" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#16a34a">H₂O ADDED</text>
+
+      <path d="M230 -6 L300 -6" stroke="#ea580c" stroke-width="3"/>
+      <polygon points="300,-11 312,-6 300,-1" fill="#ea580c"/>
+
+      <text x="330" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">MONOMER</text>
+      <text x="450" y="0" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#dc2626">+</text>
+      <text x="480" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">MONOMER</text>
+      <text x="600" y="0" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#dc2626">+</text>
+      <text x="630" y="0" font-family="system-ui, sans-serif" font-size="17" font-weight="800" fill="#0284c7">MONOMER</text>
+    </g>
+  </g>
+
+  <!-- Divider -->
+  <line x1="30" y1="180" x2="820" y2="180" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <!-- Section 2: Symbolic representation -->
+  <g transform="translate(30, 200)">
+    <rect x="0" y="0" width="90" height="24" rx="4" fill="#f1f5f9" stroke="#cbd5e1"/>
+    <text x="45" y="16" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#475569">SYMBOLIC</text>
+
+    <g transform="translate(30, 60)">
+      <!-- Joined Dimer with bond highlighted -->
+      <text x="0" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">HO —</text>
+      <polygon points="65,0 45,45 85,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+      <!-- Bond highlight -->
+      <rect x="85" y="10" width="40" height="25" rx="4" fill="#38bdf8" opacity="0.4"/>
+      <line x1="85" y1="22" x2="125" y2="22" stroke="#0284c7" stroke-width="3"/>
+      <polygon points="145,0 125,45 165,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+      <text x="170" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">— H</text>
+
+      <!-- Water added arrow into bond -->
+      <path d="M105 75 Q105 45 105 38" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+      <polygon points="100,42 105,32 110,42" fill="#16a34a"/>
+      <text x="105" y="95" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#16a34a">H₂O ADDED</text>
+
+      <!-- Reaction arrow -->
+      <line x1="230" y1="22" x2="300" y2="22" stroke="#ea580c" stroke-width="3"/>
+      <polygon points="300,17 312,22 300,27" fill="#ea580c"/>
+
+      <!-- Separated Monomers -->
+      <g transform="translate(340, 0)">
+        <text x="0" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">HO —</text>
+        <polygon points="65,0 45,45 85,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+        <rect x="85" y="10" width="30" height="25" rx="12" fill="#bae6fd" opacity="0.8"/>
+        <text x="92" y="28" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0369a1">— H</text>
+
+        <text x="135" y="25" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#dc2626">+</text>
+
+        <rect x="160" y="10" width="45" height="25" rx="12" fill="#bae6fd" opacity="0.8"/>
+        <text x="165" y="28" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#0369a1">HO —</text>
+        <polygon points="230,0 210,45 250,45" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+        <text x="255" y="24" font-family="system-ui, sans-serif" font-size="16" font-weight="700" fill="#0f172a">— H</text>
+
+        <text x="150" y="65" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#16a34a">SEPARATED MONOMERS</text>
+      </g>
+    </g>
+  </g>
+</svg>`,
+
 };
 
 /**
