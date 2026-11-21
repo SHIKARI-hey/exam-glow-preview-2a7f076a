@@ -208,3 +208,21 @@
     box-shadow: 0 1px 3px oklch(0 0 0 / 6%);
   }
 }
+
+/* Apple-style minimal surfaces (home dashboard) */
+@utility font-apple {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+}
+@utility apple-tile {
+  background-color: color-mix(in oklab, var(--color-foreground) 3.5%, var(--color-background));
+  border-radius: 1.75rem;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s ease;
+}
+@utility apple-tile-hover {
+  &:hover {
+    transform: scale(1.015);
+    background-color: color-mix(in oklab, var(--color-foreground) 5.5%, var(--color-background));
+  }
+}

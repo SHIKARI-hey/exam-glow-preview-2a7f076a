@@ -131,157 +131,103 @@ export function HomePage() {
   return (
     <div className="flex h-dvh overflow-hidden app-frame">
       <DashboardSidebar />
-      <main className="app-panel min-w-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-[1180px] px-5 pb-24 pt-20 md:px-8 md:pt-10 lg:px-12">
-          {/* Dateline */}
-          <header className="flex items-center gap-5">
-            <p className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-              {todayFormatted}
-            </p>
-            <span className="h-px min-w-0 flex-1 bg-border" aria-hidden />
+      <main className="app-panel font-apple min-w-0 flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-[1080px] px-5 pb-24 pt-20 md:px-10 md:pt-10">
+          <header className="flex items-center justify-between">
+            <p className="text-sm font-medium text-muted-foreground">{todayFormatted}</p>
             <ProfileAvatar className="shrink-0" />
           </header>
 
-          {/* Masthead — landing style */}
-          <section className="mt-12 text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-              Today&apos;s focus · {focusTitle}
-            </p>
-            <h1 className="mx-auto mt-6 max-w-4xl text-[clamp(2.8rem,7vw,5rem)] leading-[1.02]">
-              Good to see you,
-              <br />
-              <span className="display-italic">{firstName}</span>
+          <section className="mt-16 text-center md:mt-20">
+            <p className="text-sm font-semibold text-muted-foreground">{focusTitle}</p>
+            <h1 className="font-apple mx-auto mt-3 max-w-3xl text-[clamp(2.6rem,6.5vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
+              Good to see you, {firstName}.
             </h1>
-            <p className="mx-auto mt-6 max-w-md text-[15px] leading-relaxed text-muted-foreground">
-              All chapters, notes, diagrams, and unlimited AI tutoring — free, no subscription needed.
+            <p className="mx-auto mt-5 max-w-lg text-[clamp(1.05rem,1.6vw,1.3rem)] leading-relaxed text-muted-foreground">
+              Every chapter, note and AI tutor session. All in one place.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
               <Link
                 to="/syllabus-notes"
-                className="inline-flex items-center gap-2 rounded-full bg-ink px-7 py-3.5 text-[15px] font-medium text-ink-foreground transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-6 py-3 text-[15px] font-medium text-background transition-opacity hover:opacity-85"
               >
-                Continue syllabus notes <ArrowRight className="size-4" aria-hidden />
+                Continue learning
               </Link>
-              <Link
-                to="/notes"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-7 py-3.5 text-[15px] font-medium text-foreground hover:bg-muted"
-              >
-                Open my notes
+              <Link to="/notes" className="inline-flex items-center gap-1 text-[15px] font-medium text-foreground hover:underline underline-offset-4">
+                Open my notes <ArrowRight className="size-4" aria-hidden />
               </Link>
             </div>
           </section>
 
-          {/* Stat cards — landing style */}
-          <section className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <StatCard tone="bg-mint" value="All Open" label="Syllabus access" />
-            <StatCard tone="bg-lilac" value={notesCount.toString()} label="Personal notes" />
-            <StatCard tone="bg-highlight" value={profile.streakDays ? `${profile.streakDays} days` : "Active"} label="Study consistency" />
-            <StatCard tone="bg-card border border-border" value="Unlimited" label="AI tutor" />
+          <section className="mt-20 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <StatCard value="All" label="Syllabus open" />
+            <StatCard value={notesCount.toString()} label="Personal notes" />
+            <StatCard value={profile.streakDays ? `${profile.streakDays}d` : "On"} label="Study streak" />
+            <StatCard value="∞" label="AI tutor" />
           </section>
 
-          {/* The index */}
-          <section className="mt-16">
-            <div className="flex items-center gap-5">
-              <p className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                Quick actions
-              </p>
-              <span className="h-px min-w-0 flex-1 bg-border" aria-hidden />
-            </div>
-
-            <div className="mt-2">
-              {quickActions.map(({ title, meta, to }, i) => (
-                <Link
-                  key={title}
-                  to={to}
-                  className="group grid grid-cols-[2.5rem_minmax(0,1fr)_auto] md:grid-cols-[2.5rem_minmax(0,1fr)_auto_auto] items-center gap-3 border-t border-border/70 py-6 sm:gap-6"
-                >
-                  <span className="text-xs font-semibold tabular-nums tracking-[0.18em] text-muted-foreground">
-                    {String(i + 1).padStart(2, "0")}
+          <section className="mt-20">
+            <h2 className="font-apple text-[clamp(1.6rem,2.6vw,2rem)] font-semibold tracking-[-0.025em]">Get started.</h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {quickActions.map(({ title, meta, to, Icon }) => (
+                <Link key={title} to={to} className="apple-tile apple-tile-hover group flex items-center gap-5 p-6">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-background">
+                    <Icon className="size-5 text-foreground" aria-hidden />
                   </span>
-                  <span className="min-w-0 truncate font-display text-[clamp(1.4rem,2.8vw,1.9rem)] leading-none">
-                    {title}
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[17px] font-semibold tracking-tight">{title}</span>
+                    <span className="mt-0.5 block truncate text-sm text-muted-foreground">{meta}</span>
                   </span>
-                  <span className="hidden min-w-0 text-right text-sm text-muted-foreground md:block">
-                    {meta}
-                  </span>
-                  <ArrowUpRight className="size-5 shrink-0 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden />
+                  <ArrowUpRight className="size-5 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden />
                 </Link>
               ))}
-              <span className="block h-px bg-border/70" aria-hidden />
             </div>
           </section>
 
-          {/* Goals + milestone */}
-          <div className="mt-16 grid gap-12 lg:grid-cols-[minmax(0,1.45fr)_minmax(280px,0.75fr)]">
-            <section>
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                    Today&apos;s goals
-                  </p>
-                  <h2 className="mt-2 text-[clamp(1.8rem,3vw,2.3rem)] leading-tight">Your study checklist</h2>
-                </div>
+          <div className="mt-20 grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,1fr)]">
+            <section className="apple-tile p-7 md:p-8">
+              <div className="flex items-baseline justify-between gap-4">
+                <h2 className="font-apple text-2xl font-semibold tracking-[-0.02em]">Today’s goals</h2>
                 {tasks.length > 0 && (
-                  <span className="text-sm text-muted-foreground">
-                    {completedTasks} of {tasks.length}
-                  </span>
+                  <span className="text-sm text-muted-foreground">{completedTasks} of {tasks.length}</span>
                 )}
               </div>
               {tasks.length > 0 && (
-                <div className="mt-4 h-px bg-border">
-                  <div
-                    className="h-px bg-ink transition-all duration-300"
-                    style={{ width: `${(completedTasks / tasks.length) * 100}%` }}
-                  />
+                <div className="mt-4 h-1 overflow-hidden rounded-full bg-background">
+                  <div className="h-full rounded-full bg-foreground transition-all duration-500" style={{ width: `${(completedTasks / tasks.length) * 100}%` }} />
                 </div>
               )}
-
-              {/* Add task */}
-              <div className="mt-6 flex items-center gap-3 border-b border-border pb-2.5">
+              <div className="mt-6 flex items-center gap-3 rounded-2xl bg-background px-4 py-3">
                 <Plus className="size-4 shrink-0 text-muted-foreground" aria-hidden />
                 <input
                   type="text"
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addTask()}
-                  placeholder="Add a study goal…"
+                  placeholder="Add a study goal"
                   className="min-w-0 flex-1 bg-transparent text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none"
                 />
-                <button
-                  type="button"
-                  onClick={addTask}
-                  disabled={!newTask.trim()}
-                  className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink transition-opacity hover:opacity-60 disabled:opacity-30"
-                >
+                <button type="button" onClick={addTask} disabled={!newTask.trim()} className="shrink-0 text-sm font-medium text-foreground transition-opacity hover:opacity-60 disabled:opacity-30">
                   Add
                 </button>
               </div>
-
               {tasks.length === 0 ? (
-                <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-                  No goals yet — add your first study goal above and start tracking today&apos;s progress.
-                </p>
+                <p className="mt-5 text-sm text-muted-foreground">No goals yet. Add one to start tracking today.</p>
               ) : (
-                <div>
+                <div className="mt-3">
                   {tasks.map((task) => (
                     <button
                       key={task.id}
                       type="button"
                       onClick={() => toggleTask(task.id)}
-                      className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-b border-border/70 py-4 text-left"
+                      className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-b border-border/60 py-3.5 text-left last:border-0"
                     >
                       {task.done ? (
-                        <CheckCircle2 className="size-5 shrink-0 text-lavender" />
+                        <CheckCircle2 className="size-5 shrink-0 text-foreground" />
                       ) : (
-                        <span className="size-4 shrink-0 rounded-full border border-muted-foreground/50" />
+                        <span className="size-5 shrink-0 rounded-full border-[1.5px] border-muted-foreground/40" />
                       )}
-                      <span
-                        className={`min-w-0 truncate text-[15px] ${
-                          task.done ? "text-muted-foreground line-through" : "font-medium text-foreground"
-                        }`}
-                      >
-                        {task.title}
-                      </span>
+                      <span className={`min-w-0 truncate text-[15px] ${task.done ? "text-muted-foreground line-through" : "text-foreground"}`}>{task.title}</span>
                       <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
                         <Clock3 className="size-3.5" />
                         {task.time}
@@ -292,34 +238,22 @@ export function HomePage() {
               )}
             </section>
 
-            <section>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                Upcoming milestone
+            <section className="apple-tile flex flex-col p-7 md:p-8">
+              <p className="text-sm font-medium text-muted-foreground">Next checkpoint · {nextTargetDay}</p>
+              <h2 className="font-apple mt-2 text-2xl font-semibold leading-snug tracking-[-0.02em]">
+                {profile.goal ? `${profile.goal} Mock Assessment` : "IGCSE Mock Test"}
+              </h2>
+              <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
+                Practise past questions and review your formula flashcards.
               </p>
-              <h2 className="mt-2 text-[clamp(1.8rem,3vw,2.3rem)] leading-tight">Next checkpoint</h2>
-              <div className="mt-5 border-t border-border pt-5">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  {nextTargetDay}
-                </p>
-                <p className="mt-2.5 font-display text-xl leading-snug">
-                  {profile.goal ? `${profile.goal} Mock Assessment` : "IGCSE Mock Test"}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Prepare by testing past questions and reviewing your formula flashcards.
-                </p>
-                <Link
-                  to="/test"
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-foreground underline decoration-border decoration-1 underline-offset-8 transition-colors hover:decoration-foreground"
-                >
-                  Open Quizzes &amp; Tests <ArrowRight className="size-4" />
+              <div className="mt-auto flex flex-col gap-2 pt-8">
+                <Link to="/test" className="inline-flex items-center gap-1 text-[15px] font-medium text-foreground hover:underline underline-offset-4">
+                  Open quizzes &amp; tests <ArrowRight className="size-4" />
+                </Link>
+                <Link to="/calendar" className="inline-flex items-center gap-1 text-[15px] font-medium text-muted-foreground hover:text-foreground">
+                  Revision calendar <ArrowRight className="size-4" />
                 </Link>
               </div>
-              <Link
-                to="/calendar"
-                className="mt-6 flex items-center justify-between border-t border-border pt-5 text-sm font-medium hover:text-foreground/70"
-              >
-                Full revision calendar <ArrowRight className="size-4 text-muted-foreground" />
-              </Link>
             </section>
           </div>
         </div>
@@ -328,11 +262,11 @@ export function HomePage() {
   );
 }
 
-function StatCard({ value, label, tone }: { value: string; label: string; tone: string }) {
+function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className={`flex min-h-[170px] flex-col justify-between rounded-[24px] p-6 text-foreground ${tone}`}>
-      <strong className="block font-display text-[clamp(2rem,3.4vw,2.8rem)] font-normal leading-none">{value}</strong>
-      <span className="text-sm">{label}</span>
+    <div className="apple-tile flex flex-col items-center justify-center px-4 py-8 text-center">
+      <strong className="font-apple block text-[clamp(2rem,3.4vw,2.6rem)] font-semibold leading-none tracking-[-0.03em]">{value}</strong>
+      <span className="mt-2 text-sm text-muted-foreground">{label}</span>
     </div>
   );
 }
