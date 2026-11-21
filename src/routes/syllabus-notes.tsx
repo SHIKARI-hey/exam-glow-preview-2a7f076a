@@ -96,12 +96,77 @@ export const Route = createFileRoute("/syllabus-notes")({
 const catDot: Record<string, string> = {
   Sciences: "bg-emerald-500",
   Mathematics: "bg-blue-500",
-  English: "bg-violet-500",
+  "English & Literature": "bg-violet-500",
   Languages: "bg-pink-500",
   "Business & Economics": "bg-amber-500",
   Humanities: "bg-orange-500",
   Technology: "bg-cyan-500",
+  "Arts & Media": "bg-pink-500",
 };
+
+const categoryStyles: Record<string, { bg: string; text: string; border: string; badge: string }> = {
+  Sciences: {
+    bg: "bg-emerald-50",
+    text: "text-emerald-700",
+    border: "border-emerald-200",
+    badge: "bg-emerald-100/80 text-emerald-800",
+  },
+  Mathematics: {
+    bg: "bg-blue-50",
+    text: "text-blue-700",
+    border: "border-blue-200",
+    badge: "bg-blue-100/80 text-blue-800",
+  },
+  "Business & Economics": {
+    bg: "bg-amber-50",
+    text: "text-amber-700",
+    border: "border-amber-200",
+    badge: "bg-amber-100/80 text-amber-800",
+  },
+  Technology: {
+    bg: "bg-cyan-50",
+    text: "text-cyan-700",
+    border: "border-cyan-200",
+    badge: "bg-cyan-100/80 text-cyan-800",
+  },
+  Humanities: {
+    bg: "bg-orange-50",
+    text: "text-orange-700",
+    border: "border-orange-200",
+    badge: "bg-orange-100/80 text-orange-800",
+  },
+  "English & Literature": {
+    bg: "bg-violet-50",
+    text: "text-violet-700",
+    border: "border-violet-200",
+    badge: "bg-violet-100/80 text-violet-800",
+  },
+  Languages: {
+    bg: "bg-rose-50",
+    text: "text-rose-700",
+    border: "border-rose-200",
+    badge: "bg-rose-100/80 text-rose-800",
+  },
+  "Arts & Media": {
+    bg: "bg-pink-50",
+    text: "text-pink-700",
+    border: "border-pink-200",
+    badge: "bg-pink-100/80 text-pink-800",
+  },
+};
+
+function getSubjectCategory(s: SubjectNotes): string {
+  const id = s.id;
+  if (["biology", "chemistry", "physics", "environmental-management", "co-ordinated-sciences", "marine-science", "astronomy"].includes(id)) return "Sciences";
+  if (["mathematics", "additional-mathematics"].includes(id)) return "Mathematics";
+  if (["accounting", "business-studies", "economics", "enterprise"].includes(id)) return "Business & Economics";
+  if (["computer-science", "ict", "design-and-technology"].includes(id)) return "Technology";
+  if (["first-language-english", "english-second-language", "literature-in-english", "world-literature"].includes(id)) return "English & Literature";
+  if (["french", "spanish", "portuguese", "german", "arabic-second-language", "latin"].includes(id)) return "Languages";
+  if (["art-design", "art-and-design", "music", "drama", "media-studies"].includes(id)) return "Arts & Media";
+  if (["history", "geography", "sociology", "psychology", "development-studies", "religious-studies", "global-perspectives", "travel-and-tourism", "physical-education", "agriculture", "food-and-nutrition"].includes(id)) return "Humanities";
+  return "Sciences";
+}
 
 // ─── Full chapter document reader & 20-Min Yumna Masterclass Player ───────────
 
@@ -1464,41 +1529,70 @@ export function SyllabusNotesPage() {
 
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [expandedSubjects, setExpandedSubjects] = useState<Record<string, boolean>>({});
 
-  const getSubjectCategory = (code: string): string => {
-    if (["0610", "0620", "0625", "0680", "0697", "0654", "0653", "0617"].includes(code)) return "Sciences";
-    if (["0580", "0606"].includes(code)) return "Mathematics";
-    if (["0520", "0530", "0504", "0525", "0508", "0480"].includes(code)) return "Languages";
-    if (["0500", "0510", "0475", "0408"].includes(code)) return "English";
-    if (["0455", "0450", "0452", "0454"].includes(code)) return "Business & Economics";
-    if (["0470", "0460", "0495", "0490", "0471", "0457", "0478", "0413", "0453"].includes(code)) return "Humanities";
-    if (["0417", "0478", "0445", "0648", "0400", "0410", "0411", "0573"].includes(code)) return "Technology";
-    return "Sciences";
+  const toggleSubject = (id: string) => {
+    setExpandedSubjects((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const expandAll = () => {
+    const all: Record<string, boolean> = {};
+    SYLLABUS_NOTES.forEach((s) => {
+      all[s.id] = true;
+    });
+    setExpandedSubjects(all);
+  };
+
+  const collapseAll = () => {
+    setExpandedSubjects({});
   };
 
   const categoryOrder = [
     "Sciences",
     "Mathematics",
     "Business & Economics",
-    "Humanities",
     "Technology",
+    "Humanities",
+    "English & Literature",
     "Languages",
-    "English",
+    "Arts & Media",
   ];
 
-  const categories = [
+  const categories = useMemo(() => [
     "All",
     ...categoryOrder.filter((cat) =>
-      SYLLABUS_NOTES.some((s) => getSubjectCategory(s.code) === cat)
+      SYLLABUS_NOTES.some((s) => getSubjectCategory(s) === cat)
     ),
-  ];
+  ], []);
 
-  const filteredSubjects = SYLLABUS_NOTES.filter((s) => {
-    const matchCat = activeCategory === "All" || getSubjectCategory(s.code) === activeCategory;
-    const matchSearch =
-      s.name.toLowerCase().includes(search.toLowerCase()) || s.code.includes(search);
-    return matchCat && matchSearch;
-  });
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { All: SYLLABUS_NOTES.length };
+    SYLLABUS_NOTES.forEach((s) => {
+      const cat = getSubjectCategory(s);
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  }, []);
+
+  const totalChaptersAcrossAll = useMemo(() => {
+    return SYLLABUS_NOTES.reduce((sum, s) => sum + s.chapters.length, 0);
+  }, []);
+
+  const filteredSubjects = useMemo(() => {
+    return SYLLABUS_NOTES.filter((s) => {
+      const matchCat = activeCategory === "All" || getSubjectCategory(s) === activeCategory;
+      const q = search.trim().toLowerCase();
+      if (!q) return matchCat;
+      const matchSearch =
+        s.name.toLowerCase().includes(q) ||
+        s.code.toLowerCase().includes(q) ||
+        s.chapters.some((c) => c.title.toLowerCase().includes(q));
+      return matchCat && matchSearch;
+    });
+  }, [activeCategory, search]);
 
   const openNextChapter = () => {
     if (!selectedSubject || !activeChapter) return;
@@ -1960,210 +2054,237 @@ export function SyllabusNotesPage() {
     );
   }
 
-  // 6. COURSES DIRECTORY VIEW (EXCLUSIVELY FOCUSED ON BIOLOGY)
-  const biologySubject = SYLLABUS_NOTES.find((s) => s.id === "biology") || SYLLABUS_NOTES[0];
-  const totalChapters = biologySubject ? biologySubject.chapters.length : 120;
-
+  // 6. COURSES & SYLLABUS NOTES DIRECTORY LIST VIEW
   return (
     <DashboardLayout crumbs={[{ label: "Courses" }]}>
-      <div className="w-full py-6 max-w-5xl mx-auto font-sans">
-        {/* Tiimo-style Editorial Hero */}
-        <header className="mb-10 text-center max-w-2xl mx-auto pt-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#CBD5C6] bg-white/80 px-3.5 py-1 text-xs font-semibold text-[#173128] shadow-2xs mb-5">
-            <span className="size-2 rounded-full bg-[#233831]" />
-            <span>Curriculum Specification · 2026/27 Syllabus Aligned</span>
+      <div className="w-full font-sans space-y-6 max-w-5xl mx-auto pb-16">
+        {/* Top Header */}
+        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pt-2 pb-1">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 mb-3 shadow-2xs">
+              <span className="size-2 rounded-full bg-blue-600 animate-pulse" />
+              <span>Syllabus Notes Directory · 2026/27 Aligned</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Courses &amp; Revision Notes
+            </h1>
+            <p className="mt-2 text-sm text-slate-600 max-w-2xl leading-relaxed">
+              Explore teacher-written revision notes across all syllabus specifications. Expand any course to view and read individual chapter notes.
+            </p>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-normal font-display tracking-tight text-[#0D170C] leading-[1.18]">
-            A visual syllabus planner <br className="hidden sm:inline" />
-            built for <span className="italic font-display font-medium text-[#173128]">real mastery</span>
-          </h1>
-
-          <p className="mt-4 text-sm sm:text-base text-[#465A4D] leading-relaxed max-w-xl mx-auto">
-            Comprehensive revision notes, high-yield molecular diagrams, topic checkpoints, and examiner insights crafted to help you achieve top grades.
-          </p>
-
-          {/* Quick CTA Pill Button */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={() => goTo("biology", 1)}
-              className="inline-flex items-center gap-3 rounded-full border border-[#CBD5C6] bg-[#233831] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-[#2C443C] transition-all cursor-pointer"
-            >
-              <span>Start reading chapter 1</span>
-              <span className="size-5 rounded-full bg-white/20 flex items-center justify-center">
-                <ArrowRight className="size-3 text-white" />
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => goTo("biology", undefined, "topics")}
-              className="inline-flex items-center gap-3 rounded-full border border-[#CBD5C6] bg-white px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#173128] shadow-xs hover:bg-[#F0F2E4] transition-all cursor-pointer"
-            >
-              <span>Explore all {totalChapters} chapters</span>
-              <span className="size-5 rounded-full bg-[#233831] flex items-center justify-center">
-                <ChevronRight className="size-3 text-white" />
-              </span>
-            </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 px-3.5 py-1.5 rounded-xl shadow-2xs">
+              {SYLLABUS_NOTES.length} Courses · {totalChaptersAcrossAll} Total Notes
+            </span>
           </div>
         </header>
 
-        {/* Featured Biology Spotlight Card */}
-        {biologySubject && (
-          <section className="mb-12 rounded-3xl border border-[#D8E0D2] bg-white p-6 sm:p-9 shadow-xs">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#D8E0D2]">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[11px] font-bold text-[#173128] bg-[#E2EBDE] px-2.5 py-0.5 rounded-full border border-[#CBD5C6]">
-                    Code: {biologySubject.code}
-                  </span>
-                  <span className="text-[11px] font-semibold text-[#5B6E62]">
-                    SCIENCES
-                  </span>
-                  <span className="text-[11px] font-semibold text-[#233831] bg-[#F0F2E4] px-2.5 py-0.5 rounded-full">
-                    {totalChapters} Comprehensive Chapters
-                  </span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0D170C] tracking-tight">
-                  IGCSE {biologySubject.name} Revision Suite
-                </h2>
-                <p className="mt-2 text-sm text-[#465A4D] max-w-2xl leading-relaxed">
-                  Covering all curriculum specifications across Biological Molecules, Cell Organization, Plant Physiology, Animal Organ Systems, Genetics, and Ecosystems.
-                </p>
-              </div>
+        {/* Search Bar & Expand/Collapse Controls */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by course name, syllabus code (e.g. 0610), or topic..."
+              className="w-full pl-10 pr-9 py-2.5 text-sm bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 placeholder:text-slate-400 shadow-2xs transition-all"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+                title="Clear search"
+              >
+                <X className="size-4" />
+              </button>
+            )}
+          </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => goTo(biologySubject.id, undefined, "boards")}
-                  className="inline-flex items-center gap-2.5 rounded-full bg-[#233831] text-white px-5 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#2C443C] transition-all cursor-pointer shadow-xs"
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={expandAll}
+              className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+            >
+              Expand All
+            </button>
+            <button
+              type="button"
+              onClick={collapseAll}
+              className="px-3.5 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+            >
+              Collapse All
+            </button>
+          </div>
+        </div>
+
+        {/* Category Pills Filter */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5 no-scrollbar">
+          {categories.map((cat) => {
+            const count = categoryCounts[cat] ?? 0;
+            const active = activeCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActiveCategory(cat)}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  active
+                    ? "bg-slate-900 text-white shadow-xs"
+                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                }`}
+              >
+                <span>{cat}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                    active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                  }`}
                 >
-                  <span>Select Exam Board</span>
-                  <ChevronRight className="size-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* 4 Interactive Resource Doors */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
-              <button
-                type="button"
-                onClick={() => goTo(biologySubject.id, undefined, "boards")}
-                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
-              >
-                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
-                  <BookOpen className="size-4.5" />
-                </div>
-                <div>
-                  <p className="text-xs text-[#5B6E62] font-medium">120 Detailed Chapters</p>
-                  <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-[#0D170C]">Revision Notes</h3>
-                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
-                  </div>
-                </div>
+                  {count}
+                </span>
               </button>
+            );
+          })}
+        </div>
 
+        {/* The Course Notes List */}
+        <div className="space-y-3">
+          {filteredSubjects.length === 0 ? (
+            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center space-y-3">
+              <Search className="size-8 text-slate-400 mx-auto" />
+              <h3 className="font-bold text-base text-slate-900">No matching courses or notes found</h3>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                No syllabus notes matched &ldquo;{search}&rdquo;. Try another search keyword or clear filters.
+              </p>
               <button
                 type="button"
-                onClick={() => void navigate({ to: "/test" })}
-                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                onClick={() => {
+                  setSearch("");
+                  setActiveCategory("All");
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors shadow-xs cursor-pointer"
               >
-                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
-                  <HelpCircle className="size-4.5" />
-                </div>
-                <div>
-                  <p className="text-xs text-[#5B6E62] font-medium">Past Paper Format</p>
-                  <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-[#0D170C]">Exam Questions</h3>
-                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => goTo(biologySubject.id, 1)}
-                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
-              >
-                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
-                  <Layers className="size-4.5" />
-                </div>
-                <div>
-                  <p className="text-xs text-[#5B6E62] font-medium">Active Recall</p>
-                  <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-[#0D170C]">Flashcards</h3>
-                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => void navigate({ to: "/test" })}
-                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
-              >
-                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
-                  <FileText className="size-4.5" />
-                </div>
-                <div>
-                  <p className="text-xs text-[#5B6E62] font-medium">Timed Assessments</p>
-                  <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-[#0D170C]">Mock Exams</h3>
-                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
-                  </div>
-                </div>
+                Reset Search
               </button>
             </div>
-          </section>
-        )}
+          ) : (
+            filteredSubjects.map((sub) => {
+              const cat = getSubjectCategory(sub);
+              const styling = categoryStyles[cat] || categoryStyles.Sciences;
+              const isExpanded = !!expandedSubjects[sub.id];
 
-        {/* Biology Study Guides & Exam Timetable Articles */}
-        <section>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-bold text-[#0D170C]">
-              Articles &amp; resources for IGCSE Biology students
-            </h2>
-            <span className="text-xs font-semibold text-[#5B6E62] bg-[#E2EBDE] border border-[#CBD5C6] px-3 py-1 rounded-full cursor-default">
-              Latest
-            </span>
-          </div>
+              return (
+                <div
+                  key={sub.id}
+                  className="rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition-all p-4 sm:p-5 shadow-2xs"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    {/* Subject info */}
+                    <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
+                      <div
+                        className={`size-11 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 border ${styling.bg} ${styling.text} ${styling.border}`}
+                      >
+                        {sub.name.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="font-bold text-base text-slate-900 truncate">{sub.name}</h3>
+                          <span className="text-[11px] font-mono text-slate-600 bg-slate-100 border border-slate-200/80 px-2 py-0.5 rounded-md">
+                            Code: {sub.code}
+                          </span>
+                          <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${styling.badge}`}>
+                            {cat}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1 line-clamp-1">
+                          {sub.chapters.length} Chapters · {sub.chapters.slice(0, 4).map((c) => c.title).join(", ")}
+                          {sub.chapters.length > 4 ? "..." : ""}
+                        </p>
+                      </div>
+                    </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {STUDY_ARTICLES.map((article) => (
-              <button
-                key={article.id}
-                type="button"
-                onClick={() => goTo("biology", undefined, "article", undefined, article.id)}
-                className="group rounded-2xl border border-[#D8E0D2] bg-white p-4 shadow-2xs hover:border-[#233831] hover:shadow-sm transition-all text-left cursor-pointer flex flex-col gap-3"
-              >
-                {/* Thumbnail */}
-                <div className="w-full h-28 rounded-xl bg-gradient-to-br from-[#E2EBDE] to-[#D5DEC9] flex flex-col justify-between p-3 shrink-0 border border-[#CBD5C6]">
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-[#173128] bg-white/70 w-fit px-1.5 py-0.5 rounded">
-                    {article.category}
-                  </span>
-                  <span className="text-xs font-extrabold text-[#0D170C] leading-tight line-clamp-2">
-                    {article.title}
-                  </span>
-                </div>
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                      <button
+                        type="button"
+                        onClick={() => toggleSubject(sub.id)}
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors cursor-pointer"
+                      >
+                        <FileText className="size-3.5 text-slate-500" />
+                        <span>{isExpanded ? "Hide notes" : `View ${sub.chapters.length} notes`}</span>
+                        <ChevronDown
+                          className={`size-3.5 text-slate-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                        />
+                      </button>
 
-                <div className="flex-1 space-y-1">
-                  <h3 className="font-bold text-sm text-[#0D170C] leading-snug line-clamp-2">
-                    {article.title}
-                  </h3>
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-[11px] font-medium text-[#5B6E62]">
-                      {article.readTime} read
-                    </span>
-                    <span className="text-[11px] font-semibold text-[#173128] group-hover:text-[#233831] transition-colors">
-                      Read →
-                    </span>
+                      <button
+                        type="button"
+                        onClick={() => goTo(sub.id, 1)}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-semibold text-white transition-colors cursor-pointer shadow-2xs"
+                      >
+                        <span>Start Reading</span>
+                        <ArrowRight className="size-3.5" />
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Expanded Chapter Sub-list */}
+                  {isExpanded && (
+                    <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5 animate-in fade-in duration-150">
+                      <div className="flex items-center justify-between pb-1">
+                        <span className="text-xs font-bold text-slate-700">
+                          Chapters &amp; Revision Notes ({sub.chapters.length}):
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => goTo(sub.id, undefined, "topics")}
+                          className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>Full syllabus overview</span>
+                          <ChevronRight className="size-3" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-96 overflow-y-auto pr-1">
+                        {sub.chapters.map((ch) => (
+                          <button
+                            key={ch.number}
+                            type="button"
+                            onClick={() => goTo(sub.id, ch.number)}
+                            className="group flex items-center justify-between p-2.5 rounded-xl border border-slate-100 bg-slate-50/70 hover:bg-blue-50/70 hover:border-blue-200 transition-all text-left cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                              <span className="size-6 rounded-md bg-white border border-slate-200 text-[10px] font-bold text-slate-600 flex items-center justify-center shrink-0 group-hover:border-blue-300 group-hover:text-blue-700 shadow-2xs">
+                                {ch.number}
+                              </span>
+                              <div className="min-w-0">
+                                <span className="text-xs font-semibold text-slate-800 group-hover:text-blue-700 truncate block">
+                                  {ch.title}
+                                </span>
+                                {ch.section && (
+                                  <span className="text-[10px] text-slate-400 block truncate">
+                                    {ch.section}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-semibold text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 flex items-center gap-0.5">
+                              <span>Read</span>
+                              <ChevronRight className="size-3" />
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </button>
-            ))}
-          </div>
-        </section>
+              );
+            })
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );

@@ -145,13 +145,7 @@ const RAW_NOTES: SubjectNotes[] = [
   WORLD_LITERATURE,
 ];
 
-// Only subjects whose chapters have actually been written are listed. The rest
-// stay in RAW_NOTES so they can be re-enabled as each one is completed.
-// Currently focused exclusively on Biology as requested.
-const PUBLISHED_SUBJECT_IDS = new Set([
-  "biology",
-]);
-
-export const SYLLABUS_NOTES: SubjectNotes[] = RAW_NOTES.filter((s) =>
-  PUBLISHED_SUBJECT_IDS.has(s.id),
+// All subjects with written syllabus chapters are published and accessible.
+export const SYLLABUS_NOTES: SubjectNotes[] = RAW_NOTES.filter(
+  (s) => s.chapters && s.chapters.length > 0,
 );
