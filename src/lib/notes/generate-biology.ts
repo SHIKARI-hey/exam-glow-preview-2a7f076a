@@ -56,6 +56,7 @@ interface Spec {
     rawChapter?: number;
     rawSubheadingIndexes?: number[];
     customBody?: string;
+    customFigure?: string;
     customGroups?: BulletGroup[];
     customTips?: string[];
     customMistakes?: string[];
@@ -74,11 +75,13 @@ const specs: Spec[] = [
         title: "Characteristics of Living Organisms",
         rawChapter: 1,
         rawSubheadingIndexes: [0], // MRS GREN
+        customFigure: "![The 7 Characteristics of Living Organisms (MRS GREN)](mrs-gren.svg)",
       },
       {
         title: "Concept & Uses of Classification Systems",
         rawChapter: 1,
         rawSubheadingIndexes: [1], // Concept and Uses of Classification System
+        customFigure: "![The 5 Kingdoms & Classification Hierarchy](biology-classification.svg)",
       },
       {
         title: "Concept & Uses of Classification Systems Continued",
@@ -107,7 +110,8 @@ const specs: Spec[] = [
       {
         title: "Cell Structure",
         rawChapter: 2,
-        rawSubheadingIndexes: [1, 4], // Animal & Plant Cell Structure + Functions of Cell Parts
+        rawSubheadingIndexes: [1, 4],
+        customFigure: "![Ultrastructure of Animal vs Plant Cells](cell-structure.svg)", // Animal & Plant Cell Structure + Functions of Cell Parts
       },
       {
         title: "Cell Specialisation",
@@ -217,7 +221,8 @@ const specs: Spec[] = [
       {
         title: "Carbohydrates, Lipids & Proteins",
         rawChapter: 4,
-        rawSubheadingIndexes: [0, 1, 2], // Four Classes + Carbohydrates + Lipids & Proteins
+        rawSubheadingIndexes: [0, 1, 2],
+        customFigure: "![Biological Molecules Overview](biological-molecules-overview.svg)\n\n![Glucose Ring Structures](glucose-ring-structures.svg)", // Four Classes + Carbohydrates + Lipids & Proteins
       },
       {
         title: "Food Tests in the Laboratory",
@@ -241,7 +246,8 @@ const specs: Spec[] = [
       {
         title: "Enzyme Action & Specificity",
         rawChapter: 5,
-        rawSubheadingIndexes: [0, 1], // What Enzymes Are + Lock and Key
+        rawSubheadingIndexes: [0, 1],
+        customFigure: "![Lock and Key Model of Enzyme Action](biology-enzyme.svg)", // What Enzymes Are + Lock and Key
       },
       {
         title: "Effect of Temperature on Enzymes",
@@ -275,7 +281,8 @@ const specs: Spec[] = [
       {
         title: "Photosynthesis & Chlorophyll Function",
         rawChapter: 6,
-        rawSubheadingIndexes: [0], // Photosynthesis
+        rawSubheadingIndexes: [0],
+        customFigure: "![Photosynthesis & Light Energy Absorption](biology-photosynthesis.svg)", // Photosynthesis
       },
       {
         title: "Word & Chemical Equations for Photosynthesis",
@@ -1758,6 +1765,12 @@ for (const spec of specs) {
         if (rawCh.subheadings[idx]) {
           subheadings.push(rawCh.subheadings[idx]);
         }
+      }
+    }
+
+    if (noteSpec.customFigure) {
+      if (subheadings.length > 0) {
+        subheadings[0].figure = noteSpec.customFigure;
       }
     }
 

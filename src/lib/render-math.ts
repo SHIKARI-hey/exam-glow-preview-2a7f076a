@@ -17,21 +17,24 @@ function escHtml(s: string): string {
 }
 
 function renderSvgBlock(title: string, svgContent: string): string {
-  // Strip outer card styling or border classes so it renders cleanly and big like Save My Exams
+  // Strip outer card styling, borders, and background card rectangles so diagrams sit cleanly and big on transparent background
   let cleanSvg = svgContent
-    .replace(/class="[^"]*rounded-2xl[^"]*"/gi, 'class="w-full max-w-4xl h-auto block mx-auto"')
-    .replace(/class="[^"]*shadow-[^"]*"/gi, 'class="w-full max-w-4xl h-auto block mx-auto"')
-    .replace(/<rect[^>]*class="[^"]*rounded-2xl[^"]*"[^>]*\/?>/gi, '');
+    .replace(/<rect[^>]*class="bg"[^>]*\/?>/gi, "")
+    .replace(/<rect[^>]*fill="#20262d"[^>]*\/?>/gi, "")
+    .replace(/<rect[^>]*fill="#1b1d1f"[^>]*\/?>/gi, "")
+    .replace(/<rect[^>]*class="[^"]*rounded-2xl[^"]*"[^>]*\/?>/gi, "")
+    .replace(/\.bg\{fill:#20262d\}/gi, ".bg{fill:none}")
+    .replace(/class="[^"]*(?:rounded-2xl|shadow-\S+|border\S*|bg-\S+)[^"]*"/gi, 'class="w-full max-w-4xl h-auto block mx-auto"');
 
   if (!cleanSvg.includes('class="')) {
     cleanSvg = cleanSvg.replace(/<svg\s+/i, '<svg class="w-full max-w-4xl h-auto block mx-auto" ');
   }
 
-  return `<figure class="my-8 sm:my-10 not-prose flex flex-col items-center">
+  return `<figure class="my-8 sm:my-10 not-prose flex flex-col items-center w-full">
     <div class="w-full flex justify-center py-2 overflow-x-auto">
       ${cleanSvg.trim()}
     </div>
-    ${title ? `<figcaption class="mt-3.5 text-center text-[13.5px] sm:text-[14px] font-semibold italic text-foreground/85 max-w-2xl px-4 leading-relaxed">${title}</figcaption>` : ''}
+    ${title ? `<figcaption class="mt-3.5 text-center text-[13.5px] sm:text-[14px] font-semibold italic text-slate-600 dark:text-slate-300 max-w-2xl px-4 leading-relaxed">${title}</figcaption>` : ''}
   </figure>`;
 }
 
@@ -228,7 +231,12 @@ function renderMarkdown(text: string): string {
   // Author-supplied figure markup (image grids, labelled panels). Escaped out of
   // the markdown pass so card layouts survive inside the prose stream.
   text = text.replace(/:::raw\n([\s\S]*?):::/g, (_, body) => {
-    rawBlocks.push(`<div class="my-6 not-prose">${stripEmoji(body)}</div>`);
+    const clean = stripEmoji(body)
+      .replace(/bg-\[#1b1d1f\]/g, "bg-transparent")
+      .replace(/bg-\[#20262d\]/g, "bg-transparent")
+      .replace(/rounded-2xl/g, "")
+      .replace(/border border-\S+/g, "");
+    rawBlocks.push(`<div class="my-6 not-prose flex justify-center w-full">${clean}</div>`);
     return `\x00BLOCK${rawBlocks.length - 1}\x00`;
   });
 
@@ -251,7 +259,7 @@ function renderMarkdown(text: string): string {
     const directSvg = DIAGRAM_MAP[filename];
     const inner = directSvg
       ? directSvg
-      : `<img src="${src}" alt="${alt}" class="w-full max-w-2xl rounded-xl object-contain" loading="lazy" />`;
+      : `<img src="${src}" alt="${alt}" class="w-full max-w-4xl h-auto object-contain mx-auto block py-2" loading="lazy" />`;
     rawBlocks.push(renderSvgBlock(alt || "Diagram", inner));
     return `\x00BLOCK${rawBlocks.length - 1}\x00`;
   });

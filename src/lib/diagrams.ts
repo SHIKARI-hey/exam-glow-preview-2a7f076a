@@ -4,6 +4,120 @@
  */
 
 export const DIAGRAM_MAP: Record<string, string> = {
+  "mrs-gren.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" class="w-full max-w-4xl h-auto block mx-auto">
+  <defs>
+    <filter id="mgShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.06" />
+    </filter>
+  </defs>
+
+  <!-- Title Header (No background card, pure clean canvas) -->
+  <text x="480" y="32" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="800" fill="#0f172a">
+    The 7 Characteristics of Living Organisms
+  </text>
+  <text x="480" y="54" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#047857">
+    Universal Criteria Defining All Life — Cambridge IGCSE Biology (MRS GREN)
+  </text>
+
+  <!-- Central Hub -->
+  <g transform="translate(380, 245)">
+    <rect x="0" y="0" width="200" height="70" rx="35" fill="#047857" filter="url(#mgShadow)" />
+    <text x="100" y="36" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" font-weight="900" fill="#ffffff" letter-spacing="2">MRS GREN</text>
+    <text x="100" y="54" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#a7f3d0">Core Life Processes</text>
+  </g>
+
+  <!-- Connector Lines from Hub -->
+  <path d="M 400 245 L 200 135" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M 480 245 L 480 135" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M 560 245 L 760 135" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M 380 280 L 190 280" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M 580 280 L 770 280" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M 420 315 L 260 435" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M 540 315 L 700 435" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 4"/>
+
+  <!-- 1. MOVEMENT (Top Left) -->
+  <g transform="translate(60, 85)" filter="url(#mgShadow)">
+    <rect x="0" y="0" width="270" height="90" rx="14" fill="#ffffff" stroke="#3b82f6" stroke-width="2"/>
+    <rect x="12" y="12" width="34" height="34" rx="8" fill="#eff6ff"/>
+    <text x="29" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#1d4ed8">M</text>
+    <text x="56" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#1e3a8a">Movement</text>
+    <text x="56" y="44" font-family="system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#3b82f6">Action causing change of position</text>
+    <text x="14" y="65" font-family="system-ui, sans-serif" font-size="10" fill="#475569">An action by an organism or part of an organism</text>
+    <text x="14" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#475569">causing a change of position or place.</text>
+  </g>
+
+  <!-- 2. RESPIRATION (Top Centre) -->
+  <g transform="translate(345, 80)" filter="url(#mgShadow)">
+    <rect x="0" y="0" width="270" height="90" rx="14" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <rect x="12" y="12" width="34" height="34" rx="8" fill="#ecfdf5"/>
+    <text x="29" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#047857">R</text>
+    <text x="56" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#064e3b">Respiration</text>
+    <text x="56" y="44" font-family="system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#10b981">Releasing energy (ATP) in cells</text>
+    <text x="14" y="65" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Chemical reactions in cells that break down</text>
+    <text x="14" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#475569">nutrient molecules to release energy for metabolism.</text>
+  </g>
+
+  <!-- 3. SENSITIVITY (Top Right) -->
+  <g transform="translate(630, 85)" filter="url(#mgShadow)">
+    <rect x="0" y="0" width="270" height="90" rx="14" fill="#ffffff" stroke="#8b5cf6" stroke-width="2"/>
+    <rect x="12" y="12" width="34" height="34" rx="8" fill="#f5f3ff"/>
+    <text x="29" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#6d28d9">S</text>
+    <text x="56" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#4c1d95">Sensitivity</text>
+    <text x="56" y="44" font-family="system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#8b5cf6">Detecting &amp; responding to stimuli</text>
+    <text x="14" y="65" font-family="system-ui, sans-serif" font-size="10" fill="#475569">The ability to detect and respond to changes</text>
+    <text x="14" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#475569">in the internal or external environment.</text>
+  </g>
+
+  <!-- 4. GROWTH (Middle Left) -->
+  <g transform="translate(40, 235)" filter="url(#mgShadow)">
+    <rect x="0" y="0" width="270" height="90" rx="14" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="12" y="12" width="34" height="34" rx="8" fill="#fffbeb"/>
+    <text x="29" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#b45309">G</text>
+    <text x="56" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#78350f">Growth</text>
+    <text x="56" y="44" font-family="system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#f59e0b">Permanent increase in size &amp; dry mass</text>
+    <text x="14" y="65" font-family="system-ui, sans-serif" font-size="10" fill="#475569">A permanent increase in size and dry mass by</text>
+    <text x="14" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#475569">an increase in cell number or cell size or both.</text>
+  </g>
+
+  <!-- 5. REPRODUCTION (Middle Right) -->
+  <g transform="translate(650, 235)" filter="url(#mgShadow)">
+    <rect x="0" y="0" width="270" height="90" rx="14" fill="#ffffff" stroke="#ec4899" stroke-width="2"/>
+    <rect x="12" y="12" width="34" height="34" rx="8" fill="#fdf2f8"/>
+    <text x="29" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#be185d">R</text>
+    <text x="56" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#831843">Reproduction</text>
+    <text x="56" y="44" font-family="system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#ec4899">Producing new individuals / offspring</text>
+    <text x="14" y="65" font-family="system-ui, sans-serif" font-size="10" fill="#475569">The processes that make more of the</text>
+    <text x="14" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#475569">same kind of organism (asexual or sexual).</text>
+  </g>
+
+  <!-- 6. EXCRETION (Bottom Left) -->
+  <g transform="translate(140, 395)" filter="url(#mgShadow)">
+    <rect x="0" y="0" width="290" height="90" rx="14" fill="#ffffff" stroke="#ef4444" stroke-width="2"/>
+    <rect x="12" y="12" width="34" height="34" rx="8" fill="#fef2f2"/>
+    <text x="29" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#b91c1c">E</text>
+    <text x="56" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#7f1d1d">Excretion</text>
+    <text x="56" y="44" font-family="system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#ef4444">Removal of toxic metabolic waste</text>
+    <text x="14" y="65" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Removal of the waste products of metabolism</text>
+    <text x="14" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#475569">and substances in excess of requirements.</text>
+  </g>
+
+  <!-- 7. NUTRITION (Bottom Right) -->
+  <g transform="translate(530, 395)" filter="url(#mgShadow)">
+    <rect x="0" y="0" width="290" height="90" rx="14" fill="#ffffff" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="12" y="12" width="34" height="34" rx="8" fill="#f0fdfa"/>
+    <text x="29" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="900" fill="#0f766e">N</text>
+    <text x="56" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#134e4a">Nutrition</text>
+    <text x="56" y="44" font-family="system-ui, sans-serif" font-size="10.5" font-weight="600" fill="#14b8a6">Taking in materials for growth &amp; repair</text>
+    <text x="14" y="65" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Taking in of materials for energy, growth</text>
+    <text x="14" y="78" font-family="system-ui, sans-serif" font-size="10" fill="#475569">and development (light, CO2, water, organic ions).</text>
+  </g>
+
+  <!-- Bottom Key Tip -->
+  <text x="480" y="530" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-style="italic" fill="#64748b">
+    * Non-living entities (such as rocks or viruses) perform none of these seven processes independently.
+  </text>
+</svg>`,
+
   "cell-structure.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 560" width="100%" height="auto" class="rounded-2xl bg-white shadow-sm border border-slate-200">
   <defs>
     <linearGradient id="animalCytoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -2151,11 +2265,13 @@ export function getChapterDiagramSvg(subjectId: string, chapterNumber: number): 
 
   // 1. Biology (0610)
   if (sid.includes("bio")) {
-    if (chapterNumber === 1) return DIAGRAM_MAP["biology-classification.svg"]!;
-    if (chapterNumber === 2) return DIAGRAM_MAP["cell-structure.svg"]!;
-    if (chapterNumber === 3) return DIAGRAM_MAP["biology-enzyme.svg"]!;
-    if (chapterNumber === 4) return DIAGRAM_MAP["biology-photosynthesis.svg"]!;
-    return DIAGRAM_MAP["cell-structure.svg"]!;
+    if (chapterNumber === 1) return DIAGRAM_MAP["mrs-gren.svg"]!;
+    if (chapterNumber >= 2 && chapterNumber <= 5) return DIAGRAM_MAP["biology-classification.svg"]!;
+    if (chapterNumber >= 6 && chapterNumber <= 9) return DIAGRAM_MAP["cell-structure.svg"]!;
+    if (chapterNumber >= 18 && chapterNumber <= 20) return DIAGRAM_MAP["biological-molecules-overview.svg"]!;
+    if (chapterNumber >= 21 && chapterNumber <= 25) return DIAGRAM_MAP["biology-enzyme.svg"]!;
+    if (chapterNumber >= 26 && chapterNumber <= 36) return DIAGRAM_MAP["biology-photosynthesis.svg"]!;
+    return DIAGRAM_MAP["mrs-gren.svg"]!;
   }
 
   // 2. Chemistry (0620)

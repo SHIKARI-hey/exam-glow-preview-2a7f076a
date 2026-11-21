@@ -54,6 +54,7 @@ import {
   type FlashcardItem,
 } from "@/lib/syllabus-notes";
 import { formatMathAndMarkdown } from "@/lib/render-math";
+import { getChapterDiagramSvg } from "@/lib/diagrams";
 import { STUDY_ARTICLES, type Article } from "@/lib/articles-data";
 import { sound } from "@/components/arcade/sound-fx";
 
@@ -1172,7 +1173,7 @@ function ChapterDoc({
               </h1>
               <div className="flex items-center gap-3 shrink-0">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#E2EBDE] text-[#173128] border border-[#D8E0D2]">
-                  Exam code: 7402
+                  Exam code: {SYLLABUS_NOTES.find((s) => s.id === subjectId)?.code || "0610 / 0970"}
                 </span>
                 <button
                   type="button"
@@ -1200,7 +1201,16 @@ function ChapterDoc({
                 {sub.body && <ProseBlock text={sub.body} />}
 
                 {/* Figure / Diagrams (rendered clean and big without container cards) */}
-                {sub.figure && <ProseBlock text={sub.figure} />}
+                {sub.figure ? (
+                  <ProseBlock text={sub.figure} />
+                ) : (
+                  <div
+                    className="my-8 sm:my-10 not-prose flex flex-col items-center w-full"
+                    dangerouslySetInnerHTML={{
+                      __html: getChapterDiagramSvg(subjectId, chapter.number),
+                    }}
+                  />
+                )}
 
                 {/* Group parts (if any) */}
                 {sub.groups && sub.groups.length > 0 && (
