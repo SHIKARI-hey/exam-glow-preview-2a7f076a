@@ -34,6 +34,7 @@ import {
   simulateRenewalFailure,
   toggleAutoRenew,
 } from "@/lib/onboarding";
+import { markLoggedOut } from "@/lib/auth";
 
 const THEME_KEY = "examglow.theme";
 
@@ -370,12 +371,8 @@ export function ProfileAvatar({ className = "" }: { className?: string }) {
   }
 
   function signOut() {
-    try {
-      window.localStorage.removeItem("examglow.profile");
-      window.localStorage.removeItem("examglow.google_picture");
-      window.localStorage.removeItem("examglow.auth_method");
-    } catch { /* storage unavailable */ }
-    window.location.href = "/login";
+    markLoggedOut();
+    window.location.href = "/";
   }
 
   return (

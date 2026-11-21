@@ -4,6 +4,7 @@ import { useNavigate } from "@tanstack/react-router";
 
 import { AuthLayout } from "@/components/auth-layout";
 import { saveProfile } from "@/lib/onboarding";
+import { isLoggedIn, markLoggedIn } from "@/lib/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -28,10 +29,7 @@ function LoginPage() {
 
   // Auto-redirect if already logged in
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const hasPicture = window.localStorage.getItem("examglow.google_picture");
-    const authMethod = window.localStorage.getItem("examglow.auth_method");
-    if (hasPicture && authMethod === "google") {
+    if (isLoggedIn()) {
       navigate({ to: "/home", replace: true });
     }
   }, [navigate]);
@@ -52,6 +50,7 @@ function LoginPage() {
         window.localStorage.setItem("examglow.auth_method", "email");
       }
     } catch { /* ignore */ }
+    markLoggedIn();
     navigate({ to: "/home", replace: true });
   }
 

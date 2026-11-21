@@ -23,6 +23,7 @@ import {
   toggleAutoRenew,
   simulateRenewalFailure,
 } from "@/lib/onboarding";
+import { markLoggedOut } from "@/lib/auth";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -330,7 +331,8 @@ function SettingsPage() {
               type="button"
               onClick={() => {
                 if (confirm("Are you sure you want to sign out?")) {
-                  navigate({ to: "/login" });
+                  markLoggedOut();
+                  window.location.href = "/";
                 }
               }}
               className="flex items-center gap-2 w-full rounded-xl border border-border p-3 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-500/10 transition-colors"

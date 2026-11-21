@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence, type Variants } from "motion/react";
+import { isLoggedIn } from "@/lib/auth";
 
 import { SiteNav } from "@/components/site-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -805,13 +806,10 @@ function ClosingCta() {
 function Index() {
   const navigate = useNavigate();
 
-  // Auto-login: if the user already signed in with Google, go straight to /home
+  // Auto-login: if the user has an active session, skip landing → go straight to /home
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const hasPicture = window.localStorage.getItem("examglow.google_picture");
-    const authMethod = window.localStorage.getItem("examglow.auth_method");
-    if (hasPicture && authMethod === "google") {
-      navigate({ to: "/home" });
+    if (isLoggedIn()) {
+      navigate({ to: "/home", replace: true });
     }
   }, [navigate]);
 

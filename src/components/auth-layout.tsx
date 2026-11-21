@@ -13,6 +13,7 @@ import {
   lockGoogleAccountPlan,
 } from "@/lib/onboarding";
 import { registerAccount } from "@/lib/admin-store";
+import { markLoggedIn } from "@/lib/auth";
 
 export function AuthLayout({ title, children }: { title: string; children: ReactNode }) {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ export function AuthLayout({ title, children }: { title: string; children: React
         }).catch(() => {});
       } catch { /* ignore */ }
 
+      markLoggedIn();
       navigate({ to: "/home", replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Google sign-in failed.";
