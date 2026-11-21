@@ -515,6 +515,10 @@ export function ProfileAvatar({ className = "" }: { className?: string }) {
   );
 }
 
+import { SaveMyExamsNavbar } from "@/components/save-my-exams-navbar";
+import { SaveMyExamsSidebar } from "@/components/save-my-exams-sidebar";
+import { Sparkles, MessageCircle } from "lucide-react";
+
 export function DashboardLayout({
   crumbs = [],
   children,
@@ -525,214 +529,43 @@ export function DashboardLayout({
   loading?: boolean;
 }) {
   return (
-    <div className="flex h-dvh overflow-hidden app-frame">
-      <DashboardSidebar />
-      <main className="app-panel min-w-0 flex-1 overflow-y-auto">
-        <TopBar crumbs={crumbs} />
-        <div className="mx-auto max-w-[1280px] px-4 pb-16 pt-4 sm:px-6 lg:px-8">
-          {loading ? <PageSkeleton /> : children}
-        </div>
-      </main>
+    <div className="flex flex-col h-dvh bg-[#f8fafc] font-sans text-slate-900 overflow-hidden">
+      {/* ── 1. Full-Width Save My Exams Top Navbar with Mega Dropdowns ── */}
+      <SaveMyExamsNavbar />
+
+      {/* ── 2. Body: Left Save My Exams Sidebar + Main Content ── */}
+      <div className="flex-1 flex overflow-hidden">
+        <SaveMyExamsSidebar />
+
+        <main className="flex-1 overflow-y-auto bg-[#f8fafc] relative flex flex-col">
+          {crumbs.length > 0 && (
+            <div className="border-b border-slate-200/80 bg-white/90 backdrop-blur-xs px-6 py-2.5 flex items-center gap-2 text-xs text-slate-500 shrink-0">
+              {crumbs.map((c, i) => (
+                <span key={c.label} className="flex items-center gap-1.5">
+                  {i > 0 && <span className="text-slate-300">/</span>}
+                  <span className={i === crumbs.length - 1 ? "font-bold text-slate-900" : "hover:text-slate-700"}>
+                    {c.label}
+                  </span>
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl w-full mx-auto">
+            {loading ? <PageSkeleton /> : children}
+          </div>
+        </main>
+      </div>
+
+      {/* ── 3. Floating DueOtter AI Assistant Launcher (Bottom Right) ── */}
+      <Link
+        to="/chat"
+        className="fixed bottom-5 right-5 z-40 size-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all group"
+        title="Chat with DueOtter AI Tutor"
+      >
+        <Sparkles className="size-5 group-hover:rotate-12 transition-transform" />
+      </Link>
     </div>
-  );
-}
-
-import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, Search, ArrowRight, HelpCircle, BookOpen, Layers, Calendar, Sparkles } from "lucide-react";
-import { PaywallModal } from "@/components/paywall-modal";
-
-function TopBar({ crumbs = [] }: { crumbs?: { label: string; icon?: ReactNode }[] }) {
-  const navigate = useNavigate();
-  const [studyingOpen, setStudyingOpen] = useState(false);
-  const [toolsOpen, setToolsOpen] = useState(false);
-  const [paywallOpen, setPaywallOpen] = useState(false);
-
-  const studyingRef = useRef<HTMLDivElement>(null);
-  const toolsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as Node;
-      if (studyingRef.current && !studyingRef.current.contains(target)) {
-        setStudyingOpen(false);
-      }
-      if (toolsRef.current && !toolsRef.current.contains(target)) {
-        setToolsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const popularSubjects = [
-    { name: "Biology", code: "0610", active: true, desc: "120 Chapters · CIE, Edexcel" },
-    { name: "Chemistry", code: "0620", active: false, desc: "Atomic structure, organic" },
-    { name: "Physics", code: "0625", active: false, desc: "Forces, electricity, waves" },
-    { name: "Mathematics", code: "0580", active: false, desc: "Algebra, calculus, statistics" },
-  ];
-
-  const studyTools = [
-    { title: "Revision Notes", desc: "Chapter summaries with molecular illustrations", icon: BookOpen, to: "/syllabus-notes", badge: "Popular" },
-    { title: "Topic Questions", desc: "Past paper practice questions with mark schemes", icon: HelpCircle, to: "/test", badge: "Essential" },
-    { title: "Flashcards", desc: "Active recall memory decks", icon: Layers, to: "/flashcards" },
-    { title: "Study Plan", desc: "Personalized revision planner", icon: Calendar, to: "/study-plan" },
-    { title: "DueOtter AI Tutor", desc: "Instant syllabus helper & hints", icon: Sparkles, to: "/chat", badge: "AI" },
-  ];
-
-  return (
-    <>
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-border/70 bg-background/85 px-4 py-3 pl-14 backdrop-blur md:pl-6">
-        <nav className="flex min-w-0 items-center gap-2 text-[15px]" aria-label="Breadcrumb">
-          {crumbs.map((crumb, i) => (
-            <span key={crumb.label} className="flex min-w-0 items-center gap-2">
-              {i > 0 && <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
-              <span
-                className={`flex min-w-0 items-center gap-1.5 truncate ${
-                  i === crumbs.length - 1 ? "font-semibold text-slate-900" : "text-muted-foreground"
-                }`}
-              >
-                {crumb.icon}
-                <span className="truncate">{crumb.label}</span>
-              </span>
-            </span>
-          ))}
-        </nav>
-
-        {/* Save My Exams Dropdown Navigation */}
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3 text-xs font-semibold">
-          {/* Start Studying Mega Menu */}
-          <div className="relative" ref={studyingRef}>
-            <button
-              type="button"
-              onClick={() => {
-                setStudyingOpen(!studyingOpen);
-                setToolsOpen(false);
-              }}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
-                studyingOpen ? "bg-slate-900 text-white" : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              <span>Start studying</span>
-              <ChevronDown className={`size-3 transition-transform ${studyingOpen ? "rotate-180" : ""}`} />
-            </button>
-
-            {studyingOpen && (
-              <div className="absolute right-0 top-full mt-2 w-[340px] sm:w-[480px] rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl z-50 text-slate-900">
-                <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    IGCSE Curriculum
-                  </span>
-                  <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
-                    2026/27 Aligned
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {popularSubjects.map((sub) => (
-                    <button
-                      key={sub.code}
-                      type="button"
-                      onClick={() => {
-                        setStudyingOpen(false);
-                        void navigate({ to: "/syllabus-notes", search: { subject: sub.name.toLowerCase() } });
-                      }}
-                      className="p-2.5 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 text-left transition-colors cursor-pointer group"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-extrabold text-xs text-slate-900 group-hover:text-blue-600">
-                          {sub.name}
-                        </span>
-                        <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.2 rounded font-mono">
-                          {sub.code}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{sub.desc}</p>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-400">All qualification levels</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setStudyingOpen(false);
-                      void navigate({ to: "/syllabus-notes" });
-                    }}
-                    className="font-bold text-blue-600 hover:underline flex items-center gap-1"
-                  >
-                    <span>View all courses</span>
-                    <ArrowRight className="size-3" />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Study Tools Dropdown */}
-          <div className="relative" ref={toolsRef}>
-            <button
-              type="button"
-              onClick={() => {
-                setToolsOpen(!toolsOpen);
-                setStudyingOpen(false);
-              }}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
-                toolsOpen ? "bg-slate-900 text-white" : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
-              }`}
-            >
-              <span>Study tools</span>
-              <ChevronDown className={`size-3 transition-transform ${toolsOpen ? "rotate-180" : ""}`} />
-            </button>
-
-            {toolsOpen && (
-              <div className="absolute right-0 top-full mt-2 w-[320px] rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl z-50 text-slate-900 space-y-1">
-                {studyTools.map((tool) => (
-                  <button
-                    key={tool.title}
-                    type="button"
-                    onClick={() => {
-                      setToolsOpen(false);
-                      void navigate({ to: tool.to });
-                    }}
-                    className="w-full flex items-start gap-2.5 p-2 rounded-xl text-left hover:bg-slate-50 transition-colors group cursor-pointer"
-                  >
-                    <div className="size-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                      <tool.icon className="size-3.5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600">
-                          {tool.title}
-                        </span>
-                        {tool.badge && (
-                          <span className="text-[9px] font-bold text-blue-700 bg-blue-50 px-1 py-0.2 rounded border border-blue-200">
-                            {tool.badge}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[10px] text-slate-500 leading-snug line-clamp-1">{tool.desc}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Try 7 days free Pill Button */}
-          <button
-            type="button"
-            onClick={() => setPaywallOpen(true)}
-            className="hidden sm:inline-flex rounded-full bg-[#f43f5e] hover:bg-[#e11d48] text-white px-3.5 py-1.5 text-xs font-bold transition-colors shadow-2xs cursor-pointer"
-          >
-            Try 7 days free
-          </button>
-        </div>
-      </header>
-
-      {/* Paywall Modal */}
-      {paywallOpen && <PaywallModal onClose={() => setPaywallOpen(false)} />}
-    </>
   );
 }
 

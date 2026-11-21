@@ -1,29 +1,16 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import {
-  ArrowRight,
-  BookOpen,
-  ChevronDown,
   ChevronRight,
-  LogOut,
   Pencil,
   Plus,
-  Search,
-  Settings,
   Sparkles,
-  User,
-  Zap,
-  Tag,
-  LayoutDashboard,
-  PanelLeftClose,
-  PanelLeftOpen,
 } from "lucide-react";
 
 import { readProfile, type OnboardingProfile } from "@/lib/onboarding";
-import { markLoggedOut } from "@/lib/auth";
 import { PaywallModal } from "@/components/paywall-modal";
-
 import { SaveMyExamsNavbar } from "@/components/save-my-exams-navbar";
+import { SaveMyExamsSidebar } from "@/components/save-my-exams-sidebar";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -41,7 +28,6 @@ export const Route = createFileRoute("/home")({
 export function SaveMyExamsDashboardPage() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<OnboardingProfile>({});
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [paywallOpen, setPaywallOpen] = useState(false);
 
   useEffect(() => {
@@ -54,107 +40,14 @@ export function SaveMyExamsDashboardPage() {
   const userName = profile.name || "Heue";
 
   return (
-    <div className="flex flex-col h-dvh bg-white font-sans text-slate-900 overflow-hidden">
+    <div className="flex flex-col h-dvh bg-[#f8fafc] font-sans text-slate-900 overflow-hidden">
       {/* ── 1. Top Navbar (Save My Exams with mega dropdowns) ── */}
       <SaveMyExamsNavbar />
 
       {/* ── 2. Body: Left Sidebar + Main Content ── */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar */}
-        <aside
-          className={`shrink-0 border-r border-slate-200 bg-white transition-all duration-200 flex flex-col justify-between py-4 px-3 ${
-            sidebarCollapsed ? "w-16" : "w-56"
-          }`}
-        >
-          {/* Top navigation */}
-          <div className="space-y-4">
-            <button
-              type="button"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="flex items-center gap-2 px-2.5 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-50 w-full transition-colors"
-            >
-              {sidebarCollapsed ? (
-                <PanelLeftOpen className="size-4" />
-              ) : (
-                <>
-                  <PanelLeftClose className="size-4" />
-                  <span>Hide menu</span>
-                </>
-              )}
-            </button>
-
-            <nav className="space-y-1">
-              <Link
-                to="/home"
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
-                  !sidebarCollapsed ? "bg-blue-50 text-blue-700" : "text-blue-700 justify-center"
-                }`}
-              >
-                <LayoutDashboard className="size-4 shrink-0 text-blue-600" />
-                {!sidebarCollapsed && <span>Dashboard</span>}
-              </Link>
-
-              <Link
-                to="/syllabus-notes"
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors ${
-                  sidebarCollapsed ? "justify-center" : ""
-                }`}
-              >
-                <BookOpen className="size-4 shrink-0 text-slate-500" />
-                {!sidebarCollapsed && <span>Revision Notes</span>}
-              </Link>
-
-              <Link
-                to="/test"
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors ${
-                  sidebarCollapsed ? "justify-center" : ""
-                }`}
-              >
-                <Tag className="size-4 shrink-0 text-slate-500" />
-                {!sidebarCollapsed && <span>Brand ambassador</span>}
-              </Link>
-            </nav>
-          </div>
-
-          {/* Bottom links */}
-          <div className="space-y-1 pt-4 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={() => setPaywallOpen(true)}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 w-full text-left transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
-            >
-              <User className="size-4 shrink-0 text-slate-500" />
-              {!sidebarCollapsed && <span>Profile</span>}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setPaywallOpen(true)}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 w-full text-left transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
-            >
-              <Settings className="size-4 shrink-0 text-slate-500" />
-              {!sidebarCollapsed && <span>Settings</span>}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                markLoggedOut();
-                void navigate({ to: "/login" });
-              }}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 w-full text-left transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
-            >
-              <LogOut className="size-4 shrink-0 text-slate-500" />
-              {!sidebarCollapsed && <span>Log out</span>}
-            </button>
-          </div>
-        </aside>
+        <SaveMyExamsSidebar />
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto bg-slate-50/50 p-5 sm:p-8 lg:p-10">
@@ -181,7 +74,7 @@ export function SaveMyExamsDashboardPage() {
                     <button
                       type="button"
                       onClick={() => void navigate({ to: "/syllabus-notes" })}
-                      className="size-8 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-colors"
+                      className="size-8 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-colors cursor-pointer"
                       title="Edit courses"
                     >
                       <Pencil className="size-3.5" />
@@ -189,7 +82,7 @@ export function SaveMyExamsDashboardPage() {
                     <button
                       type="button"
                       onClick={() => void navigate({ to: "/syllabus-notes" })}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 text-white px-3.5 py-1.5 text-xs font-semibold hover:bg-blue-700 transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 text-white px-3.5 py-1.5 text-xs font-semibold hover:bg-blue-700 transition-colors shadow-2xs cursor-pointer"
                     >
                       <Plus className="size-3.5" />
                       <span>Add course</span>
@@ -204,7 +97,7 @@ export function SaveMyExamsDashboardPage() {
                     <button
                       type="button"
                       onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", chapter: 1 } })}
-                      className="text-slate-400 hover:text-slate-700"
+                      className="text-slate-400 hover:text-slate-700 cursor-pointer"
                     >
                       <ChevronRight className="size-4" />
                     </button>
@@ -232,7 +125,7 @@ export function SaveMyExamsDashboardPage() {
                         Biology
                       </h3>
                       <p className="text-xs text-slate-400 mt-0.5">
-                        Chapter 1: Biological Molecules &amp; Carbohydrates
+                        Chapter 1: Characteristics &amp; Classification of Living Organisms
                       </p>
                     </div>
 
@@ -283,7 +176,7 @@ export function SaveMyExamsDashboardPage() {
                     <button
                       type="button"
                       onClick={() => void navigate({ to: "/study-plan" })}
-                      className="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-800 transition-colors shadow-2xs"
+                      className="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-800 transition-colors shadow-2xs cursor-pointer"
                     >
                       <Plus className="size-3.5" />
                       <span>Create Study Plan</span>
@@ -298,7 +191,7 @@ export function SaveMyExamsDashboardPage() {
                     <button
                       type="button"
                       onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", chapter: 1 } })}
-                      className="text-slate-400 hover:text-slate-700"
+                      className="text-slate-400 hover:text-slate-700 cursor-pointer"
                     >
                       <ChevronRight className="size-4" />
                     </button>
@@ -312,10 +205,10 @@ export function SaveMyExamsDashboardPage() {
                     <div className="space-y-1">
                       <span className="text-xs font-bold text-blue-600">Revision Notes</span>
                       <p className="text-xs font-semibold text-slate-900 leading-snug group-hover:text-blue-600 transition-colors">
-                        Biology / The Purpose of Biological Molecules &amp; Carbohydrates
+                        Biology / 1.1 Characteristics of Living Organisms
                       </p>
                       <p className="text-[11px] text-slate-400">
-                        IGCSE · Curriculum (CIE)
+                        IGCSE · CIE (0610)
                       </p>
                     </div>
 
