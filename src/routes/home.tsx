@@ -23,6 +23,8 @@ import { readProfile, type OnboardingProfile } from "@/lib/onboarding";
 import { markLoggedOut } from "@/lib/auth";
 import { PaywallModal } from "@/components/paywall-modal";
 
+import { SaveMyExamsNavbar } from "@/components/save-my-exams-navbar";
+
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
@@ -40,7 +42,6 @@ export function SaveMyExamsDashboardPage() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<OnboardingProfile>({});
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [paywallOpen, setPaywallOpen] = useState(false);
 
   useEffect(() => {
@@ -54,80 +55,8 @@ export function SaveMyExamsDashboardPage() {
 
   return (
     <div className="flex flex-col h-dvh bg-white font-sans text-slate-900 overflow-hidden">
-      {/* ── 1. Top Navbar (Save My Exams exact style) ── */}
-      <header className="h-16 shrink-0 border-b border-slate-200 bg-white px-4 sm:px-6 flex items-center justify-between gap-4 z-20">
-        {/* Left: Brand + Nav dropdowns */}
-        <div className="flex items-center gap-6">
-          <Link to="/home" className="flex items-center gap-1.5 font-extrabold text-xl tracking-tight text-slate-900">
-            <Zap className="size-6 text-blue-600 fill-blue-600" />
-            <span className="font-extrabold text-[21px]">ExamGlow</span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-700">
-            <button
-              type="button"
-              onClick={() => void navigate({ to: "/syllabus-notes" })}
-              className="flex items-center gap-1 hover:text-slate-950 transition-colors"
-            >
-              <span>Start studying</span>
-              <ChevronDown className="size-3.5 text-slate-400" />
-            </button>
-            <button
-              type="button"
-              onClick={() => void navigate({ to: "/test" })}
-              className="flex items-center gap-1 hover:text-slate-950 transition-colors"
-            >
-              <span>Study tools</span>
-              <ChevronDown className="size-3.5 text-slate-400" />
-            </button>
-          </nav>
-        </div>
-
-        {/* Center: Search input */}
-        <div className="flex-1 max-w-md hidden sm:block">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && searchQuery.trim()) {
-                  void navigate({ to: "/syllabus-notes" });
-                }
-              }}
-              placeholder="Search for a subject"
-              className="w-full rounded-full border border-slate-200 bg-slate-50/70 py-2 pl-4 pr-10 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-blue-500 focus:outline-none transition-all"
-            />
-            <Search className="absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-blue-600" />
-          </div>
-        </div>
-
-        {/* Right: Dashboard link + Free trial button + User Avatar */}
-        <div className="flex items-center gap-4 shrink-0">
-          <Link
-            to="/home"
-            className="hidden sm:inline-block text-xs font-semibold text-slate-700 hover:text-slate-950"
-          >
-            Dashboard
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => setPaywallOpen(true)}
-            className="rounded-full bg-[#f43f5e] hover:bg-[#e11d48] text-white px-4 py-2 text-xs font-bold transition-colors shadow-xs cursor-pointer"
-          >
-            Try 7 days free
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setPaywallOpen(true)}
-            className="size-8 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center hover:opacity-90"
-          >
-            {userName.charAt(0).toUpperCase()}
-          </button>
-        </div>
-      </header>
+      {/* ── 1. Top Navbar (Save My Exams with mega dropdowns) ── */}
+      <SaveMyExamsNavbar />
 
       {/* ── 2. Body: Left Sidebar + Main Content ── */}
       <div className="flex-1 flex overflow-hidden">
