@@ -986,11 +986,13 @@ function ChapterDoc({
                       </p>
                     </div>
                   </div>
-                  <ChevronDown
-                    className={`size-4 text-slate-400 transition-transform duration-200 shrink-0 ${
-                      isSecOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  <span className="size-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <ChevronDown
+                      className={`size-4 transition-transform duration-200 ${
+                        isSecOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </span>
                 </button>
 
                 {/* Topics in Section */}
@@ -1006,6 +1008,9 @@ function ChapterDoc({
 
                       if (sidebarSearch && filteredChaps.length === 0) return null;
 
+                      const topMastered = chaps.filter((c) => masteredSections[c.number]).length;
+                      const topPct = chaps.length ? Math.round((topMastered / chaps.length) * 100) : 0;
+
                       return (
                         <div key={topTitle} className="space-y-1">
                           {/* Topic Accordion Button */}
@@ -1017,18 +1022,33 @@ function ChapterDoc({
                             className="w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 transition-colors text-left"
                           >
                             <div className="flex items-center gap-2 min-w-0">
-                              <div className="size-3.5 rounded-full border border-slate-400/60 bg-slate-100 shrink-0 flex items-center justify-center">
-                                <div className="size-1.5 rounded-full bg-slate-700" />
+                              <div className="relative size-4 shrink-0 flex items-center justify-center">
+                                <svg className="size-4 -rotate-90" viewBox="0 0 36 36">
+                                  <circle cx="18" cy="18" r="14" fill="none" stroke="#e2e8f0" strokeWidth="4" />
+                                  <circle
+                                    cx="18"
+                                    cy="18"
+                                    r="14"
+                                    fill="none"
+                                    stroke="#10b981"
+                                    strokeWidth="4"
+                                    strokeDasharray="88"
+                                    strokeDashoffset={88 - (88 * (topPct || 25)) / 100}
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
                               </div>
                               <span className="text-[12.5px] font-semibold text-slate-800 truncate">
                                 {topTitle}
                               </span>
                             </div>
-                            <ChevronDown
-                              className={`size-3.5 text-slate-400 transition-transform duration-200 shrink-0 ${
-                                isTopOpen ? "rotate-180" : ""
-                              }`}
-                            />
+                            <span className="size-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                              <ChevronDown
+                                className={`size-3.5 transition-transform duration-200 ${
+                                  isTopOpen ? "rotate-180" : ""
+                                }`}
+                              />
+                            </span>
                           </button>
 
                           {/* Connected Vertical Timeline Tree */}
@@ -1049,22 +1069,22 @@ function ChapterDoc({
                                     }}
                                     className={`group relative w-full flex items-center gap-2.5 px-2.5 py-1.5 text-left rounded-lg text-xs transition-colors ${
                                       isActive
-                                        ? "bg-slate-100 text-slate-900 font-bold"
-                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
+                                        ? "bg-blue-50/90 text-blue-900 font-bold"
+                                        : "text-slate-700 hover:text-slate-900 hover:bg-slate-50 font-medium"
                                     }`}
                                   >
                                     {/* Dot connected to vertical line */}
                                     <span
-                                      className={`absolute -left-[23px] size-4 rounded-full flex items-center justify-center transition-all ${
+                                      className={`absolute -left-[23px] rounded-full flex items-center justify-center transition-all ${
                                         isActive
-                                          ? "bg-slate-900 text-white shadow-xs ring-4 ring-slate-100"
+                                          ? "size-3.5 -left-[23px] bg-blue-600 ring-4 ring-blue-100"
                                           : isMastered
-                                            ? "bg-emerald-600 text-white ring-4 ring-emerald-50"
-                                            : "border-2 border-slate-300 bg-white ring-2 ring-white"
+                                            ? "size-3.5 -left-[23px] bg-emerald-600 text-white ring-4 ring-emerald-50"
+                                            : "size-2.5 -left-[21px] bg-slate-300"
                                       }`}
                                     >
-                                      {isActive || isMastered ? (
-                                        <CheckCircle2 className="size-3 fill-current text-white" />
+                                      {isMastered ? (
+                                        <CheckCircle2 className="size-2.5 fill-current text-white" />
                                       ) : null}
                                     </span>
 
@@ -1530,6 +1550,9 @@ export function SyllabusNotesPage() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [expandedSubjects, setExpandedSubjects] = useState<Record<string, boolean>>({});
+  const [expandedGridTopics, setExpandedGridTopics] = useState<Record<string, boolean>>({
+    "Characteristics, Classification & Features of Organisms": true,
+  });
 
   const toggleSubject = (id: string) => {
     setExpandedSubjects((prev) => ({
@@ -1724,55 +1747,83 @@ export function SyllabusNotesPage() {
             </p>
           </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {Object.entries(sections).map(([secTitle, topicGroups]) => {
-              const allSecChaps = Object.values(topicGroups).flat();
+              const displaySecTitle = secTitle.replace(/^\d+\.\s*/, "");
               return (
                 <div
                   key={secTitle}
-                  className="rounded-2xl border border-[#D8E0D2] bg-white p-5 shadow-xs flex flex-col justify-between"
+                  className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-[#D8E0D2] mb-4">
-                      <div className="flex items-center gap-2.5">
-                        <div className="size-2.5 rounded-full bg-[#233831]" />
-                        <h2 className="font-bold text-base text-[#0D170C] tracking-tight">
-                          {secTitle}
-                        </h2>
-                      </div>
-                      <span className="text-xs font-semibold text-[#5B6E62]">
-                        {allSecChaps.length} Chapters
-                      </span>
+                    {/* Topic Header: empty circle + Title */}
+                    <div className="flex items-center gap-3 mb-3.5">
+                      <span className="size-4.5 rounded-full border-2 border-slate-300 shrink-0" />
+                      <h2 className="font-bold text-base text-slate-900 tracking-tight">
+                        {displaySecTitle}
+                      </h2>
                     </div>
 
-                    <div className="space-y-4">
-                      {Object.entries(topicGroups).map(([topTitle, chaps]) => (
-                        <div key={topTitle} className="space-y-1.5">
-                          <p className="text-xs font-bold text-[#173128] tracking-wide uppercase">
-                            {topTitle}
-                          </p>
-                          <div className="space-y-1">
-                            {chaps.map((ch) => (
-                              <button
-                                key={ch.number}
-                                type="button"
-                                onClick={() => goTo(selectedSubject.id, ch.number)}
-                                className="group w-full flex items-center justify-between p-2 rounded-xl text-left hover:bg-[#F0F2E4] border border-transparent hover:border-[#D8E0D2] transition-all cursor-pointer"
+                    {/* Subtopics */}
+                    <div className="space-y-3">
+                      {Object.entries(topicGroups).map(([topTitle, chaps]) => {
+                        const isOpen = expandedGridTopics[topTitle] ?? false;
+                        return (
+                          <div
+                            key={topTitle}
+                            className="rounded-xl border border-slate-200/80 bg-slate-50/50 p-3.5 transition-all"
+                          >
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setExpandedGridTopics((prev) => ({
+                                  ...prev,
+                                  [topTitle]: !isOpen,
+                                }))
+                              }
+                              className="w-full flex items-center justify-between gap-3 text-left cursor-pointer group"
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <span className="size-4 rounded-full border-2 border-slate-300 shrink-0 group-hover:border-slate-400" />
+                                <span className="font-semibold text-sm text-slate-800 truncate group-hover:text-slate-900">
+                                  {topTitle}
+                                </span>
+                              </div>
+                              <span
+                                className={`size-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                                  isOpen
+                                    ? "bg-blue-50 text-blue-600"
+                                    : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                                }`}
                               >
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                  <span className="size-4 rounded-full border border-[#CBD5C6] flex items-center justify-center shrink-0 group-hover:border-[#233831]">
-                                    <span className="size-1.5 rounded-full bg-transparent group-hover:bg-[#233831] transition-colors" />
-                                  </span>
-                                  <span className="text-xs font-medium text-[#173128] group-hover:text-[#0D170C] truncate">
-                                    {ch.title}
-                                  </span>
-                                </div>
-                                <ChevronRight className="size-3.5 text-[#8E9F93] group-hover:text-[#233831] shrink-0 transition-transform group-hover:translate-x-0.5" />
-                              </button>
-                            ))}
+                                <ChevronDown
+                                  className={`size-3.5 transition-transform duration-200 ${
+                                    isOpen ? "rotate-180" : ""
+                                  }`}
+                                />
+                              </span>
+                            </button>
+
+                            {isOpen && (
+                              <div className="mt-3 pt-3 border-t border-slate-200/60 space-y-2 pl-1">
+                                {chaps.map((ch) => (
+                                  <button
+                                    key={ch.number}
+                                    type="button"
+                                    onClick={() => goTo(selectedSubject.id, ch.number)}
+                                    className="w-full flex items-center gap-3 text-left py-1.5 px-2 rounded-lg hover:bg-slate-100/80 transition-colors cursor-pointer group"
+                                  >
+                                    <span className="size-3.5 rounded-full border-2 border-slate-300 shrink-0 group-hover:border-blue-500" />
+                                    <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600 truncate">
+                                      {ch.title}
+                                    </span>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
