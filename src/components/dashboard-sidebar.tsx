@@ -4,12 +4,13 @@ import {
   BookOpen,
   CalendarDays,
   ChevronDown,
+  ChevronRight,
   ChevronsUpDown,
-  MoreVertical,
-  Check,
+  Crown,
   FileText,
   ClipboardCheck,
   Home,
+  LogOut,
   Menu,
   MessageCircle,
   Mic,
@@ -17,11 +18,15 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Search,
+  Settings,
+  Sparkles,
   X,
 } from "lucide-react";
 
 import logoMark from "@/assets/logo-mark.png";
-import { readProfile } from "@/lib/onboarding";
+import { readProfile, type OnboardingProfile } from "@/lib/onboarding";
+import { markLoggedOut } from "@/lib/auth";
+import { PaywallModal } from "@/components/paywall-modal";
 
 const primaryItems = [
   { label: "Home", to: "/home", Icon: Home },
@@ -57,10 +62,18 @@ export function DashboardSidebar() {
     return saved === null ? true : saved === "true";
   });
   const [user, setUser] = useState<{ name: string; email: string }>({ name: "Student", email: "" });
+  const [profile, setProfile] = useState<OnboardingProfile>({});
+  const [googlePicture, setGooglePicture] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [paywallOpen, setPaywallOpen] = useState(false);
+
   useEffect(() => {
     try {
       const p = readProfile();
+      setProfile(p);
       setUser({ name: p.name || "Student", email: p.email || "" });
+      const pic = localStorage.getItem("examglow.google_picture");
+      if (pic) setGooglePicture(pic);
     } catch {}
   }, []);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
@@ -178,25 +191,147 @@ export function DashboardSidebar() {
         </nav>
       </div>
 
-      <div className="mx-4 border-t border-sidebar-border py-3">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-1">
-          <div className="flex min-w-0 items-center gap-2.5">
+      <div className="relative mx-3 border-t border-sidebar-border py-3">
+        {/* Slide-out Menu */}
+        {menuOpen && (
+          <>
+            {/* Click-outside backdrop */}
+            <div
+              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px]"
+              onClick={() => setMenuOpen(false)}
+            />
+            <div
+              className={`absolute bottom-full mb-2 z-50 overflow-hidden rounded-2xl border border-border bg-card p-2.5 text-foreground shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-200 ${
+                collapsed && !mobile ? "left-0 w-64" : "left-0 right-0"
+              }`}
+            >
+              {/* User header inside slide-out */}
+              <div className="flex items-center gap-2.5 px-2 py-2 border-b border-border/70">
+                {googlePicture ? (
+                  <img
+                    src={googlePicture}
+                    alt={user.name}
+                    referrerPolicy="no-referrer"
+                    className="size-9 rounded-full object-cover ring-1 ring-border shrink-0"
+                  />
+                ) : (
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-sm font-bold text-sidebar-accent-foreground">
+                    {user.name.charAt(0).toUpperCase()}
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <p className="truncate text-xs font-bold text-foreground">{user.name}</p>
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ${
+                        profile.plan && profile.plan !== "free"
+                          ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                          : "bg-secondary text-muted-foreground"
+                      }`}
+                    >
+                      {profile.plan && profile.plan !== "free" ? "Pro" : "Free"}
+                    </span>
+                  </div>
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    {user.email || "Student Account"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Upgrade Button */}
+              <div className="pt-2 pb-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setPaywallOpen(true);
+                  }}
+                  className="group relative flex w-full items-center justify-between overflow-hidden rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 px-3 py-2 text-left text-white shadow-md shadow-amber-500/20 transition-all duration-300 hover:brightness-105 active:scale-[0.99] cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-white/20 text-white">
+                      <Crown className="size-3.5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold leading-tight flex items-center gap-1">
+                        Upgrade Plan
+                        <Sparkles className="size-3 text-amber-200" />
+                      </p>
+                      <p className="text-[10px] text-amber-100 font-normal leading-tight">PayPal & Cards</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="size-3.5 text-white/80 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </div>
+
+              {/* Settings Button */}
+              <Link
+                to="/settings"
+                onClick={() => {
+                  setMenuOpen(false);
+                  if (mobile) setMobileOpen(false);
+                }}
+                className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium text-foreground hover:bg-secondary/70 transition-colors"
+              >
+                <Settings className="size-4 text-muted-foreground" />
+                <span>Settings & Preferences</span>
+              </Link>
+
+              {/* Sign Out Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  if (confirm("Are you sure you want to sign out?")) {
+                    markLoggedOut();
+                    window.location.href = "/";
+                  }
+                }}
+                className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+              >
+                <LogOut className="size-4" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Bottom Profile Button */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          className={`flex w-full items-center gap-2.5 rounded-xl p-1.5 transition-colors text-left hover:bg-sidebar-hover cursor-pointer ${
+            menuOpen ? "bg-sidebar-hover" : ""
+          }`}
+          aria-expanded={menuOpen}
+          aria-label="User account menu"
+        >
+          {googlePicture ? (
+            <img
+              src={googlePicture}
+              alt={user.name}
+              referrerPolicy="no-referrer"
+              className="size-8 shrink-0 rounded-full object-cover ring-1 ring-sidebar-border"
+            />
+          ) : (
             <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-[13px] font-semibold text-sidebar-accent-foreground">
               {user.name.charAt(0).toUpperCase()}
             </span>
-            {showLabels && (
-              <span className="min-w-0 leading-tight">
-                <span className="block truncate text-[13px] font-semibold uppercase">{user.name}</span>
-                {user.email && <span className="block truncate text-[11px] text-sidebar-muted">{user.email}</span>}
-              </span>
-            )}
-          </div>
-          {showLabels && (
-            <Link to="/settings" className="flex size-6 items-center justify-center rounded text-sidebar-muted hover:bg-sidebar-hover" aria-label="Account settings">
-              <MoreVertical className="size-4" />
-            </Link>
           )}
-        </div>
+
+          {showLabels && (
+            <div className="min-w-0 flex-1 leading-tight">
+              <span className="block truncate text-[13px] font-semibold">{user.name}</span>
+              <span className="block truncate text-[11px] text-sidebar-muted">
+                {user.email || (profile.plan && profile.plan !== "free" ? "Pro Member" : "Free Plan")}
+              </span>
+            </div>
+          )}
+
+          {showLabels && (
+            <ChevronsUpDown className="size-3.5 shrink-0 text-sidebar-muted" />
+          )}
+        </button>
       </div>
     </aside>
   );
@@ -228,6 +363,7 @@ export function DashboardSidebar() {
           {renderSidebar(true)}
         </div>
       </div>
+      <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} />
     </>
   );
 }

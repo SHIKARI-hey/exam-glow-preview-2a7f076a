@@ -2,11 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowUpRight,
-  ChevronDown,
   ChevronRight,
   GraduationCap,
   Search,
-  Settings,
 } from "lucide-react";
 
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
@@ -120,29 +118,6 @@ function HomePage() {
                 placeholder="Search..."
                 className="w-full bg-[#F4F5F7] rounded-full pl-9 pr-4 py-2 text-xs text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 transition"
               />
-            </div>
-
-            <div className="flex items-center gap-3 self-end sm:self-auto">
-              <button
-                type="button"
-                className="size-8 rounded-full bg-[#F4F5F7] flex items-center justify-center text-gray-500 hover:text-gray-800 transition cursor-pointer"
-                aria-label="Settings"
-              >
-                <Settings className="size-4" />
-              </button>
-
-              <div className="flex items-center gap-2 pl-1 cursor-pointer">
-                <img
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-                  alt="Sudarsan"
-                  className="size-8 rounded-full object-cover ring-1 ring-gray-200"
-                />
-                <div className="text-left">
-                  <p className="text-xs font-bold text-gray-900 leading-tight">Sudarsan</p>
-                  <p className="text-[10px] text-gray-400 leading-tight">Student</p>
-                </div>
-                <ChevronDown className="size-3 text-gray-400" />
-              </div>
             </div>
           </header>
 
