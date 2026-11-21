@@ -48,7 +48,7 @@ const practiceItems = [
 
 
 const courseItems = [
-  { label: "Syllabus Notes", to: "/syllabus-notes", Icon: NotebookTabs },
+  { label: "Courses", to: "/syllabus-notes", Icon: NotebookTabs },
 ] as const;
 
 type NavItem = (typeof primaryItems)[number] | (typeof studyItems)[number] | (typeof practiceItems)[number] | (typeof courseItems)[number];

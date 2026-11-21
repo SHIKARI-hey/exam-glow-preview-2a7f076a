@@ -1983,6 +1983,163 @@ export const DIAGRAM_MAP: Record<string, string> = {
   </g>
 </svg>`,
 
+  "disaccharides-structure.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 620" width="100%" height="auto">
+  <!-- Section 1: MALTOSE -->
+  <g transform="translate(30, 15)">
+    <!-- Header Badge -->
+    <rect x="0" y="0" width="220" height="28" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="1.2"/>
+    <text x="110" y="19" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0f172a">MALTOSE (α-1,4-Glycosidic Bond)</text>
+    <rect x="230" y="3" width="105" height="22" rx="11" fill="#ecfdf5" stroke="#a7f3d0"/>
+    <text x="282.5" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#059669">Reducing Sugar</text>
+
+    <!-- Reaction Equation -->
+    <g transform="translate(10, 45)">
+      <text x="0" y="14" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#334155">α-glucose + α-glucose</text>
+      <text x="145" y="14" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#ea580c">──(Condensation)──></text>
+      <text x="290" y="14" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0f172a">Maltose + H₂O</text>
+    </g>
+
+    <!-- Maltose Structure Sketch -->
+    <g transform="translate(15, 80)">
+      <!-- Left ring (C1) -->
+      <polygon points="0,-20 35,-20 55,5 35,30 0,30 -20,5" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+      <circle cx="30" cy="-16" r="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2"/>
+      <text x="30" y="-13" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" font-weight="800" fill="#dc2626">O</text>
+      <text x="10" y="8" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">α-Glucose</text>
+      <text x="45" y="5" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C1</text>
+
+      <!-- Central alpha-1,4 Oxygen bridge -->
+      <line x1="55" y1="5" x2="85" y2="18" stroke="#1e293b" stroke-width="2.5"/>
+      <circle cx="85" cy="18" r="10" fill="#cbd5e1" stroke="#334155" stroke-width="1.5"/>
+      <text x="85" y="22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="900" fill="#0f172a">O</text>
+      <line x1="85" y1="18" x2="115" y2="5" stroke="#1e293b" stroke-width="2.5"/>
+
+      <!-- Right ring (C4) -->
+      <g transform="translate(135, 0)">
+        <polygon points="0,-20 35,-20 55,5 35,30 0,30 -20,5" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="30" cy="-16" r="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2"/>
+        <text x="30" y="-13" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" font-weight="800" fill="#dc2626">O</text>
+        <text x="10" y="8" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">α-Glucose</text>
+        <text x="-15" y="5" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C4</text>
+        <text x="45" y="5" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#059669">C1 (free –OH)</text>
+      </g>
+
+      <!-- Callout note -->
+      <g transform="translate(420, -5)">
+        <rect x="0" y="0" width="410" height="50" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="15" y="20" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#0f172a">• Produced during digestion of starch by <tspan font-weight="800" fill="#0284c7">amylase</tspan></text>
+        <text x="15" y="38" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#475569">• Hydrolysed to 2 glucose molecules by <tspan font-weight="700" fill="#0284c7">maltase</tspan> in small intestine</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Divider line -->
+  <line x1="30" y1="185" x2="890" y2="185" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <!-- Section 2: SUCROSE -->
+  <g transform="translate(30, 205)">
+    <rect x="0" y="0" width="220" height="28" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="1.2"/>
+    <text x="110" y="19" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0f172a">SUCROSE (α-1,2-Glycosidic Bond)</text>
+    <rect x="230" y="3" width="130" height="22" rx="11" fill="#fef2f2" stroke="#fecaca"/>
+    <text x="295" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#dc2626">Non-Reducing Sugar</text>
+
+    <!-- Reaction Equation -->
+    <g transform="translate(10, 45)">
+      <text x="0" y="14" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#334155">α-glucose + β-fructose</text>
+      <text x="145" y="14" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#ea580c">──(Condensation)──></text>
+      <text x="290" y="14" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0f172a">Sucrose + H₂O</text>
+    </g>
+
+    <!-- Sucrose Structure Sketch -->
+    <g transform="translate(15, 80)">
+      <!-- Glucose Pyranose Ring -->
+      <polygon points="0,-20 35,-20 55,5 35,30 0,30 -20,5" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+      <circle cx="30" cy="-16" r="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2"/>
+      <text x="30" y="-13" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" font-weight="800" fill="#dc2626">O</text>
+      <text x="10" y="8" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">α-Glucose</text>
+      <text x="45" y="5" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#dc2626">C1*</text>
+
+      <!-- Central oxygen link C1 to C2 -->
+      <line x1="55" y1="5" x2="85" y2="18" stroke="#1e293b" stroke-width="2.5"/>
+      <circle cx="85" cy="18" r="10" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/>
+      <text x="85" y="22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="900" fill="#991b1b">O</text>
+      <line x1="85" y1="18" x2="115" y2="18" stroke="#1e293b" stroke-width="2.5"/>
+
+      <!-- Fructose Furanose Ring (5-membered) -->
+      <g transform="translate(135, 0)">
+        <polygon points="10,-15 35,-15 48,15 22,28 -2,15" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="22" cy="-12" r="5" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2"/>
+        <text x="22" y="-9" text-anchor="middle" font-family="system-ui, sans-serif" font-size="7" font-weight="800" fill="#dc2626">O</text>
+        <text x="22" y="8" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">β-Fructose</text>
+        <text x="-15" y="18" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#dc2626">C2*</text>
+      </g>
+
+      <!-- Why non-reducing callout box -->
+      <g transform="translate(380, -5)">
+        <rect x="0" y="0" width="450" height="58" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+        <text x="15" y="20" font-family="system-ui, sans-serif" font-size="11.5" font-weight="800" fill="#b91c1c">⚠️ WHY SUCROSE IS NON-REDUCING:</text>
+        <text x="15" y="36" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#7f1d1d">• Bond forms between BOTH anomeric carbons (C1 of glucose &amp; C2 of fructose)</text>
+        <text x="15" y="50" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#7f1d1d">• No free anomeric –OH group remains to donate electrons to Benedict's (Cu²⁺)</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Divider line -->
+  <line x1="30" y1="385" x2="890" y2="385" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <!-- Section 3: LACTOSE -->
+  <g transform="translate(30, 405)">
+    <rect x="0" y="0" width="220" height="28" rx="4" fill="#f1f5f9" stroke="#334155" stroke-width="1.2"/>
+    <text x="110" y="19" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0f172a">LACTOSE (β-1,4-Glycosidic Bond)</text>
+    <rect x="230" y="3" width="105" height="22" rx="11" fill="#ecfdf5" stroke="#a7f3d0"/>
+    <text x="282.5" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#059669">Reducing Sugar</text>
+
+    <!-- Reaction Equation -->
+    <g transform="translate(10, 45)">
+      <text x="0" y="14" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#334155">β-galactose + β-glucose</text>
+      <text x="155" y="14" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#ea580c">──(Condensation)──></text>
+      <text x="300" y="14" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0f172a">Lactose + H₂O</text>
+    </g>
+
+    <!-- Lactose Structure Sketch -->
+    <g transform="translate(15, 80)">
+      <!-- Left ring (Galactose C1) -->
+      <polygon points="0,-20 35,-20 55,5 35,30 0,30 -20,5" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+      <circle cx="30" cy="-16" r="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2"/>
+      <text x="30" y="-13" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" font-weight="800" fill="#dc2626">O</text>
+      <text x="10" y="8" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">β-Galactose</text>
+      <text x="45" y="-5" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C1</text>
+
+      <!-- Central beta-1,4 diagonal Oxygen bridge -->
+      <line x1="55" y1="-5" x2="85" y2="10" stroke="#1e293b" stroke-width="2.5"/>
+      <circle cx="85" cy="10" r="10" fill="#cbd5e1" stroke="#334155" stroke-width="1.5"/>
+      <text x="85" y="14" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="900" fill="#0f172a">O</text>
+      <line x1="85" y1="10" x2="115" y2="25" stroke="#1e293b" stroke-width="2.5"/>
+
+      <!-- Right ring (Glucose C4) -->
+      <g transform="translate(135, 20)">
+        <polygon points="0,-20 35,-20 55,5 35,30 0,30 -20,5" fill="#f8fafc" stroke="#1e293b" stroke-width="2"/>
+        <circle cx="30" cy="-16" r="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2"/>
+        <text x="30" y="-13" text-anchor="middle" font-family="system-ui, sans-serif" font-size="8" font-weight="800" fill="#dc2626">O</text>
+        <text x="10" y="8" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">β-Glucose</text>
+        <text x="-15" y="5" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C4</text>
+      </g>
+
+      <!-- Callout note -->
+      <g transform="translate(420, -5)">
+        <rect x="0" y="0" width="410" height="50" rx="6" fill="#f8fafc" stroke="#cbd5e1"/>
+        <text x="15" y="20" font-family="system-ui, sans-serif" font-size="11.5" font-weight="700" fill="#0f172a">• The primary sugar found in mammalian milk</text>
+        <text x="15" y="38" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#475569">• Hydrolysed by enzyme <tspan font-weight="700" fill="#0284c7">lactase</tspan> into glucose and galactose</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Watermark -->
+  <text x="460" y="605" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Copyright © Save My Exams. All Rights Reserved</text>
+</svg>`,
+
+
+
 };
 
 /**

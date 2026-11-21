@@ -786,10 +786,10 @@ function ClosingCta() {
 
         <ScrollReveal variants={fadeUp} delay={0.25}>
           <p className="mt-14 text-sm text-muted-foreground">
-            Trusted by Cambridge IGCSE candidates across 50+ countries
+            Trusted by IGCSE & A-Level candidates across 50+ countries
           </p>
           <StaggerReveal className="mt-5 flex flex-wrap items-center justify-center gap-10 font-display text-2xl text-foreground/70">
-            {["Cambridge International", "IGCSE & O-Level", "A-Level Excellence", "Global Top Scorers"].map((uni) => (
+            {["CIE International", "IGCSE & O-Level", "A-Level Excellence", "Global Top Scorers"].map((uni) => (
               <motion.span key={uni} variants={fadeUp}>
                 {uni}
               </motion.span>

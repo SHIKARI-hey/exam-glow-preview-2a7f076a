@@ -225,7 +225,6 @@ function StudyPlanPage() {
                 <Flame className="size-4 text-amber-600 fill-amber-500" />
                 <span>5 Day Streak</span>
               </div>
-              <ProfileAvatar className="shrink-0" />
             </div>
           </header>
 

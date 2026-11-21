@@ -44,7 +44,12 @@ import { sound } from "@/components/arcade/sound-fx";
 
 // Which subject row is expanded and which chapter is being read live in the URL,
 // so a refresh anywhere lands back on the same screen.
-type NotesSearch = { subject?: string; chapter?: number };
+type NotesSearch = {
+  subject?: string;
+  chapter?: number;
+  view?: string;
+  board?: string;
+};
 
 export const Route = createFileRoute("/syllabus-notes")({
   validateSearch: (raw: Record<string, unknown>): NotesSearch => {
@@ -56,7 +61,7 @@ export const Route = createFileRoute("/syllabus-notes")({
   },
   head: () => ({
     meta: [
-      { title: "Syllabus Notes — IGCSE | ExamGlow" },
+      { title: "Courses & Revision Notes | ExamGlow" },
       {
         name: "description",
         content:
@@ -568,7 +573,7 @@ function ChapterFlashcardModal({
           className="relative mt-2 min-h-[220px] sm:min-h-[260px] w-full cursor-pointer rounded-2xl border-2 border-border/80 bg-gradient-to-br from-background to-muted/30 p-6 flex flex-col items-center justify-center text-center shadow-md transition-all hover:border-primary/50 select-none"
         >
           <span className="absolute top-3 left-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            {isFlipped ? "Answer / Cambridge Marking Points" : "Question / Term"}
+            {isFlipped ? "Answer / Official Marking Points" : "Question / Term"}
           </span>
           <span className="absolute top-3 right-4 text-[11px] font-medium text-primary hover:underline">
             Click to {isFlipped ? "flip back" : "reveal answer"}
@@ -586,7 +591,7 @@ function ChapterFlashcardModal({
           </div>
 
           <div className="mt-auto pt-4 text-[11px] text-muted-foreground">
-            {isFlipped ? "Tap to flip back" : "Tap card to flip and check Cambridge answer"}
+            {isFlipped ? "Tap to flip back" : "Tap card to flip and check official answer"}
           </div>
         </div>
 
@@ -652,23 +657,28 @@ function ChapterDoc({
   const [revealedAnswers, setRevealedAnswers] = useState<Record<number, boolean>>({});
   const [expandedExam, setExpandedExam] = useState<Record<number, boolean>>({});
   const [showFlashcards, setShowFlashcards] = useState(false);
-  const [isLectureActive, setIsLectureActive] = useState(false);
-  const [lectureSectionIdx, setLectureSectionIdx] = useState(0);
-  const [isVoiceLoading, setIsVoiceLoading] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [sidebarSearch, setSidebarSearch] = useState("");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
 
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const lectureSectionsRef = useRef<LectureSection[]>([]);
-  const currentSectionRef = useRef<number>(0);
+  // Chatbot Drawer state matching media_1795273520836_423dc96f.png
+  const [chatOpen, setChatOpen] = useState(false);
+  const [messages, setMessages] = useState<
+    Array<{ id: string; role: "agent" | "user"; text: string; time?: string }>
+  >([
+    {
+      id: "init",
+      role: "agent",
+      text: "Hey! 👋 I'm ExamGlow AI. I have full syllabus knowledge of this chapter. How can I help you understand this topic, explain a tricky concept, or test your exam recall today?",
+    },
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const [isCopied, setIsCopied] = useState<string | null>(null);
+
   const scrollRef = useRef<HTMLDivElement>(null);
-  const backFiredRef = useRef(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Group chapters by section and topic for Save My Exams hierarchy
   const hierarchy = useMemo(() => {
@@ -683,7 +693,6 @@ function ChapterDoc({
     return sections;
   }, [allChapters]);
 
-  // Automatically expand the section and topic of the active chapter
   useEffect(() => {
     if (chapter.section) {
       setExpandedSections((prev) => ({ ...prev, [chapter.section!]: true }));
@@ -693,7 +702,6 @@ function ChapterDoc({
     }
   }, [chapter.number, chapter.section, chapter.topic]);
 
-  // Load mastered state from local storage
   useEffect(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(`chapter_mastery_${subjectId}_${chapter.number}`);
@@ -708,9 +716,7 @@ function ChapterDoc({
   const toggleMastered = (idx: number) => {
     setMasteredSections((prev) => {
       const next = { ...prev, [idx]: !prev[idx] };
-      if (next[idx]) {
-        sound.playCorrect();
-      }
+      if (next[idx]) sound.playCorrect();
       if (typeof window !== "undefined") {
         localStorage.setItem(
           `chapter_mastery_${subjectId}_${chapter.number}`,
@@ -721,19 +727,7 @@ function ChapterDoc({
     });
   };
 
-  const totalSections = chapter.subheadings.length;
-  const masteredCount = Object.values(masteredSections).filter(Boolean).length;
-  const masteryPercentage = Math.round((masteredCount / Math.max(1, totalSections)) * 100);
-
-  const idx = allChapters.findIndex((c) => c.number === chapter.number);
-  const hasNext = idx < allChapters.length - 1;
-  const hasPrev = idx > 0;
-
-  const chapterWords =
-    chapter.subheadings.reduce((n, s) => n + sectionWords(s), 0) + countWords(chapter.intro);
-
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const [activeSection, setActiveSection] = useState(0);
 
   function handleReaderScroll(e: ReactUIEvent<HTMLDivElement>) {
     const el = e.currentTarget;
@@ -741,135 +735,38 @@ function ChapterDoc({
     if (progressBarRef.current) {
       progressBarRef.current.style.transform = `scaleX(${scrollable > 8 ? Math.min(1, el.scrollTop / scrollable) : 0})`;
     }
-    let current = 0;
-    for (let i = 0; i < chapter.subheadings.length; i++) {
-      const node = document.getElementById(`section-${i}`);
-      if (node && node.offsetTop - el.scrollTop <= 180) {
-        current = i;
-      }
-    }
-    setActiveSection(current);
   }
-
-  function playSection(index: number, sections: LectureSection[]) {
-    if (index >= sections.length) {
-      handleStop();
-      return;
-    }
-    const current = sections[index];
-    if (!current) return;
-
-    currentSectionRef.current = index;
-    setLectureSectionIdx(index);
-    setIsVoiceLoading(true);
-    setIsPlaying(false);
-    setIsPaused(false);
-
-    if (index + 1 < sections.length) {
-      const next = sections[index + 1];
-      if (next) preloadGeminiSpeech(next.script);
-    }
-
-    playRealisticVoice(
-      current.script,
-      () => {
-        setIsVoiceLoading(false);
-        setIsPlaying(true);
-        setIsPaused(false);
-      },
-      () => {
-        playSection(index + 1, sections);
-      },
-      () => {
-        setIsVoiceLoading(false);
-        setIsPlaying(false);
-      },
-    );
-  }
-
-  function handleStartLecture() {
-    unlockAudio();
-    if (isPaused) {
-      handleResume();
-      return;
-    }
-    if (isPlaying) {
-      handlePause();
-      return;
-    }
-
-    const sections = build20MinChapterLecture(chapter);
-    lectureSectionsRef.current = sections;
-    setIsLectureActive(true);
-    setElapsedSeconds(0);
-    playSection(0, sections);
-
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setElapsedSeconds((prev) => {
-        if (prev >= TOTAL_LECTURE_SECONDS) {
-          handleStop();
-          return TOTAL_LECTURE_SECONDS;
-        }
-        return prev + 1;
-      });
-    }, 1000);
-  }
-
-  function handlePause() {
-    pauseRealisticVoice();
-    setIsPlaying(false);
-    setIsPaused(true);
-  }
-
-  function handleResume() {
-    resumeRealisticVoice();
-    setIsPlaying(true);
-    setIsPaused(false);
-  }
-
-  function handleStop() {
-    stopRealisticVoice();
-    setIsPlaying(false);
-    setIsPaused(false);
-    setIsVoiceLoading(false);
-    setIsLectureActive(false);
-    setElapsedSeconds(0);
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    }
-  }
-
-  function handleNextSection() {
-    const nextIdx = currentSectionRef.current + 1;
-    if (nextIdx < lectureSectionsRef.current.length) {
-      playSection(nextIdx, lectureSectionsRef.current);
-    }
-  }
-
-  function handlePrevSection() {
-    const prevIdx = Math.max(0, currentSectionRef.current - 1);
-    playSection(prevIdx, lectureSectionsRef.current);
-  }
-
-  useEffect(() => {
-    return () => {
-      stopRealisticVoice();
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [chapter.number]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
     if (progressBarRef.current) progressBarRef.current.style.transform = "scaleX(0)";
-    setActiveSection(0);
-    backFiredRef.current = false;
-    handleStop();
   }, [chapter.number]);
+
+  const handleSendChat = () => {
+    if (!chatInput.trim()) return;
+    const userText = chatInput.trim();
+    const userMsg = { id: Date.now().toString(), role: "user" as const, text: userText };
+    setMessages((prev) => [...prev, userMsg]);
+    setChatInput("");
+
+    // Simulate smart context-aware tutor response
+    setTimeout(() => {
+      let reply = `In ${chapter.title}, this is a crucial exam point. Make sure to clearly state definitions, name the specific chemical bonds involved, and explain how the molecular structure directly enables its biological function.`;
+      if (userText.toLowerCase().includes("reduce") || userText.toLowerCase().includes("reducing")) {
+        reply = "Reducing sugars donate electrons to copper(II) ions in Benedict's reagent, reducing soluble blue Cu²⁺ to insoluble brick-red Cu₂O precipitate upon heating. Glucose, fructose, and galactose are reducing sugars. Sucrose is non-reducing because both anomeric carbons are engaged in the glycosidic bond.";
+      } else if (userText.toLowerCase().includes("maltose") || userText.toLowerCase().includes("disaccharide")) {
+        reply = "Maltose is formed by condensation of two α-glucose monomers via an α-1,4-glycosidic bond. Sucrose is α-glucose + β-fructose (α-1,2 bond). Lactose is β-galactose + β-glucose (β-1,4 bond).";
+      } else if (userText.toLowerCase().includes("test") || userText.toLowerCase().includes("question")) {
+        reply = `Exam Question Check: "Describe how a glycosidic bond forms between two monosaccharides and explain why sucrose gives a negative Benedict's test." Would you like the model answer points?`;
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { id: (Date.now() + 1).toString(), role: "agent" as const, text: reply },
+      ]);
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 450);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex overflow-hidden bg-white text-slate-900 font-sans antialiased">
@@ -881,9 +778,7 @@ function ChapterDoc({
       >
         {/* Top Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-slate-900 tracking-tight">Revision Notes</h2>
-          </div>
+          <h2 className="text-base font-bold text-slate-900 tracking-tight">Revision Notes</h2>
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-slate-400 hover:text-slate-600 p-1 rounded-md"
@@ -907,7 +802,7 @@ function ChapterDoc({
               onClick={() => setSearchOpen(!searchOpen)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full border text-xs font-semibold shadow-2xs transition-all ${
                 searchOpen
-                  ? "bg-blue-50 border-blue-200 text-blue-700"
+                  ? "bg-slate-200 border-slate-400 text-slate-900"
                   : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300"
               }`}
             >
@@ -923,7 +818,7 @@ function ChapterDoc({
                 value={sidebarSearch}
                 onChange={(e) => setSidebarSearch(e.target.value)}
                 placeholder="Search notes in this topic..."
-                className="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none"
               />
             </div>
           )}
@@ -956,7 +851,7 @@ function ChapterDoc({
                           cy="18"
                           r="14"
                           fill="none"
-                          stroke="#16a34a"
+                          stroke="#1e293b"
                           strokeWidth="3"
                           strokeDasharray="88"
                           strokeDashoffset={88 - (88 * secPct) / 100}
@@ -1004,8 +899,8 @@ function ChapterDoc({
                             className="w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 transition-colors text-left"
                           >
                             <div className="flex items-center gap-2 min-w-0">
-                              <div className="size-3.5 rounded-full border border-emerald-500/60 bg-emerald-50 shrink-0 flex items-center justify-center">
-                                <div className="size-1.5 rounded-full bg-emerald-600" />
+                              <div className="size-3.5 rounded-full border border-slate-400/60 bg-slate-100 shrink-0 flex items-center justify-center">
+                                <div className="size-1.5 rounded-full bg-slate-700" />
                               </div>
                               <span className="text-[12.5px] font-semibold text-slate-800 truncate">
                                 {topTitle}
@@ -1036,7 +931,7 @@ function ChapterDoc({
                                     }}
                                     className={`group relative w-full flex items-center gap-2.5 px-2.5 py-1.5 text-left rounded-lg text-xs transition-colors ${
                                       isActive
-                                        ? "bg-blue-50/90 text-blue-700 font-bold"
+                                        ? "bg-slate-100 text-slate-900 font-bold"
                                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
                                     }`}
                                   >
@@ -1044,7 +939,7 @@ function ChapterDoc({
                                     <span
                                       className={`absolute -left-[23px] size-4 rounded-full flex items-center justify-center transition-all ${
                                         isActive
-                                          ? "bg-blue-600 text-white shadow-xs ring-4 ring-blue-50"
+                                          ? "bg-slate-900 text-white shadow-xs ring-4 ring-slate-100"
                                           : isMastered
                                             ? "bg-emerald-600 text-white ring-4 ring-emerald-50"
                                             : "border-2 border-slate-300 bg-white ring-2 ring-white"
@@ -1076,14 +971,14 @@ function ChapterDoc({
       <main
         ref={scrollRef}
         onScroll={handleReaderScroll}
-        className="flex-1 flex flex-col h-full overflow-y-auto overflow-x-hidden bg-white"
+        className="flex-1 flex flex-col h-full overflow-y-auto overflow-x-hidden bg-white relative"
       >
-        {/* Sticky Reading Progress bar */}
+        {/* Sticky Reading Progress bar in charcoal grey */}
         <div
           ref={progressBarRef}
           aria-hidden
           style={{ transform: "scaleX(0)" }}
-          className="sticky top-0 z-30 h-[2.5px] origin-left bg-blue-600"
+          className="sticky top-0 z-30 h-[2.5px] origin-left bg-slate-900"
         />
 
         {/* Top Control Bar */}
@@ -1093,7 +988,7 @@ function ChapterDoc({
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
             >
-              <Layers className="size-3.5 text-blue-600" />
+              <Layers className="size-3.5 text-slate-700" />
               <span>Notes</span>
             </button>
             <p className="text-xs text-slate-500 font-medium hidden sm:block">
@@ -1108,29 +1003,8 @@ function ChapterDoc({
               onClick={() => setShowFlashcards(true)}
               className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
             >
-              <Layers className="size-3.5 text-blue-600" />
+              <Layers className="size-3.5 text-slate-700" />
               <span className="hidden sm:inline">Flashcards</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleStartLecture}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
-                isPlaying
-                  ? "bg-blue-600 text-white"
-                  : isPaused
-                    ? "bg-amber-500/15 text-amber-700"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              {isVoiceLoading ? (
-                <Loader2 className="size-3.5 animate-spin" />
-              ) : isPlaying ? (
-                <Pause className="size-3.5 fill-current" />
-              ) : (
-                <Volume2 className="size-3.5" />
-              )}
-              <span>{isPlaying ? "Pause" : isPaused ? "Resume" : "Listen"}</span>
             </button>
 
             <button
@@ -1154,7 +1028,7 @@ function ChapterDoc({
         <article className="mx-auto w-full max-w-4xl px-5 sm:px-12 py-8 sm:py-12 pb-36">
           {/* Main Chapter Title */}
           <header className="mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
               <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
                 {chapter.title}
               </h1>
@@ -1165,59 +1039,11 @@ function ChapterDoc({
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="rounded-full bg-[#1d4ed8] hover:bg-[#1e40af] text-white px-5 py-2 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+                  className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
                 >
                   Download PDF
                 </button>
               </div>
-            </div>
-
-            {/* Author Byline */}
-            <div className="flex items-center gap-3 py-2 text-xs sm:text-[13px] text-slate-600 border-b border-slate-100 pb-5">
-              <div className="flex -space-x-2 shrink-0">
-                <div className="size-7 rounded-full bg-slate-300 border-2 border-white flex items-center justify-center font-bold text-[10px] text-slate-700">
-                  LM
-                </div>
-                <div className="size-7 rounded-full bg-blue-300 border-2 border-white flex items-center justify-center font-bold text-[10px] text-blue-900">
-                  CH
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span>
-                  Written by: <span className="underline font-medium text-slate-900">Lára Marie McIvor</span>
-                </span>
-                <span>·</span>
-                <span className="flex items-center gap-1">
-                  Reviewed by: <span className="underline font-medium text-slate-900">Cara Head</span>
-                  <CheckCircle2 className="size-3.5 text-emerald-600 inline" />
-                </span>
-                <span>·</span>
-                <span className="text-slate-400">Updated on 27 May 2025</span>
-              </div>
-            </div>
-
-            {/* Guided Study Available Banner */}
-            <div className="mt-6 rounded-2xl bg-[#eff6ff] border border-[#dbeafe] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
-              <div className="flex items-start gap-3">
-                <div className="size-9 rounded-xl bg-blue-600/10 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <Lightbulb className="size-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 leading-snug">
-                    Guided study available on this topic
-                  </h4>
-                  <p className="text-xs text-slate-600 mt-0.5">
-                    Understand this topic with deeper explanations and understanding checks.
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleStartLecture}
-                className="shrink-0 rounded-full bg-[#1d4ed8] hover:bg-[#1e40af] text-white px-5 py-2 text-xs sm:text-sm font-semibold transition-colors shadow-2xs"
-              >
-                Start guided study
-              </button>
             </div>
           </header>
 
@@ -1226,15 +1052,10 @@ function ChapterDoc({
             {chapter.subheadings.map((sub, si) => (
               <section id={`section-${si}`} key={si} className="scroll-mt-16">
                 {/* Section Sub-heading matching Save My Exams */}
-                <div className="flex items-center justify-between gap-4 mb-6 pb-2 border-b border-slate-100">
+                <div className="mb-6 pb-2 border-b border-slate-100">
                   <h2 className="text-2xl sm:text-[28px] font-extrabold text-slate-900 tracking-tight">
                     {sub.title.toLowerCase().startsWith("biological") ? sub.title.toLowerCase() : sub.title}
                   </h2>
-                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-2xs cursor-pointer hover:bg-slate-50">
-                    <Lightbulb className="size-3.5 text-amber-500" />
-                    <span>Guided study</span>
-                    <ChevronDown className="size-3 text-slate-400" />
-                  </div>
                 </div>
 
                 {/* Prose Body */}
@@ -1252,7 +1073,7 @@ function ChapterDoc({
                   </div>
                 )}
 
-                {/* Examiner Tips and Tricks (white card with 5px blue left border) */}
+                {/* Examiner Tips and Tricks in Charcoal Grey */}
                 {sub.examinerTips && sub.examinerTips.length > 0 && (
                   <CalloutList items={sub.examinerTips} tone="tips" />
                 )}
@@ -1271,7 +1092,7 @@ function ChapterDoc({
                       className="w-full flex items-center justify-between gap-3 bg-slate-50/80 px-5 py-3.5 hover:bg-slate-100/70 transition-colors"
                     >
                       <div className="flex items-center gap-2.5">
-                        <HelpCircle className="size-4 text-blue-600" />
+                        <HelpCircle className="size-4 text-slate-800" />
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
                           Exam Practice ({sub.recap.length} Questions)
                         </span>
@@ -1288,7 +1109,7 @@ function ChapterDoc({
                         {sub.recap.map((q, qi) => (
                           <div key={qi} className="pt-4 first:pt-0 space-y-2">
                             <p className="text-[14px] font-semibold text-slate-900 leading-snug flex items-start gap-2.5">
-                              <span className="size-5 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                              <span className="size-5 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                 {qi + 1}
                               </span>
                               <span>{q}</span>
@@ -1302,7 +1123,7 @@ function ChapterDoc({
                                 }));
                                 sound.playFlip();
                               }}
-                              className="ml-7 text-[12px] font-semibold text-blue-600 hover:underline flex items-center gap-1"
+                              className="ml-7 text-[12px] font-semibold text-slate-700 hover:underline flex items-center gap-1"
                             >
                               {revealedAnswers[si * 100 + qi] ? "Hide model answer hint" : "Show model answer hint"}
                               <ChevronDown
@@ -1312,7 +1133,7 @@ function ChapterDoc({
                               />
                             </button>
                             {revealedAnswers[si * 100 + qi] && (
-                              <div className="ml-7 rounded-xl bg-blue-50/60 border border-blue-100 p-3.5 text-xs text-slate-700 leading-relaxed">
+                              <div className="ml-7 rounded-xl bg-slate-50 border border-slate-200 p-3.5 text-xs text-slate-700 leading-relaxed">
                                 State clear definitions, cite exact chemical bonds (e.g. 1,4 vs 1,6), mention reactants/products, and explain the biological functional advantage.
                               </div>
                             )}
@@ -1362,14 +1183,14 @@ function ChapterDoc({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 text-left">
                   <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 leading-relaxed">
                     "I would just like to say a massive thank you for putting together such a brilliant, easy to use website.{" "}
-                    <span className="bg-sky-100 font-semibold text-sky-900 px-1 rounded">
+                    <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
                       I really think using this site helped me secure my top grades
                     </span>{" "}
                     in science and maths. You really did save my exams! Thank you."
                   </div>
                   <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 leading-relaxed">
                     "This website is soooo useful and I can't ever thank you enough for organising questions by topic like this.{" "}
-                    <span className="bg-sky-100 font-semibold text-sky-900 px-1 rounded">
+                    <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
                       It literally did SAVE MY EXAMS!
                     </span>"
                   </div>
@@ -1379,15 +1200,156 @@ function ChapterDoc({
           </div>
         </article>
 
-        {/* Floating Action Button at Bottom Center */}
+        {/* ── Chatbot Floating Action Button (Right Edge) ── */}
         <button
           type="button"
-          onClick={handleStartLecture}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-rose-500 text-white font-bold text-sm shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          onClick={() => setChatOpen(true)}
+          aria-label="Open AI Tutor Chat"
+          className="fixed right-6 bottom-6 z-40 size-12 rounded-full bg-slate-900 text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white cursor-pointer"
         >
-          <Sparkles className="size-4" />
-          <span>Help me understand</span>
+          <Bot className="size-6 text-white" />
         </button>
+
+        {/* ── AI Chatbot Slide-Out Panel (Matching media_1795273520836_423dc96f.png) ── */}
+        {chatOpen && (
+          <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white border-l border-slate-200 shadow-2xl flex flex-col animate-in slide-in-from-right duration-250">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-white">
+              <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-lg bg-black text-white flex items-center justify-center font-bold text-xs">
+                  <Bot className="size-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 leading-tight">DueOtter AI</h3>
+                </div>
+              </div>
+
+              {/* Action Icons: History, Edit/New, Trash, Close */}
+              <div className="flex items-center gap-2 text-slate-500">
+                <button
+                  type="button"
+                  title="History"
+                  className="p-1 hover:text-slate-900 rounded transition-colors"
+                >
+                  <RotateCcw className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  title="New chat"
+                  onClick={() =>
+                    setMessages([
+                      {
+                        id: Date.now().toString(),
+                        role: "agent",
+                        text: `New session started for ${chapter.title}. How can I assist you?`,
+                      },
+                    ])
+                  }
+                  className="p-1 hover:text-slate-900 rounded transition-colors"
+                >
+                  <SquarePen className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  title="Clear chat"
+                  onClick={() => setMessages([])}
+                  className="p-1 hover:text-slate-900 rounded transition-colors"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  title="Close panel"
+                  onClick={() => setChatOpen(false)}
+                  className="p-1 hover:text-slate-900 rounded transition-colors ml-1"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Chat Body with subtle dot-grid background */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] bg-slate-50/40">
+              {messages.map((m) => (
+                <div
+                  key={m.id}
+                  className={`${
+                    m.role === "agent"
+                      ? "bg-white rounded-2xl border border-slate-200/90 p-4 shadow-2xs space-y-2 text-slate-800"
+                      : "ml-auto max-w-[85%] bg-slate-900 text-white rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-medium"
+                  }`}
+                >
+                  {m.role === "agent" && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold tracking-wider text-orange-600 uppercase">
+                        AGENT
+                      </span>
+                    </div>
+                  )}
+
+                  <p className="text-xs sm:text-[13.5px] leading-relaxed whitespace-pre-line m-0">
+                    {m.text}
+                  </p>
+
+                  {m.role === "agent" && (
+                    <div className="flex items-center gap-3 pt-2 text-slate-400 border-t border-slate-100 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(m.text);
+                          setIsCopied(m.id);
+                          setTimeout(() => setIsCopied(null), 1500);
+                        }}
+                        className="hover:text-slate-700 flex items-center gap-1 transition-colors"
+                      >
+                        {isCopied === m.id ? (
+                          <Check className="size-3.5 text-emerald-600" />
+                        ) : (
+                          <Copy className="size-3.5" />
+                        )}
+                        <span>{isCopied === m.id ? "Copied" : "Copy"}</span>
+                      </button>
+                      <button type="button" className="hover:text-slate-700 transition-colors">
+                        <ThumbsUp className="size-3.5" />
+                      </button>
+                      <button type="button" className="hover:text-slate-700 transition-colors">
+                        <ThumbsDown className="size-3.5" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Input Footer */}
+            <div className="p-3 border-t border-slate-200 bg-white">
+              <div className="rounded-2xl border border-slate-300 bg-white p-2.5 shadow-2xs flex items-end gap-2 focus-within:border-slate-800 transition-all">
+                <textarea
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendChat();
+                    }
+                  }}
+                  rows={2}
+                  placeholder="Type @ to tag a resource or ask anything..."
+                  className="w-full resize-none border-0 bg-transparent text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleSendChat}
+                  disabled={!chatInput.trim()}
+                  className="size-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-slate-900 transition-colors"
+                >
+                  <ArrowUp className="size-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Flashcards Modal */}
@@ -1629,7 +1591,7 @@ function SyllabusNotesPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <span className="inline-block rounded-full bg-black text-white px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
-                  Cambridge IGCSE Curriculum
+                  IGCSE & International Curriculum
                 </span>
                 <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
                   Syllabus Revision Notes
