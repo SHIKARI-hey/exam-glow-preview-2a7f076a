@@ -1032,7 +1032,7 @@ function ChapterDoc({
           ref={progressBarRef}
           aria-hidden
           style={{ transform: "scaleX(0)" }}
-          className="sticky top-0 z-30 h-[2.5px] origin-left bg-slate-900"
+          className="sticky top-0 z-30 h-[3px] origin-left bg-[#edcaff]"
         />
 
         {/* Top Control Bar */}
@@ -1087,13 +1087,13 @@ function ChapterDoc({
                 {chapter.title}
               </h1>
               <div className="flex items-center gap-3 shrink-0">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#edcaff] text-slate-900 border border-[#d8b4fe]/50">
                   Exam code: 7402
                 </span>
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="rounded-full bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+                  className="rounded-full bg-[#edcaff] hover:bg-[#e4b5fc] text-slate-900 px-5 py-2 text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-xs border border-[#d8b4fe]/60 transition-colors cursor-pointer"
                 >
                   Download PDF
                 </button>
@@ -1260,7 +1260,7 @@ function ChapterDoc({
             type="button"
             onClick={() => setChatOpen(true)}
             aria-label="Open AI Tutor Chat"
-            className="fixed right-6 bottom-6 z-40 size-12 rounded-full bg-slate-900 text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white cursor-pointer"
+            className="fixed right-6 bottom-6 z-40 size-12 rounded-full bg-[#edcaff] text-slate-900 shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white cursor-pointer"
           >
             <Bot className="size-6 text-white" />
           </button>
@@ -1274,7 +1274,7 @@ function ChapterDoc({
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white">
               <div className="flex items-center gap-2.5">
-                <div className="size-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                <div className="size-8 rounded-xl bg-[#edcaff] text-slate-900 flex items-center justify-center font-bold text-xs shadow-xs border border-[#d8b4fe]/50">
                   <Bot className="size-5" />
                 </div>
                 <div>
@@ -1406,7 +1406,7 @@ function ChapterDoc({
                   type="button"
                   onClick={handleSendChat}
                   disabled={!chatInput.trim() || isAiLoading}
-                  className="size-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-slate-900 transition-colors"
+                  className="size-8 rounded-full bg-[#edcaff] text-slate-900 flex items-center justify-center shrink-0 hover:bg-[#e4b5fc] disabled:opacity-40 transition-colors cursor-pointer"
                 >
                   <ArrowUp className="size-4" />
                 </button>
@@ -1739,7 +1739,7 @@ export function SyllabusNotesPage() {
               className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-10 rounded-xl bg-slate-100 font-bold text-xs flex items-center justify-center text-slate-900 shrink-0">
+                <div className="size-10 rounded-xl bg-[#edcaff] font-bold text-xs flex items-center justify-center text-slate-900 shrink-0 border border-[#d8b4fe]/50">
                   CIE
                 </div>
                 <div>
@@ -1760,7 +1760,7 @@ export function SyllabusNotesPage() {
               className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-10 rounded-xl bg-slate-100 font-bold text-xs flex items-center justify-center text-slate-900 shrink-0">
+                <div className="size-10 rounded-xl bg-[#edcaff] font-bold text-xs flex items-center justify-center text-slate-900 shrink-0 border border-[#d8b4fe]/50">
                   EDX
                 </div>
                 <div>
@@ -1781,7 +1781,7 @@ export function SyllabusNotesPage() {
               className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-10 rounded-xl bg-slate-100 font-bold text-xs flex items-center justify-center text-slate-900 shrink-0">
+                <div className="size-10 rounded-xl bg-[#edcaff] font-bold text-xs flex items-center justify-center text-slate-900 shrink-0 border border-[#d8b4fe]/50">
                   AL
                 </div>
                 <div>
@@ -1842,7 +1842,7 @@ export function SyllabusNotesPage() {
                 onClick={() => goTo(selectedSubject.id, undefined, "boards")}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
                   <BookOpen className="size-4" />
                 </div>
                 <div>
@@ -1860,7 +1860,7 @@ export function SyllabusNotesPage() {
                 onClick={() => void navigate({ to: "/test" })}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
                   <HelpCircle className="size-4" />
                 </div>
                 <div>
@@ -1878,7 +1878,7 @@ export function SyllabusNotesPage() {
                 onClick={() => goTo(selectedSubject.id, 1)}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
                   <Layers className="size-4" />
                 </div>
                 <div>
@@ -1896,7 +1896,7 @@ export function SyllabusNotesPage() {
                 onClick={() => void navigate({ to: "/test" })}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
                   <FileText className="size-4" />
                 </div>
                 <div>
@@ -1929,8 +1929,8 @@ export function SyllabusNotesPage() {
                   onClick={() => goTo(selectedSubject.id, undefined, "article", undefined, article.id)}
                   className="group rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:border-slate-300 transition-all flex items-center gap-4 text-left cursor-pointer"
                 >
-                  <div className="size-20 rounded-xl bg-blue-600 text-white p-2.5 flex flex-col justify-between shrink-0 font-sans shadow-xs">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                  <div className="size-20 rounded-xl bg-[#edcaff] text-slate-900 p-2.5 flex flex-col justify-between shrink-0 font-sans shadow-xs border border-[#d8b4fe]/60">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600">
                       IGCSE
                     </span>
                     <span className="text-[11px] font-extrabold leading-tight line-clamp-2">
@@ -1988,9 +1988,7 @@ export function SyllabusNotesPage() {
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-                  activeCategory === cat
-                    ? "bg-slate-900 text-white shadow-xs"
-                    : "border border-slate-200 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900"
+                  activeCategory === cat ? "bg-[#edcaff] text-slate-900 border border-[#d8b4fe] shadow-xs font-bold" : "border border-slate-300 bg-white text-slate-700 hover:bg-[#edcaff]/20 hover:border-[#d8b4fe]"
                 }`}
               >
                 {cat}
@@ -2012,7 +2010,7 @@ export function SyllabusNotesPage() {
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-bold text-slate-900 bg-[#edcaff] px-2 py-0.5 rounded-md border border-[#d8b4fe]/40">
                       {sub.code}
                     </span>
                     <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">

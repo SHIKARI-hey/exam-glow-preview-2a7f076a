@@ -66,46 +66,50 @@
   --color-sidebar-success: var(--sidebar-success);
   --color-panel: var(--panel);
   --color-overlay: var(--overlay);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-foreground: var(--brand-accent-foreground);
 }
 
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.977 0.011 95.5);
+  --background: #d3d3d3;
   --foreground: oklch(0.19 0.005 60);
-  --surface: oklch(0.955 0.012 95.5);
+  --surface: #d3d3d3;
   --card: oklch(0.995 0.004 95);
   --card-foreground: oklch(0.19 0.005 60);
   --popover: oklch(0.995 0.004 95);
   --popover-foreground: oklch(0.19 0.005 60);
-  --primary: oklch(0.19 0.005 60);
-  --primary-foreground: oklch(0.98 0.008 95);
+  --primary: #edcaff;
+  --primary-foreground: #1e1b2e;
+  --brand-accent: #edcaff;
+  --brand-accent-foreground: #1e1b2e;
   --secondary: oklch(0.93 0.013 95);
   --secondary-foreground: oklch(0.19 0.005 60);
   --muted: oklch(0.93 0.013 95);
   --muted-foreground: oklch(0.52 0.012 70);
-  --accent: oklch(0.93 0.013 95);
-  --accent-foreground: oklch(0.19 0.005 60);
+  --accent: #edcaff;
+  --accent-foreground: #1e1b2e;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.98 0.008 95);
-  --border: oklch(0.88 0.012 90);
+  --border: oklch(0.82 0.01 90);
   --input: oklch(0.88 0.012 90);
-  --ring: oklch(0.5 0.02 80);
+  --ring: #edcaff;
   --mint: oklch(0.9 0.056 190);
-  --lilac: oklch(0.91 0.075 350);
-  --lavender: oklch(0.68 0.14 350);
-  --highlight: oklch(0.93 0.15 125);
+  --lilac: #edcaff;
+  --lavender: #edcaff;
+  --highlight: #edcaff;
   --ink: oklch(0.17 0.004 60);
   --ink-foreground: oklch(0.97 0.008 95);
-  --sidebar: oklch(0.867 0 0); /* #D9D9D9 */
+  --sidebar: #d3d3d3;
   --sidebar-foreground: oklch(0.2 0.01 260);
   --sidebar-muted: oklch(0.45 0.01 260);
   --sidebar-border: oklch(0.78 0 0);
   --sidebar-hover: oklch(0.8 0 0);
-  --sidebar-active: oklch(1 0 0);
-  --sidebar-accent: oklch(0.2 0.01 260);
-  --sidebar-accent-foreground: oklch(0.99 0 0);
+  --sidebar-active: #edcaff;
+  --sidebar-accent: #edcaff;
+  --sidebar-accent-foreground: #1e1b2e;
   --sidebar-success: oklch(0.55 0.15 150);
-  --panel: oklch(0.92 0 0); /* #E8E8E8 - slightly lighter than #D9D9D9 */
+  --panel: #d3d3d3;
   --overlay: oklch(0 0 0 / 55%);
 }
 
