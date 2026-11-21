@@ -96,16 +96,16 @@
   --highlight: oklch(0.93 0.15 125);
   --ink: oklch(0.17 0.004 60);
   --ink-foreground: oklch(0.97 0.008 95);
-  --sidebar: oklch(0.945 0.003 250);
-  --sidebar-foreground: oklch(0.2 0.01 260);
-  --sidebar-muted: oklch(0.45 0.01 260);
-  --sidebar-border: oklch(0.89 0.004 250);
-  --sidebar-hover: oklch(0.915 0.004 250);
+  --sidebar: oklch(0.452 0 0); /* #6B6B6B */
+  --sidebar-foreground: oklch(0.97 0 0);
+  --sidebar-muted: oklch(0.85 0 0);
+  --sidebar-border: oklch(0.55 0 0);
+  --sidebar-hover: oklch(0.52 0 0);
   --sidebar-active: oklch(1 0 0);
   --sidebar-accent: oklch(0.2 0.01 260);
   --sidebar-accent-foreground: oklch(0.99 0 0);
   --sidebar-success: oklch(0.55 0.15 150);
-  --panel: var(--background);
+  --panel: oklch(0.867 0 0); /* #D9D9D9 */
   --overlay: oklch(0 0 0 / 55%);
 }
 
