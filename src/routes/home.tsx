@@ -1,13 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  ArrowUpRight,
+  ArrowRight,
+  BookOpen,
+  Calendar,
+  CheckCircle2,
   ChevronRight,
+  Clock,
+  FileText,
   GraduationCap,
-  Search,
+  HelpCircle,
+  Layers,
+  Sparkles,
 } from "lucide-react";
 
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
+import { STUDY_ARTICLES } from "@/lib/articles-data";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
@@ -15,294 +23,233 @@ export const Route = createFileRoute("/home")({
       { title: "Study Dashboard | ExamGlow" },
       {
         name: "description",
-        content: "Course search made smarter and simpler. Find courses with high admission chances.",
+        content: "Track your IGCSE revision progress, read teacher-written chapter notes, and practice exam questions.",
       },
-      { property: "og:title", content: "Study Dashboard | ExamGlow" },
-      {
-        property: "og:description",
-        content: "Explore new opportunities, courses, destinations and university partnerships.",
-      },
-      { property: "og:type", content: "website" },
     ],
   }),
   component: HomePage,
 });
 
-const courses = [
-  {
-    title: "Doctoral Certificate in Applied Computer Science",
-    price: "$10,280",
-    university: "Westcliff University, US",
-  },
-  {
-    title: "PhD Health Economics",
-    price: "$11,584",
-    university: "University of Colorado Denver, US",
-  },
-  {
-    title: "Doctoral Certificate in Applied Computer Science",
-    price: "$18,343",
-    university: "University of North Carolina at Gree...",
-  },
-];
-
-const destinations = [
-  {
-    country: "Canada",
-    sub: "Your best destination",
-    img: "https://images.unsplash.com/photo-1562774053-701939374585?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Oxford",
-    sub: "Your best destination",
-    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Colorado",
-    sub: "United States (USA)",
-    img: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=600&auto=format&fit=crop&q=80",
-  },
-  {
-    country: "Texas",
-    sub: "Your best destination",
-    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
-  },
-];
-
-const partnerships = [
-  {
-    name: "University of Colorado",
-    location: "United States (USA)",
-    img: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=100&auto=format&fit=crop&q=80",
-    highlight: true,
-  },
-  {
-    name: "University of Texas",
-    location: "United States (USA)",
-    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=100&auto=format&fit=crop&q=80",
-    highlight: false,
-  },
-  {
-    name: "University of Canada",
-    location: "United States (USA)",
-    img: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&auto=format&fit=crop&q=80",
-    highlight: false,
-  },
-  {
-    name: "University of Toronto",
-    location: "United States (USA)",
-    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=100&auto=format&fit=crop&q=80",
-    highlight: false,
-  },
-];
-
 function HomePage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   return (
     <div className="flex h-dvh overflow-hidden app-frame">
-      {/* Restored application sidebar */}
       <DashboardSidebar />
 
-      {/* Main right-hand panel matching the screenshot design */}
-      <main className="app-panel min-w-0 flex-1 overflow-y-auto bg-white">
-        <div className="mx-auto max-w-[1200px] p-5 sm:p-7 lg:p-8">
-          {/* Top Bar: Search & User Header */}
-          <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
-            <div className="relative w-full max-w-sm">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="w-full bg-[#F4F5F7] rounded-full pl-9 pr-4 py-2 text-xs text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 transition"
-              />
+      <main className="app-panel min-w-0 flex-1 overflow-y-auto bg-[#F0F2E4]">
+        <div className="mx-auto max-w-[1180px] p-5 sm:p-7 lg:p-8 font-sans">
+          {/* Welcome Header */}
+          <header className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#D8E0D2]">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#CBD5C6] bg-white/80 px-3 py-0.5 text-xs font-semibold text-[#173128] shadow-2xs mb-2">
+                <span className="size-2 rounded-full bg-[#233831]" />
+                <span>IGCSE Curriculum · 2026/27 Syllabus Aligned</span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-normal font-display tracking-tight text-[#0D170C]">
+                Welcome back to <span className="italic font-display font-medium text-[#173128]">ExamGlow</span>
+              </h1>
+              <p className="mt-1 text-sm text-[#465A4D]">
+                Continue your syllabus revision, test your recall, and prepare for your upcoming exams.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <Link
+                to="/syllabus-notes"
+                className="inline-flex items-center gap-2.5 rounded-full bg-[#233831] text-white px-5 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#2C443C] transition-all cursor-pointer shadow-xs"
+              >
+                <span>Go to Courses</span>
+                <ChevronRight className="size-4" />
+              </Link>
             </div>
           </header>
 
-          {/* Hero Banner Row: 2 Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mt-1">
-            {/* Yellow Banner (7 cols) */}
-            <div className="lg:col-span-7 bg-[#FFD634] rounded-[24px] p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between shadow-xs">
-              {/* Decorative background student illustration */}
-              <div className="absolute right-0 bottom-0 pointer-events-none opacity-90 translate-x-3 translate-y-3">
-                <svg width="180" height="150" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="90" y="125" width="70" height="14" rx="3" fill="#333333" />
-                  <rect x="85" y="112" width="80" height="13" rx="3" fill="#FFFFFF" stroke="#333" strokeWidth="2" />
-                  <rect x="95" y="100" width="65" height="12" rx="3" fill="#333333" />
-                  <circle cx="130" cy="55" r="14" fill="#333333" />
-                  <path d="M120 70 C120 62 140 62 140 70 L145 105 L115 105 Z" fill="#FFFFFF" stroke="#333" strokeWidth="2" />
-                  <path d="M122 72 L112 50 L118 48 L126 68 Z" fill="#FFFFFF" stroke="#333" strokeWidth="1.5" />
-                  <path d="M112 50 C110 44 115 40 118 43 C120 45 118 50 112 50 Z" fill="#FFE2B8" stroke="#333" strokeWidth="1.5" />
-                  <path d="M165 40 L168 45 L173 48 L168 51 L165 56 L162 51 L157 48 L162 45 Z" fill="#FFFFFF" />
-                  <circle cx="175" cy="70" r="2" fill="#333333" />
-                  <circle cx="90" cy="65" r="1.5" fill="#333333" />
-                </svg>
-              </div>
-
-              <div className="relative z-10 max-w-md">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-950">
-                  Explore new opportunities
-                </h2>
-                <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-gray-800 max-w-[320px]">
-                  Course search made smarter and simpler. Use our magical AI system, to find courses with high admission chances.
-                </p>
-              </div>
-
-              <div className="relative z-10 mt-6">
-                <button
-                  type="button"
-                  className="bg-white text-gray-950 font-bold text-xs px-5 py-2.5 rounded-full shadow-xs hover:bg-gray-50 transition cursor-pointer"
-                >
-                  Try now
-                </button>
-              </div>
-            </div>
-
-            {/* Black Event Banner (5 cols) */}
-            <div className="lg:col-span-5 bg-[#0D0D0D] rounded-[24px] p-5 sm:p-6 text-white flex items-center justify-between gap-3 relative shadow-xs">
-              <div className="flex-1 min-w-0 pr-1">
-                <span className="text-[11px] font-medium text-gray-400">Up-coming Events</span>
-                <h3 className="mt-1 text-sm font-bold text-white leading-snug">
-                  IETLS Speaking - Part 3- Tow-way discussion
-                </h3>
-                <p className="mt-1 text-[10px] text-gray-400">United Kingdom | 09am - 12am</p>
-                <button
-                  type="button"
-                  className="mt-4 bg-[#FFD634] text-gray-950 font-bold text-xs px-4 py-2 rounded-full hover:bg-amber-300 transition cursor-pointer shadow-xs"
-                >
-                  View Details
-                </button>
-              </div>
-
-              {/* White Flyer Thumbnail Preview */}
-              <div className="relative shrink-0 flex items-center">
-                <div className="w-24 bg-white rounded-2xl p-2.5 text-gray-900 shadow-md text-center">
-                  <p className="text-[8px] font-bold text-gray-400 tracking-wider">✦ Educare</p>
-                  <p className="text-xs font-extrabold text-black mt-0.5">Hello</p>
-                  <img
-                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&auto=format&fit=crop&q=80"
-                    alt="Student"
-                    className="size-11 mx-auto rounded-lg object-cover my-1"
-                  />
-                  <p className="text-[7px] text-gray-500 font-medium leading-none">Feels Good to the EVENT</p>
-                  <div className="flex justify-center gap-1 mt-1.5">
-                    <span className="size-1 rounded-full bg-black" />
-                    <span className="size-1 rounded-full bg-gray-300" />
-                  </div>
+          {/* Primary In-Progress Hero Banner: IGCSE Biology */}
+          <div className="mb-8 rounded-3xl border border-[#D8E0D2] bg-white p-6 sm:p-8 shadow-xs relative overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+              <div className="max-w-2xl">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[11px] font-bold text-[#173128] bg-[#E2EBDE] px-2.5 py-0.5 rounded-full border border-[#CBD5C6]">
+                    Active Subject: 0610 / 0970
+                  </span>
+                  <span className="text-[11px] font-semibold text-[#233831] bg-[#F0F2E4] px-2.5 py-0.5 rounded-full">
+                    120 Chapters
+                  </span>
                 </div>
 
-                {/* Circular Floating Arrow Button */}
-                <button
-                  type="button"
-                  className="absolute -right-3 top-1/2 -translate-y-1/2 size-7 rounded-full bg-white text-black shadow-md flex items-center justify-center hover:scale-105 transition"
-                  aria-label="Next event"
-                >
-                  <ChevronRight className="size-4" />
-                </button>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0D170C] tracking-tight">
+                  IGCSE Biology Revision Notes
+                </h2>
+                <p className="mt-2 text-sm text-[#465A4D] leading-relaxed">
+                  Chapter 1.1: Biological Molecules — Monomers, condensation reactions, carbohydrates, and molecular structures.
+                </p>
+
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", chapter: 1 } })}
+                    className="inline-flex items-center gap-3 rounded-full bg-[#233831] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-[#2C443C] transition-all cursor-pointer"
+                  >
+                    <span>Continue Reading Chapter 1</span>
+                    <span className="size-5 rounded-full bg-white/20 flex items-center justify-center">
+                      <ArrowRight className="size-3 text-white" />
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", view: "topics" } })}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#CBD5C6] bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-[#173128] hover:bg-[#F0F2E4] transition-all cursor-pointer shadow-2xs"
+                  >
+                    <span>Browse All 120 Chapters</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Progress Summary Pill Card */}
+              <div className="rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] p-5 shrink-0 w-full lg:w-72 space-y-3">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#173128]">
+                  <span>Syllabus Mastery</span>
+                  <span className="font-bold text-[#233831]">CIE / Edexcel</span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-[#E2EBDE] overflow-hidden">
+                  <div className="h-full bg-[#233831] rounded-full w-1/4" />
+                </div>
+                <div className="pt-2 border-t border-[#D8E0D2] flex items-center justify-between text-[11px] text-[#5B6E62]">
+                  <span>Ready for 2026/27</span>
+                  <span className="font-bold text-[#173128]">Exam Spec Aligned</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Courses Section */}
-          <div className="mt-7">
-            <div className="flex items-center justify-between pb-3">
-              <h3 className="text-sm sm:text-base font-bold text-gray-900">Courses</h3>
-              <button type="button" className="text-xs font-medium text-gray-400 hover:text-gray-700 transition">
-                See all
+          {/* Quick Study Resources Grid */}
+          <div className="mb-10">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#D8E0D2]">
+              <h3 className="text-lg font-bold text-[#0D170C]">Biology Revision Resources</h3>
+              <Link to="/syllabus-notes" className="text-xs font-semibold text-[#173128] hover:underline">
+                View all courses →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", view: "boards" } })}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <BookOpen className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">120 Detailed Chapters</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h4 className="font-bold text-sm text-[#0D170C]">Revision Notes</h4>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
               </button>
+
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/test" })}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <HelpCircle className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">Past Paper Format</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h4 className="font-bold text-sm text-[#0D170C]">Exam Questions</h4>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/syllabus-notes", search: { subject: "biology", chapter: 1 } })}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <Layers className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">Active Recall</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h4 className="font-bold text-sm text-[#0D170C]">Flashcards</h4>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/test" })}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <FileText className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">Timed Assessments</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h4 className="font-bold text-sm text-[#0D170C]">Mock Exams</h4>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Student Resource Articles & Guides */}
+          <div>
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#D8E0D2]">
+              <h3 className="text-lg font-bold text-[#0D170C]">Latest Revision Guides &amp; Timetables</h3>
+              <span className="text-xs font-semibold text-[#5B6E62] bg-[#E2EBDE] border border-[#CBD5C6] px-3 py-0.5 rounded-full">
+                Updated for 2026/27
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {courses.map((course, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:border-gray-200 transition"
+              {STUDY_ARTICLES.slice(0, 3).map((article) => (
+                <button
+                  key={article.id}
+                  type="button"
+                  onClick={() =>
+                    void navigate({
+                      to: "/syllabus-notes",
+                      search: { subject: "biology", view: "article", article: article.id },
+                    })
+                  }
+                  className="group rounded-2xl border border-[#D8E0D2] bg-white p-4 shadow-2xs hover:border-[#233831] hover:shadow-sm transition-all text-left cursor-pointer flex flex-col gap-3"
                 >
-                  <h4 className="text-xs font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[32px]">
-                    {course.title}
-                  </h4>
-                  <p className="mt-2 text-sm font-bold text-gray-950">{course.price}</p>
-                  <div className="mt-3 flex items-center gap-1.5 text-[10px] text-gray-400">
-                    <span className="size-4 rounded-full bg-black text-[#FFD634] flex items-center justify-center shrink-0">
-                      <GraduationCap className="size-2.5" />
+                  <div className="w-full h-24 rounded-xl bg-gradient-to-br from-[#E2EBDE] to-[#D5DEC9] flex flex-col justify-between p-3 shrink-0 border border-[#CBD5C6]">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#173128] bg-white/70 w-fit px-1.5 py-0.5 rounded">
+                      {article.category}
                     </span>
-                    <span className="truncate">{course.university}</span>
+                    <span className="text-xs font-extrabold text-[#0D170C] leading-tight line-clamp-2">
+                      {article.title}
+                    </span>
                   </div>
-                </div>
+
+                  <div className="flex-1 space-y-1">
+                    <h4 className="font-bold text-sm text-[#0D170C] leading-snug line-clamp-2">
+                      {article.title}
+                    </h4>
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-[11px] font-medium text-[#5B6E62]">
+                        {article.readTime} read
+                      </span>
+                      <span className="text-[11px] font-semibold text-[#173128] group-hover:text-[#233831] transition-colors">
+                        Read →
+                      </span>
+                    </div>
+                  </div>
+                </button>
               ))}
-            </div>
-          </div>
-
-          {/* Bottom 2-Column: Your destinations & Partnerships */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-7">
-            {/* Destinations Grid (7 cols) */}
-            <div className="lg:col-span-7">
-              <div>
-                <h3 className="text-sm sm:text-base font-bold text-gray-900">Your destinations</h3>
-                <p className="text-[11px] text-gray-400 mt-0.5">Providers 120 world class education in 8 countries</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3.5 mt-3">
-                {destinations.map((dest, idx) => (
-                  <div
-                    key={idx}
-                    className="group relative rounded-2xl overflow-hidden aspect-[16/10] bg-gray-100 shadow-xs cursor-pointer"
-                  >
-                    <img
-                      src={dest.img}
-                      alt={dest.country}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-3">
-                      <h4 className="text-xs font-bold text-white leading-tight">{dest.country}</h4>
-                      <p className="text-[10px] text-gray-300 leading-tight mt-0.5">{dest.sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Partnerships List (5 cols) */}
-            <div className="lg:col-span-5">
-              <div>
-                <h3 className="text-sm sm:text-base font-bold text-gray-900">Partnerships</h3>
-                <p className="text-[11px] text-gray-400 mt-0.5">Partnered over 120 world class University</p>
-              </div>
-
-              <div className="mt-3 space-y-2">
-                {partnerships.map((partner, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-2 rounded-2xl hover:bg-gray-50 transition cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img
-                        src={partner.img}
-                        alt={partner.name}
-                        className="size-10 rounded-xl object-cover shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-semibold text-gray-900 truncate">{partner.name}</h4>
-                        <p className="text-[10px] text-gray-400 truncate">{partner.location}</p>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      className={`size-7 rounded-full flex items-center justify-center shrink-0 transition ${
-                        partner.highlight
-                          ? "bg-black text-white hover:bg-gray-800"
-                          : "bg-[#F4F5F7] text-gray-500 hover:text-gray-900"
-                      }`}
-                      aria-label={`View ${partner.name}`}
-                    >
-                      <ArrowUpRight className="size-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>
