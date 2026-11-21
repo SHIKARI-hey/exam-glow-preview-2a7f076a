@@ -1031,20 +1031,20 @@ function ChapterDoc({
           ref={progressBarRef}
           aria-hidden
           style={{ transform: "scaleX(0)" }}
-          className="sticky top-0 z-30 h-[3px] origin-left bg-[#edcaff]"
+          className="sticky top-0 z-30 h-[3px] origin-left bg-[#233831]"
         />
 
         {/* Top Control Bar */}
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 bg-white px-4 py-2.5 sm:px-8">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[#D8E0D2] bg-white px-4 py-2.5 sm:px-8">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              className="lg:hidden flex items-center gap-1.5 rounded-lg border border-[#D8E0D2] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#173128] hover:bg-[#F0F2E4]"
             >
-              <Layers className="size-3.5 text-slate-700" />
+              <Layers className="size-3.5 text-[#173128]" />
               <span>Notes</span>
             </button>
-            <p className="text-xs text-slate-500 font-medium hidden sm:block">
+            <p className="text-xs text-[#5B6E62] font-medium hidden sm:block">
               {chapter.section || "Biology"} <span className="text-slate-300">/</span>{" "}
               {chapter.topic || chapter.title}
             </p>
@@ -1054,9 +1054,9 @@ function ChapterDoc({
             <button
               type="button"
               onClick={() => setShowFlashcards(true)}
-              className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+              className="flex items-center gap-1.5 rounded-full border border-[#D8E0D2] bg-white px-3 py-1.5 text-xs font-semibold text-[#173128] hover:bg-[#F0F2E4] transition-colors shadow-2xs"
             >
-              <Layers className="size-3.5 text-slate-700" />
+              <Layers className="size-3.5 text-[#233831]" />
               <span className="hidden sm:inline">Flashcards</span>
             </button>
 
@@ -1065,8 +1065,8 @@ function ChapterDoc({
               onClick={() => toggleMastered(chapter.number)}
               className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold border transition-all ${
                 masteredSections[chapter.number]
-                  ? "border-emerald-600 bg-emerald-50 text-emerald-700"
-                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                  ? "border-[#233831] bg-[#E2EBDE] text-[#173128]"
+                  : "border-[#D8E0D2] bg-white text-[#5B6E62] hover:bg-[#F0F2E4]"
               }`}
             >
               <CheckCircle2 className="size-3.5" />
@@ -1082,17 +1082,17 @@ function ChapterDoc({
           {/* Main Chapter Title */}
           <header className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0D170C] tracking-tight">
                 {chapter.title}
               </h1>
               <div className="flex items-center gap-3 shrink-0">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#edcaff] text-slate-900 border border-[#d8b4fe]/50">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#E2EBDE] text-[#173128] border border-[#D8E0D2]">
                   Exam code: 7402
                 </span>
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="rounded-full bg-[#edcaff] hover:bg-[#e4b5fc] text-slate-900 px-5 py-2 text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-xs border border-[#d8b4fe]/60 transition-colors cursor-pointer"
+                  className="rounded-full bg-[#233831] hover:bg-[#2C443C] text-white px-5 py-2 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                 >
                   Download PDF
                 </button>
@@ -1259,7 +1259,7 @@ function ChapterDoc({
             type="button"
             onClick={() => setChatOpen(true)}
             aria-label="Open AI Tutor Chat"
-            className="fixed right-6 bottom-6 z-40 size-12 rounded-full bg-[#edcaff] text-slate-900 shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white cursor-pointer"
+            className="fixed right-6 bottom-6 z-40 size-12 rounded-full bg-[#233831] text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white cursor-pointer hover:bg-[#2C443C]"
           >
             <Bot className="size-6 text-white" />
           </button>
@@ -1268,25 +1268,25 @@ function ChapterDoc({
 
       {/* Docked AI Chat Panel (Non-hovering, space/margin from edges, matching image) */}
       {chatOpen && (
-        <aside className="w-full sm:w-[420px] shrink-0 h-full p-4 pl-0 flex flex-col bg-slate-100/70 border-l border-slate-200 transition-all duration-200">
-          <div className="h-full w-full rounded-3xl border border-slate-200/90 bg-white shadow-xl flex flex-col overflow-hidden">
+        <aside className="w-full sm:w-[420px] shrink-0 h-full p-4 pl-0 flex flex-col bg-[#F0F2E4] border-l border-[#D8E0D2] transition-all duration-200">
+          <div className="h-full w-full rounded-3xl border border-[#D8E0D2] bg-white shadow-xl flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-[#D8E0D2] bg-white">
               <div className="flex items-center gap-2.5">
-                <div className="size-8 rounded-xl bg-[#edcaff] text-slate-900 flex items-center justify-center font-bold text-xs shadow-xs border border-[#d8b4fe]/50">
+                <div className="size-8 rounded-xl bg-[#233831] text-white flex items-center justify-center font-bold text-xs shadow-xs">
                   <Bot className="size-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 leading-tight">DueOtter AI</h3>
+                  <h3 className="text-sm font-bold text-[#0D170C] leading-tight">DueOtter AI</h3>
                 </div>
               </div>
 
               {/* Action Icons */}
-              <div className="flex items-center gap-1.5 text-slate-400">
+              <div className="flex items-center gap-1.5 text-[#5B6E62]">
                 <button
                   type="button"
                   title="History"
-                  className="p-1 hover:text-slate-800 rounded transition-colors"
+                  className="p-1 hover:text-[#0D170C] rounded transition-colors"
                 >
                   <RotateCcw className="size-4" />
                 </button>
@@ -1302,7 +1302,7 @@ function ChapterDoc({
                       },
                     ])
                   }
-                  className="p-1 hover:text-slate-800 rounded transition-colors"
+                  className="p-1 hover:text-[#0D170C] rounded transition-colors"
                 >
                   <SquarePen className="size-4" />
                 </button>
@@ -1310,7 +1310,7 @@ function ChapterDoc({
                   type="button"
                   title="Clear chat"
                   onClick={() => setMessages([])}
-                  className="p-1 hover:text-slate-800 rounded transition-colors"
+                  className="p-1 hover:text-[#0D170C] rounded transition-colors"
                 >
                   <Trash2 className="size-4" />
                 </button>
@@ -1318,7 +1318,7 @@ function ChapterDoc({
                   type="button"
                   title="Close panel"
                   onClick={() => setChatOpen(false)}
-                  className="p-1 hover:text-slate-800 rounded transition-colors ml-1"
+                  className="p-1 hover:text-[#0D170C] rounded transition-colors ml-1"
                 >
                   <X className="size-4" />
                 </button>
@@ -1326,19 +1326,19 @@ function ChapterDoc({
             </div>
 
             {/* Chat Body with subtle dot-grid background */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] bg-slate-50/50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[radial-gradient(#CBD5C6_1px,transparent_1px)] [background-size:16px_16px] bg-[#F7F8F4]">
               {messages.map((m) => (
                 <div
                   key={m.id}
                   className={`${
                     m.role === "agent"
-                      ? "bg-white rounded-2xl border border-slate-200/90 p-4 shadow-2xs space-y-2 text-slate-800"
-                      : "ml-auto max-w-[85%] bg-slate-900 text-white rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-medium"
+                      ? "bg-white rounded-2xl border border-[#D8E0D2] p-4 shadow-2xs space-y-2 text-[#0D170C]"
+                      : "ml-auto max-w-[85%] bg-[#233831] text-white rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-medium"
                   }`}
                 >
                   {m.role === "agent" && (
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold tracking-wider text-orange-600 uppercase">
+                      <span className="text-[10px] font-bold tracking-wider text-[#233831] uppercase">
                         AGENT
                       </span>
                     </div>
@@ -1349,7 +1349,7 @@ function ChapterDoc({
                   </p>
 
                   {m.role === "agent" && (
-                    <div className="flex items-center gap-3 pt-2 text-slate-400 border-t border-slate-100 text-xs">
+                    <div className="flex items-center gap-3 pt-2 text-[#5B6E62] border-t border-[#D8E0D2] text-xs">
                       <button
                         type="button"
                         onClick={() => {
@@ -1357,7 +1357,7 @@ function ChapterDoc({
                           setIsCopied(m.id);
                           setTimeout(() => setIsCopied(null), 1500);
                         }}
-                        className="hover:text-slate-700 flex items-center gap-1 transition-colors"
+                        className="hover:text-[#0D170C] flex items-center gap-1 transition-colors"
                       >
                         {isCopied === m.id ? (
                           <Check className="size-3.5 text-emerald-600" />
@@ -1366,10 +1366,10 @@ function ChapterDoc({
                         )}
                         <span>{isCopied === m.id ? "Copied" : "Copy"}</span>
                       </button>
-                      <button type="button" className="hover:text-slate-700 transition-colors">
+                      <button type="button" className="hover:text-[#0D170C] transition-colors">
                         <ThumbsUp className="size-3.5" />
                       </button>
-                      <button type="button" className="hover:text-slate-700 transition-colors">
+                      <button type="button" className="hover:text-[#0D170C] transition-colors">
                         <ThumbsDown className="size-3.5" />
                       </button>
                     </div>
@@ -1377,8 +1377,8 @@ function ChapterDoc({
                 </div>
               ))}
               {isAiLoading && (
-                <div className="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs flex items-center gap-2 text-xs text-slate-500">
-                  <Loader2 className="size-4 animate-spin text-slate-700" />
+                <div className="bg-white rounded-2xl border border-[#D8E0D2] p-3 shadow-2xs flex items-center gap-2 text-xs text-[#5B6E62]">
+                  <Loader2 className="size-4 animate-spin text-[#233831]" />
                   <span>Thinking...</span>
                 </div>
               )}
@@ -1386,8 +1386,8 @@ function ChapterDoc({
             </div>
 
             {/* Input Footer */}
-            <div className="p-3 border-t border-slate-100 bg-white">
-              <div className="rounded-2xl border border-slate-300 bg-white p-2.5 shadow-2xs flex items-end gap-2 focus-within:border-slate-800 transition-all">
+            <div className="p-3 border-t border-[#D8E0D2] bg-white">
+              <div className="rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] p-2.5 shadow-2xs flex items-end gap-2 focus-within:border-[#233831] focus-within:bg-white transition-all">
                 <textarea
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
@@ -1399,13 +1399,13 @@ function ChapterDoc({
                   }}
                   rows={2}
                   placeholder="Type @ to tag a resource or ask anything..."
-                  className="w-full resize-none border-0 bg-transparent text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                  className="w-full resize-none border-0 bg-transparent text-xs sm:text-sm text-[#0D170C] placeholder:text-[#8E9F93] focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleSendChat}
                   disabled={!chatInput.trim() || isAiLoading}
-                  className="size-8 rounded-full bg-[#edcaff] text-slate-900 flex items-center justify-center shrink-0 hover:bg-[#e4b5fc] disabled:opacity-40 transition-colors cursor-pointer"
+                  className="size-8 rounded-full bg-[#233831] text-white flex items-center justify-center shrink-0 hover:bg-[#2C443C] disabled:opacity-40 transition-colors cursor-pointer"
                 >
                   <ArrowUp className="size-4" />
                 </button>
@@ -1534,7 +1534,7 @@ export function SyllabusNotesPage() {
     return (
       <DashboardLayout
         crumbs={[
-          { label: "IGCSE" },
+          { label: "Courses" },
           { label: selectedSubject.name },
           { label: "Guides" },
           { label: activeArticle.title },
@@ -1545,36 +1545,36 @@ export function SyllabusNotesPage() {
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "hub")}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5B6E62] hover:text-[#0D170C] transition-colors"
             >
               <ArrowLeft className="size-4" />
               <span>Back to {selectedSubject.name} Revision</span>
             </button>
           </div>
 
-          <article className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xs">
-            <header className="mb-6 pb-6 border-b border-slate-100">
+          <article className="rounded-3xl border border-[#D8E0D2] bg-white p-6 sm:p-10 shadow-xs">
+            <header className="mb-6 pb-6 border-b border-[#D8E0D2]">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-[11px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md">
+                <span className="text-[11px] font-bold uppercase tracking-wider bg-[#E2EBDE] text-[#173128] px-2.5 py-1 rounded-md border border-[#CBD5C6]">
                   {activeArticle.category}
                 </span>
-                <span className="text-xs text-slate-400 font-medium">· {activeArticle.readTime}</span>
+                <span className="text-xs text-[#5B6E62] font-medium">· {activeArticle.readTime}</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0D170C] tracking-tight leading-tight">
                 {activeArticle.title}
               </h1>
-              <p className="mt-2 text-sm text-slate-500">{activeArticle.snippet}</p>
+              <p className="mt-2 text-sm text-[#465A4D]">{activeArticle.snippet}</p>
             </header>
 
-            <div className="prose prose-slate max-w-none text-sm sm:text-base leading-relaxed text-slate-700 space-y-4">
+            <div className="prose prose-slate max-w-none text-sm sm:text-base leading-relaxed text-[#173128] space-y-4">
               <div dangerouslySetInnerHTML={{ __html: formatMathAndMarkdown(activeArticle.body) }} />
             </div>
 
-            <div className="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between">
+            <div className="mt-10 pt-6 border-t border-[#D8E0D2] flex items-center justify-between">
               <button
                 type="button"
                 onClick={() => goTo(selectedSubject.id, undefined, "boards")}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#233831] text-white text-xs font-semibold hover:bg-[#2C443C] transition-colors shadow-xs"
               >
                 <span>Explore {selectedSubject.name} Revision Notes</span>
                 <ChevronRight className="size-4" />
@@ -1600,7 +1600,7 @@ export function SyllabusNotesPage() {
     return (
       <DashboardLayout
         crumbs={[
-          { label: "IGCSE" },
+          { label: "Courses" },
           { label: selectedSubject.name },
           { label: "Revision Notes" },
           { label: "Topics" },
@@ -1611,21 +1611,21 @@ export function SyllabusNotesPage() {
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "boards")}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5B6E62] hover:text-[#0D170C] transition-colors"
             >
               <ArrowLeft className="size-4" />
               <span>Back to Exam Boards</span>
             </button>
-            <span className="text-xs text-slate-400 font-medium">
+            <span className="text-xs text-[#5B6E62] font-medium">
               {board ? board.toUpperCase() : "CIE"} Syllabus
             </span>
           </div>
 
           <header className="mb-8">
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-3xl font-extrabold text-[#0D170C] tracking-tight">
               {selectedSubject.name} Revision Topics
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-[#465A4D]">
               Select a chapter to study in-depth teacher notes, clear molecular illustrations, and examiner insights.
             </p>
           </header>
@@ -1636,17 +1636,17 @@ export function SyllabusNotesPage() {
               return (
                 <div
                   key={secTitle}
-                  className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs flex flex-col justify-between"
+                  className="rounded-2xl border border-[#D8E0D2] bg-white p-5 shadow-xs flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#D8E0D2] mb-4">
                       <div className="flex items-center gap-2.5">
-                        <div className="size-2.5 rounded-full bg-slate-900" />
-                        <h2 className="font-bold text-base text-slate-900 tracking-tight">
+                        <div className="size-2.5 rounded-full bg-[#233831]" />
+                        <h2 className="font-bold text-base text-[#0D170C] tracking-tight">
                           {secTitle}
                         </h2>
                       </div>
-                      <span className="text-xs font-semibold text-slate-400">
+                      <span className="text-xs font-semibold text-[#5B6E62]">
                         {allSecChaps.length} Chapters
                       </span>
                     </div>
@@ -1654,7 +1654,7 @@ export function SyllabusNotesPage() {
                     <div className="space-y-4">
                       {Object.entries(topicGroups).map(([topTitle, chaps]) => (
                         <div key={topTitle} className="space-y-1.5">
-                          <p className="text-xs font-bold text-slate-700 tracking-wide uppercase">
+                          <p className="text-xs font-bold text-[#173128] tracking-wide uppercase">
                             {topTitle}
                           </p>
                           <div className="space-y-1">
@@ -1663,17 +1663,17 @@ export function SyllabusNotesPage() {
                                 key={ch.number}
                                 type="button"
                                 onClick={() => goTo(selectedSubject.id, ch.number)}
-                                className="group w-full flex items-center justify-between p-2 rounded-xl text-left hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all cursor-pointer"
+                                className="group w-full flex items-center justify-between p-2 rounded-xl text-left hover:bg-[#F0F2E4] border border-transparent hover:border-[#D8E0D2] transition-all cursor-pointer"
                               >
                                 <div className="flex items-center gap-2.5 min-w-0">
-                                  <span className="size-4 rounded-full border border-slate-300 flex items-center justify-center shrink-0 group-hover:border-slate-900">
-                                    <span className="size-1.5 rounded-full bg-transparent group-hover:bg-slate-900 transition-colors" />
+                                  <span className="size-4 rounded-full border border-[#CBD5C6] flex items-center justify-center shrink-0 group-hover:border-[#233831]">
+                                    <span className="size-1.5 rounded-full bg-transparent group-hover:bg-[#233831] transition-colors" />
                                   </span>
-                                  <span className="text-xs font-medium text-slate-700 group-hover:text-slate-900 truncate">
+                                  <span className="text-xs font-medium text-[#173128] group-hover:text-[#0D170C] truncate">
                                     {ch.title}
                                   </span>
                                 </div>
-                                <ChevronRight className="size-3.5 text-slate-300 group-hover:text-slate-900 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                                <ChevronRight className="size-3.5 text-[#8E9F93] group-hover:text-[#233831] shrink-0 transition-transform group-hover:translate-x-0.5" />
                               </button>
                             ))}
                           </div>
@@ -1735,64 +1735,64 @@ export function SyllabusNotesPage() {
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "topics", "cie")}
-              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-10 rounded-xl bg-[#edcaff] font-bold text-xs flex items-center justify-center text-slate-900 shrink-0 border border-[#d8b4fe]/50">
+                <div className="size-10 rounded-xl bg-[#E2EBDE] font-bold text-xs flex items-center justify-center text-[#173128] shrink-0 border border-[#CBD5C6]">
                   CIE
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-slate-950">
+                  <h3 className="font-bold text-sm sm:text-base text-[#0D170C] group-hover:text-[#233831]">
                     CIE IGCSE {selectedSubject.name} Revision Notes
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-[#5B6E62] mt-0.5">
                     Complete syllabus specification with chapter breakdown and diagrams
                   </p>
                 </div>
               </div>
-              <ChevronRight className="size-5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="size-5 text-[#8E9F93] group-hover:text-[#233831] group-hover:translate-x-1 transition-all" />
             </button>
 
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "topics", "edexcel")}
-              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-10 rounded-xl bg-[#edcaff] font-bold text-xs flex items-center justify-center text-slate-900 shrink-0 border border-[#d8b4fe]/50">
+                <div className="size-10 rounded-xl bg-[#E2EBDE] font-bold text-xs flex items-center justify-center text-[#173128] shrink-0 border border-[#CBD5C6]">
                   EDX
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-slate-950">
+                  <h3 className="font-bold text-sm sm:text-base text-[#0D170C] group-hover:text-[#233831]">
                     Edexcel IGCSE {selectedSubject.name} Revision Notes
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-[#5B6E62] mt-0.5">
                     Tailored core content with essential formulas and test strategies
                   </p>
                 </div>
               </div>
-              <ChevronRight className="size-5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="size-5 text-[#8E9F93] group-hover:text-[#233831] group-hover:translate-x-1 transition-all" />
             </button>
 
             <button
               type="button"
               onClick={() => goTo(selectedSubject.id, undefined, "topics", "a-level")}
-              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="size-10 rounded-xl bg-[#edcaff] font-bold text-xs flex items-center justify-center text-slate-900 shrink-0 border border-[#d8b4fe]/50">
+                <div className="size-10 rounded-xl bg-[#E2EBDE] font-bold text-xs flex items-center justify-center text-[#173128] shrink-0 border border-[#CBD5C6]">
                   AL
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-slate-950">
+                  <h3 className="font-bold text-sm sm:text-base text-[#0D170C] group-hover:text-[#233831]">
                     International A-Level {selectedSubject.name} Revision Notes
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-[#5B6E62] mt-0.5">
                     Advanced module breakdown for AS and A2 examinations
                   </p>
                 </div>
               </div>
-              <ChevronRight className="size-5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="size-5 text-[#8E9F93] group-hover:text-[#233831] group-hover:translate-x-1 transition-all" />
             </button>
           </div>
         </div>
@@ -1805,7 +1805,7 @@ export function SyllabusNotesPage() {
     return (
       <DashboardLayout
         crumbs={[
-          { label: "IGCSE" },
+          { label: "Courses" },
           { label: selectedSubject.name },
         ]}
       >
@@ -1814,7 +1814,7 @@ export function SyllabusNotesPage() {
             <button
               type="button"
               onClick={() => goTo(null)}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#5B6E62] hover:text-[#0D170C] transition-colors"
             >
               <ArrowLeft className="size-4" />
               <span>All Courses</span>
@@ -1822,16 +1822,16 @@ export function SyllabusNotesPage() {
           </div>
 
           <header className="mb-8">
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-4xl font-extrabold text-[#0D170C] tracking-tight">
               IGCSE {selectedSubject.name} Revision
             </h1>
-            <p className="mt-3 text-sm text-slate-600 leading-relaxed max-w-3xl">
+            <p className="mt-3 text-sm text-[#465A4D] leading-relaxed max-w-3xl">
               Getting ready for your IGCSE {selectedSubject.name} exam? Our teacher-written revision resources are here to help, giving you all the tools and knowledge you need to face your exam with confidence.
             </p>
           </header>
 
           <section className="mb-12">
-            <h2 className="text-xl font-bold text-slate-900 mb-5">
+            <h2 className="text-xl font-bold text-[#0D170C] mb-5">
               IGCSE {selectedSubject.name} Revision Resources
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1839,16 +1839,16 @@ export function SyllabusNotesPage() {
               <button
                 type="button"
                 onClick={() => goTo(selectedSubject.id, undefined, "boards")}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
                   <BookOpen className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900">Revision Notes</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Revision Notes</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1857,16 +1857,16 @@ export function SyllabusNotesPage() {
               <button
                 type="button"
                 onClick={() => void navigate({ to: "/test" })}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
                   <HelpCircle className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900">Exam Questions</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Exam Questions</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1875,16 +1875,16 @@ export function SyllabusNotesPage() {
               <button
                 type="button"
                 onClick={() => goTo(selectedSubject.id, 1)}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
                   <Layers className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900">Flashcards</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Flashcards</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1893,16 +1893,16 @@ export function SyllabusNotesPage() {
               <button
                 type="button"
                 onClick={() => void navigate({ to: "/test" })}
-                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-[#edcaff] text-slate-900 flex items-center justify-center shadow-xs border border-[#d8b4fe]/50">
+                <div className="size-8 rounded-lg bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
                   <FileText className="size-4" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <p className="text-xs text-[#5B6E62] font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <h3 className="font-bold text-sm text-slate-900">Mock Exams</h3>
-                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
+                    <h3 className="font-bold text-sm text-[#0D170C]">Mock Exams</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1911,40 +1911,45 @@ export function SyllabusNotesPage() {
 
           {/* Student Resource Articles Section (Real clickable guides) */}
           <section>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-5">
-              <h2 className="text-xl font-bold text-slate-900">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl font-bold text-[#0D170C]">
                 Articles and resources for IGCSE {selectedSubject.name} students
               </h2>
-              <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+              <span className="text-xs font-semibold text-[#5B6E62] bg-[#E2EBDE] border border-[#CBD5C6] px-3 py-1 rounded-full cursor-default">
                 Latest
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {STUDY_ARTICLES.map((article) => (
                 <button
                   key={article.id}
                   type="button"
                   onClick={() => goTo(selectedSubject.id, undefined, "article", undefined, article.id)}
-                  className="group rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:border-slate-300 transition-all flex items-center gap-4 text-left cursor-pointer"
+                  className="group rounded-2xl border border-[#D8E0D2] bg-white p-4 shadow-2xs hover:border-[#233831] hover:shadow-sm transition-all text-left cursor-pointer flex flex-col gap-3"
                 >
-                  <div className="size-20 rounded-xl bg-[#edcaff] text-slate-900 p-2.5 flex flex-col justify-between shrink-0 font-sans shadow-xs border border-[#d8b4fe]/60">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600">
-                      IGCSE
-                    </span>
-                    <span className="text-[11px] font-extrabold leading-tight line-clamp-2">
+                  {/* Thumbnail */}
+                  <div className="w-full h-28 rounded-xl bg-gradient-to-br from-[#E2EBDE] to-[#D5DEC9] flex flex-col justify-between p-3 shrink-0 border border-[#CBD5C6]">
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#173128] bg-white/70 w-fit px-1.5 py-0.5 rounded">
                       {article.category}
+                    </span>
+                    <span className="text-xs font-extrabold text-[#0D170C] leading-tight line-clamp-2">
+                      {article.title}
                     </span>
                   </div>
 
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <h3 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+                  <div className="flex-1 space-y-1">
+                    <h3 className="font-bold text-sm text-[#0D170C] leading-snug line-clamp-2">
                       {article.title}
                     </h3>
-                    <p className="text-xs text-slate-500 line-clamp-1">{article.snippet}</p>
-                    <span className="text-[11px] font-medium text-slate-400 block pt-0.5">
-                      {article.readTime} read · Click to view
-                    </span>
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-[11px] font-medium text-[#5B6E62]">
+                        {article.readTime} read
+                      </span>
+                      <span className="text-[11px] font-semibold text-[#173128] group-hover:text-[#233831] transition-colors">
+                        Read →
+                      </span>
+                    </div>
                   </div>
                 </button>
               ))}
@@ -1955,83 +1960,210 @@ export function SyllabusNotesPage() {
     );
   }
 
-  // 6. COURSES DIRECTORY VIEW (ONLY SUBJECTS)
-  return (
-    <DashboardLayout crumbs={[{ label: "IGCSE" }]}>
-      <div className="w-full py-4 max-w-6xl mx-auto font-sans">
-        <header className="mb-8">
-          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-            IGCSE Revision Resources
-          </h1>
-          <p className="mt-2 text-sm text-slate-600">
-            Select your subject to access expert-written revision notes, topic questions, flashcards, and exam preparation guides.
-          </p>
-        </header>
+  // 6. COURSES DIRECTORY VIEW (EXCLUSIVELY FOCUSED ON BIOLOGY)
+  const biologySubject = SYLLABUS_NOTES.find((s) => s.id === "biology") || SYLLABUS_NOTES[0];
+  const totalChapters = biologySubject ? biologySubject.chapters.length : 120;
 
-        {/* Search + Category Filter Bar */}
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative flex-1 sm:max-w-xs">
-            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search for a subject..."
-              className="w-full rounded-full border border-slate-200 bg-white py-2 pl-9 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none"
-            />
+  return (
+    <DashboardLayout crumbs={[{ label: "Courses" }]}>
+      <div className="w-full py-6 max-w-5xl mx-auto font-sans">
+        {/* Tiimo-style Editorial Hero */}
+        <header className="mb-10 text-center max-w-2xl mx-auto pt-2">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#CBD5C6] bg-white/80 px-3.5 py-1 text-xs font-semibold text-[#173128] shadow-2xs mb-5">
+            <span className="size-2 rounded-full bg-[#233831]" />
+            <span>Curriculum Specification · 2026/27 Syllabus Aligned</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-1.5">
-            {categories.map((cat) => (
+          <h1 className="text-4xl sm:text-5xl font-normal font-display tracking-tight text-[#0D170C] leading-[1.18]">
+            A visual syllabus planner <br className="hidden sm:inline" />
+            built for <span className="italic font-display font-medium text-[#173128]">real mastery</span>
+          </h1>
+
+          <p className="mt-4 text-sm sm:text-base text-[#465A4D] leading-relaxed max-w-xl mx-auto">
+            Comprehensive revision notes, high-yield molecular diagrams, topic checkpoints, and examiner insights crafted to help you achieve top grades.
+          </p>
+
+          {/* Quick CTA Pill Button */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => goTo("biology", 1)}
+              className="inline-flex items-center gap-3 rounded-full border border-[#CBD5C6] bg-[#233831] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-[#2C443C] transition-all cursor-pointer"
+            >
+              <span>Start reading chapter 1</span>
+              <span className="size-5 rounded-full bg-white/20 flex items-center justify-center">
+                <ArrowRight className="size-3 text-white" />
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => goTo("biology", undefined, "topics")}
+              className="inline-flex items-center gap-3 rounded-full border border-[#CBD5C6] bg-white px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#173128] shadow-xs hover:bg-[#F0F2E4] transition-all cursor-pointer"
+            >
+              <span>Explore all {totalChapters} chapters</span>
+              <span className="size-5 rounded-full bg-[#233831] flex items-center justify-center">
+                <ChevronRight className="size-3 text-white" />
+              </span>
+            </button>
+          </div>
+        </header>
+
+        {/* Featured Biology Spotlight Card */}
+        {biologySubject && (
+          <section className="mb-12 rounded-3xl border border-[#D8E0D2] bg-white p-6 sm:p-9 shadow-xs">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#D8E0D2]">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[11px] font-bold text-[#173128] bg-[#E2EBDE] px-2.5 py-0.5 rounded-full border border-[#CBD5C6]">
+                    Code: {biologySubject.code}
+                  </span>
+                  <span className="text-[11px] font-semibold text-[#5B6E62]">
+                    SCIENCES
+                  </span>
+                  <span className="text-[11px] font-semibold text-[#233831] bg-[#F0F2E4] px-2.5 py-0.5 rounded-full">
+                    {totalChapters} Comprehensive Chapters
+                  </span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0D170C] tracking-tight">
+                  IGCSE {biologySubject.name} Revision Suite
+                </h2>
+                <p className="mt-2 text-sm text-[#465A4D] max-w-2xl leading-relaxed">
+                  Covering all curriculum specifications across Biological Molecules, Cell Organization, Plant Physiology, Animal Organ Systems, Genetics, and Ecosystems.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => goTo(biologySubject.id, undefined, "boards")}
+                  className="inline-flex items-center gap-2.5 rounded-full bg-[#233831] text-white px-5 py-2.5 text-xs sm:text-sm font-semibold hover:bg-[#2C443C] transition-all cursor-pointer shadow-xs"
+                >
+                  <span>Select Exam Board</span>
+                  <ChevronRight className="size-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* 4 Interactive Resource Doors */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6">
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-                  activeCategory === cat ? "bg-[#edcaff] text-slate-900 border border-[#d8b4fe] shadow-xs font-bold" : "border border-slate-300 bg-white text-slate-700 hover:bg-[#edcaff]/20 hover:border-[#d8b4fe]"
-                }`}
+                type="button"
+                onClick={() => goTo(biologySubject.id, undefined, "boards")}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                {cat}
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <BookOpen className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">120 Detailed Chapters</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-[#0D170C]">Revision Notes</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/test" })}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <HelpCircle className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">Past Paper Format</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-[#0D170C]">Exam Questions</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => goTo(biologySubject.id, 1)}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <Layers className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">Active Recall</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-[#0D170C]">Flashcards</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/test" })}
+                className="group p-5 rounded-2xl border border-[#D8E0D2] bg-[#F7F8F4] hover:bg-white hover:border-[#233831] hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-9 rounded-xl bg-[#E2EBDE] text-[#233831] flex items-center justify-center shadow-xs border border-[#CBD5C6]">
+                  <FileText className="size-4.5" />
+                </div>
+                <div>
+                  <p className="text-xs text-[#5B6E62] font-medium">Timed Assessments</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-[#0D170C]">Mock Exams</h3>
+                    <ChevronRight className="size-4 text-[#233831] group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Biology Study Guides & Exam Timetable Articles */}
+        <section>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-xl font-bold text-[#0D170C]">
+              Articles &amp; resources for IGCSE Biology students
+            </h2>
+            <span className="text-xs font-semibold text-[#5B6E62] bg-[#E2EBDE] border border-[#CBD5C6] px-3 py-1 rounded-full cursor-default">
+              Latest
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {STUDY_ARTICLES.map((article) => (
+              <button
+                key={article.id}
+                type="button"
+                onClick={() => goTo("biology", undefined, "article", undefined, article.id)}
+                className="group rounded-2xl border border-[#D8E0D2] bg-white p-4 shadow-2xs hover:border-[#233831] hover:shadow-sm transition-all text-left cursor-pointer flex flex-col gap-3"
+              >
+                {/* Thumbnail */}
+                <div className="w-full h-28 rounded-xl bg-gradient-to-br from-[#E2EBDE] to-[#D5DEC9] flex flex-col justify-between p-3 shrink-0 border border-[#CBD5C6]">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-[#173128] bg-white/70 w-fit px-1.5 py-0.5 rounded">
+                    {article.category}
+                  </span>
+                  <span className="text-xs font-extrabold text-[#0D170C] leading-tight line-clamp-2">
+                    {article.title}
+                  </span>
+                </div>
+
+                <div className="flex-1 space-y-1">
+                  <h3 className="font-bold text-sm text-[#0D170C] leading-snug line-clamp-2">
+                    {article.title}
+                  </h3>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[11px] font-medium text-[#5B6E62]">
+                      {article.readTime} read
+                    </span>
+                    <span className="text-[11px] font-semibold text-[#173128] group-hover:text-[#233831] transition-colors">
+                      Read →
+                    </span>
+                  </div>
+                </div>
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Clean Subject Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSubjects.map((sub) => {
-            const cat = getSubjectCategory(sub.code);
-            return (
-              <button
-                key={sub.id}
-                type="button"
-                onClick={() => goTo(sub.id)}
-                className="group p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[11px] font-bold text-slate-900 bg-[#edcaff] px-2 py-0.5 rounded-md border border-[#d8b4fe]/40">
-                      {sub.code}
-                    </span>
-                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                      {cat}
-                    </span>
-                  </div>
-                  <h3 className="font-extrabold text-base text-slate-900 group-hover:text-slate-950">
-                    {sub.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1">
-                    {sub.chapters.length} revision chapters
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-slate-950">
-                  <span>Explore Resources</span>
-                  <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
-                </div>
-              </button>
-            );
-          })}
-        </div>
+        </section>
       </div>
     </DashboardLayout>
   );

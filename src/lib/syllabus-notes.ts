@@ -147,19 +147,9 @@ const RAW_NOTES: SubjectNotes[] = [
 
 // Only subjects whose chapters have actually been written are listed. The rest
 // stay in RAW_NOTES so they can be re-enabled as each one is completed.
+// Currently focused exclusively on Biology as requested.
 const PUBLISHED_SUBJECT_IDS = new Set([
   "biology",
-  "chemistry",
-  "physics",
-  "accounting",
-  "agriculture",
-  "art-design",
-  "physical-education",
-  "marine-science",
-  "mathematics",
-  "economics",
-  "business-studies",
-  "computer-science",
 ]);
 
 export const SYLLABUS_NOTES: SubjectNotes[] = RAW_NOTES.filter((s) =>
