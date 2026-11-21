@@ -1239,17 +1239,38 @@ function ChapterDoc({
                     <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
                       I really think using this site helped me secure my top grades
                     </span>{" "}
-                    in science and maths. You really did save my exams! Thank you."
+                    in science and maths. You really did elevate my exams! Thank you."
                   </div>
                   <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 leading-relaxed">
                     "This website is soooo useful and I can't ever thank you enough for organising questions by topic like this.{" "}
                     <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
-                      It literally did SAVE MY EXAMS!
+                      It literally transformed my revision with ExamGlow!
                     </span>"
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Bottom Topic Navigation matching Save My Exams */}
+          <div className="mt-12 pt-6 border-t border-[#D8E0D2] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={onPrev}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full border border-[#D8E0D2] bg-white text-xs sm:text-sm font-semibold text-[#173128] hover:bg-[#F0F2E4] transition-all cursor-pointer shadow-2xs"
+            >
+              <ArrowLeft className="size-4" />
+              <span>Previous Topic</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onNext}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#233831] text-xs sm:text-sm font-semibold text-white hover:bg-[#2C443C] transition-all cursor-pointer shadow-xs"
+            >
+              <span>Next Topic</span>
+              <ArrowRight className="size-4" />
+            </button>
           </div>
         </article>
 
