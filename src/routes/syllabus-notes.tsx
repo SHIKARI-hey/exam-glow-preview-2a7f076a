@@ -5,6 +5,8 @@ import {
   ChevronRight,
   Search,
   ArrowLeft,
+  ArrowRight,
+  ArrowUp,
   Volume2,
   Loader2,
   Play,
@@ -18,10 +20,22 @@ import {
   Lightbulb,
   AlertTriangle,
   CheckCircle2,
+  Circle,
   Layers,
   RotateCw,
+  RotateCcw,
   Sparkles,
   Menu,
+  Bot,
+  SquarePen,
+  Trash2,
+  Copy,
+  Check,
+  ThumbsUp,
+  ThumbsDown,
+  FileText,
+  Calendar,
+  GraduationCap,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard-page";
 import {
@@ -57,6 +71,8 @@ export const Route = createFileRoute("/syllabus-notes")({
     if (typeof raw["subject"] === "string" && raw["subject"]) next.subject = raw["subject"];
     const chapter = Number(raw["chapter"]);
     if (Number.isInteger(chapter) && chapter > 0) next.chapter = chapter;
+    if (typeof raw["view"] === "string" && raw["view"]) next.view = raw["view"];
+    if (typeof raw["board"] === "string" && raw["board"]) next.board = raw["board"];
     return next;
   },
   head: () => ({
@@ -1366,138 +1382,27 @@ function ChapterDoc({
   );
 }
 
-function SubjectNoteRow({
-  subject,
-  open,
-  onToggle,
-  onSelectChapter,
-}: {
-  subject: SubjectNotes;
-  open: boolean;
-  onToggle: () => void;
-  onSelectChapter: (c: Chapter) => void;
-}) {
-  return (
-    <div className="rounded-2xl border border-gray-200/80 bg-white p-4 shadow-xs mb-3 transition hover:border-gray-300">
-      {/* Clickable header */}
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex w-full items-center justify-between gap-3 text-left cursor-pointer"
-      >
-        <div className="flex items-center gap-3.5 min-w-0">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-gray-100 font-bold text-xs shrink-0 text-gray-900">
-            {subject.code}
-          </div>
-          <div className="min-w-0">
-            <h4 className="font-bold text-sm text-gray-900 truncate">{subject.name}</h4>
-            <p className="text-[11px] text-gray-400">
-              {subject.chapters.length} comprehensive chapter{subject.chapters.length > 1 ? "s" : ""}
-            </p>
-          </div>
-        </div>
+// ─── Main Courses & Syllabus Notes Page Component ─────────────────────────────
 
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-200 transition">
-            {open ? "Hide Chapters" : "Browse Chapters"}
-          </span>
-          <ChevronRight
-            className={`size-4 text-gray-400 transition-transform duration-200 ${open ? "rotate-90 text-black" : ""}`}
-          />
-        </div>
-      </button>
-
-      {/* Expanded chapters */}
-      {open && (
-        <div className="mt-4 pt-3 border-t border-gray-100">
-          {subject.chapters.some((ch) => ch.section) ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              {Array.from(
-                subject.chapters.reduce((acc, ch) => {
-                  const sec = ch.section || "General";
-                  if (!acc.has(sec)) acc.set(sec, []);
-                  acc.get(sec)!.push(ch);
-                  return acc;
-                }, new Map<string, Chapter[]>()),
-              ).map(([secTitle, chList]) => (
-                <div
-                  key={secTitle}
-                  className="rounded-2xl border border-gray-200/90 bg-gray-50/70 p-3.5"
-                >
-                  <div className="flex items-center gap-2 mb-2.5 pb-2 border-b border-gray-200/60">
-                    <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
-                    <h5 className="font-bold text-xs text-gray-900 tracking-tight">{secTitle}</h5>
-                    <span className="text-[10px] text-gray-400 font-medium">({chList.length})</span>
-                  </div>
-                  <div className="space-y-1.5">
-                    {chList.map((ch) => (
-                      <button
-                        key={ch.number}
-                        type="button"
-                        onClick={() => onSelectChapter(ch)}
-                        className="group flex w-full items-center justify-between gap-2 p-2 rounded-xl bg-white border border-gray-100 hover:border-gray-300 hover:shadow-xs transition text-left cursor-pointer"
-                      >
-                        <div className="min-w-0 flex items-center gap-2">
-                          <span className="size-5 rounded-md bg-gray-100 text-gray-700 font-bold text-[9px] flex items-center justify-center shrink-0">
-                            {ch.number}
-                          </span>
-                          <span className="text-xs font-medium text-gray-800 group-hover:text-black truncate">
-                            {ch.title}
-                          </span>
-                        </div>
-                        <ChevronRight className="size-3 text-gray-400 group-hover:text-black shrink-0" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {subject.chapters.map((ch) => (
-                <button
-                  key={ch.number}
-                  type="button"
-                  onClick={() => onSelectChapter(ch)}
-                  className="group flex items-center justify-between gap-2 p-2.5 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50/80 transition text-left cursor-pointer"
-                >
-                  <div className="min-w-0 flex items-center gap-2.5">
-                    <span className="size-6 rounded-full bg-gray-100 text-gray-700 font-bold text-[10px] flex items-center justify-center shrink-0">
-                      {ch.number}
-                    </span>
-                    <span className="text-xs font-semibold text-gray-800 group-hover:text-black truncate">
-                      {ch.title}
-                    </span>
-                  </div>
-                  <ChevronRight className="size-3.5 text-gray-400 group-hover:text-black shrink-0" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Main Syllabus Notes Page ─────────────────────────────────────────────────
-
-function SyllabusNotesPage() {
-  const { subject: subjectId, chapter: chapterNumber } = Route.useSearch();
+export function SyllabusNotesPage() {
+  const { subject: subjectId, chapter: chapterNumber, view: rawView, board } = Route.useSearch();
   const navigate = useNavigate();
 
-  const selectedSubject =
-    SYLLABUS_NOTES.find((s) => s.id === subjectId) ?? null;
-  const activeChapter =
-    selectedSubject?.chapters.find((c) => c.number === chapterNumber) ?? null;
+  const selectedSubject = SYLLABUS_NOTES.find((s) => s.id === subjectId) ?? null;
+  const activeChapter = selectedSubject?.chapters.find((c) => c.number === chapterNumber) ?? null;
 
-  const goTo = (subject: string | null, chapter?: number) => {
+  // Determine current active view state
+  const view = rawView || (activeChapter ? "reader" : subjectId ? "hub" : "directory");
+
+  const goTo = (subject: string | null, chapter?: number, viewState?: string, boardName?: string) => {
     void navigate({
       to: "/syllabus-notes",
       search: () => {
         const next: NotesSearch = {};
         if (subject) next.subject = subject;
         if (chapter) next.chapter = chapter;
+        if (viewState) next.view = viewState;
+        if (boardName) next.board = boardName;
         return next;
       },
     });
@@ -1505,175 +1410,557 @@ function SyllabusNotesPage() {
 
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [openId, setOpenId] = useState<string | null>(subjectId ?? null);
 
   const getSubjectCategory = (code: string): string => {
-    if (["0610", "0620", "0625", "0680", "0697", "0654", "0653", "0617"].includes(code))
-      return "Sciences";
+    if (["0610", "0620", "0625", "0680", "0697", "0654", "0653", "0617"].includes(code)) return "Sciences";
     if (["0580", "0606"].includes(code)) return "Mathematics";
     if (["0520", "0530", "0504", "0525", "0508", "0480"].includes(code)) return "Languages";
     if (["0500", "0510", "0475", "0408"].includes(code)) return "English";
     if (["0455", "0450", "0452", "0454"].includes(code)) return "Business & Economics";
-    if (["0470", "0460", "0495", "0490", "0471", "0457", "0478", "0413", "0453"].includes(code))
-      return "Humanities";
-    if (["0417", "0478", "0445", "0648", "0400", "0410", "0411", "0573"].includes(code))
-      return "Technology";
+    if (["0470", "0460", "0495", "0490", "0471", "0457", "0478", "0413", "0453"].includes(code)) return "Humanities";
+    if (["0417", "0478", "0445", "0648", "0400", "0410", "0411", "0573"].includes(code)) return "Technology";
     return "Sciences";
   };
 
   const categoryOrder = [
     "Sciences",
     "Mathematics",
-    "Languages",
-    "English",
     "Business & Economics",
     "Humanities",
     "Technology",
+    "Languages",
+    "English",
   ];
+
   const categories = [
     "All",
     ...categoryOrder.filter((cat) =>
-      SYLLABUS_NOTES.some((s) => getSubjectCategory(s.code) === cat),
+      SYLLABUS_NOTES.some((s) => getSubjectCategory(s.code) === cat)
     ),
   ];
 
-  const filtered = SYLLABUS_NOTES.filter((s) => {
+  const filteredSubjects = SYLLABUS_NOTES.filter((s) => {
     const matchCat = activeCategory === "All" || getSubjectCategory(s.code) === activeCategory;
     const matchSearch =
       s.name.toLowerCase().includes(search.toLowerCase()) || s.code.includes(search);
     return matchCat && matchSearch;
   });
 
-  // Group by category like syllabus.tsx
-  const grouped = categories
-    .filter((c) => c !== "All")
-    .map((cat) => ({
-      cat,
-      subjects: filtered.filter((s) => getSubjectCategory(s.code) === cat),
-    }))
-    .filter((g) => g.subjects.length > 0);
-
-  const openNext = () => {
+  const openNextChapter = () => {
     if (!selectedSubject || !activeChapter) return;
     const idx = selectedSubject.chapters.findIndex((c) => c.number === activeChapter.number);
     const nextCh = selectedSubject.chapters[idx + 1];
-    if (!nextCh) return;
-    goTo(selectedSubject.id, nextCh.number);
+    if (nextCh) goTo(selectedSubject.id, nextCh.number);
   };
 
-  const openPrev = () => {
+  const openPrevChapter = () => {
     if (!selectedSubject || !activeChapter) return;
     const idx = selectedSubject.chapters.findIndex((c) => c.number === activeChapter.number);
-    if (idx > 0) {
-      goTo(selectedSubject.id, selectedSubject.chapters[idx - 1]!.number);
-    }
+    if (idx > 0) goTo(selectedSubject.id, selectedSubject.chapters[idx - 1]!.number);
   };
 
-  return (
-    <>
-      {activeChapter && selectedSubject && (
-        <ChapterDoc
-          chapter={activeChapter}
-          allChapters={selectedSubject.chapters}
-          color={selectedSubject.color}
-          subjectId={selectedSubject.id}
-          onBack={() => goTo(selectedSubject.id)}
-          onNext={openNext}
-          onPrev={openPrev}
-          onSelectChapter={(ch) => goTo(selectedSubject.id, ch.number)}
-        />
-      )}
+  // 1. FULL NOTE READER VIEW
+  if (activeChapter && selectedSubject) {
+    return (
+      <ChapterDoc
+        chapter={activeChapter}
+        allChapters={selectedSubject.chapters}
+        color={selectedSubject.color}
+        subjectId={selectedSubject.id}
+        onBack={() => goTo(selectedSubject.id, undefined, "topics", board)}
+        onNext={openNextChapter}
+        onPrev={openPrevChapter}
+        onSelectChapter={(ch) => goTo(selectedSubject.id, ch.number)}
+      />
+    );
+  }
 
-      <DashboardLayout crumbs={[{ label: "Course" }, { label: "Syllabus Notes" }]}>
-        <div className="w-full py-2">
-          {/* Hero banner */}
-          <div className="mb-6 rounded-3xl bg-white border border-gray-200/80 p-6 sm:p-8 shadow-xs">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <span className="inline-block rounded-full bg-black text-white px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
-                  IGCSE & International Curriculum
-                </span>
-                <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-                  Syllabus Revision Notes
-                </h1>
-                <p className="mt-1 text-xs sm:text-sm text-gray-500">
-                  Comprehensive, high-yield chapter guides with worked formulas, voice lectures, and practice checks.
-                </p>
-              </div>
+  // 2. TOPICS GRID VIEW
+  if (selectedSubject && view === "topics") {
+    // Group chapters by section and topic
+    const sections: Record<string, Record<string, Chapter[]>> = {};
+    selectedSubject.chapters.forEach((ch) => {
+      const sec = ch.section || "General";
+      const top = ch.topic || sec;
+      if (!sections[sec]) sections[sec] = {};
+      if (!sections[sec][top]) sections[sec][top] = [];
+      sections[sec][top].push(ch);
+    });
 
-              <div className="flex items-center gap-3 shrink-0">
-                <div className="rounded-2xl bg-gray-50 border border-gray-100 p-3.5 text-center min-w-[110px]">
-                  <span className="text-2xl font-black text-gray-900 block leading-tight">{SYLLABUS_NOTES.length}</span>
-                  <span className="text-[11px] font-semibold text-gray-400">Total Subjects</span>
-                </div>
-                <div className="rounded-2xl bg-gray-50 border border-gray-100 p-3.5 text-center min-w-[110px]">
-                  <span className="text-2xl font-black text-gray-900 block leading-tight">
-                    {SYLLABUS_NOTES.reduce((acc, s) => acc + s.chapters.length, 0)}
-                  </span>
-                  <span className="text-[11px] font-semibold text-gray-400">Chapters</span>
-                </div>
-              </div>
-            </div>
+    return (
+      <DashboardLayout
+        crumbs={[
+          { label: "Courses" },
+          { label: selectedSubject.name },
+          { label: "Revision Notes" },
+          { label: "Topics" },
+        ]}
+      >
+        <div className="w-full max-w-6xl mx-auto py-4">
+          <div className="mb-6 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => goTo(selectedSubject.id, undefined, "boards")}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              <ArrowLeft className="size-4" />
+              <span>Back to Exam Boards</span>
+            </button>
+            <span className="text-xs text-slate-400 font-medium">
+              {board ? board.toUpperCase() : "CIE"} Syllabus Specification
+            </span>
           </div>
 
-          {/* Search + Category Filter Bar */}
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="relative flex-1 sm:max-w-xs">
-              <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search subject or code..."
-                className="w-full rounded-full border border-border bg-card py-2 pl-9 pr-4 text-xs text-foreground placeholder:text-muted-foreground focus:border-foreground/40 focus:outline-none"
-              />
-            </div>
+          <header className="mb-8">
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              {selectedSubject.name} Revision Topics
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              Select a chapter to study in-depth teacher notes, clear molecular illustrations, and examiner insights.
+            </p>
+          </header>
 
-            <div className="flex flex-wrap items-center gap-1.5">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
-                    activeCategory === cat
-                      ? "bg-foreground text-background shadow-sm"
-                      : "border border-border/80 bg-card text-muted-foreground hover:border-foreground/30 hover:text-foreground"
-                  }`}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Object.entries(sections).map(([secTitle, topicGroups]) => {
+              const allSecChaps = Object.values(topicGroups).flat();
+              return (
+                <div
+                  key={secTitle}
+                  className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs flex flex-col justify-between"
                 >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
+                  <div>
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                      <div className="flex items-center gap-2.5">
+                        <div className="size-2.5 rounded-full bg-slate-900" />
+                        <h2 className="font-bold text-base text-slate-900 tracking-tight">
+                          {secTitle}
+                        </h2>
+                      </div>
+                      <span className="text-xs font-semibold text-slate-400">
+                        {allSecChaps.length} Chapters
+                      </span>
+                    </div>
 
-          {/* Subjects List */}
-          <div className="space-y-6">
-            {grouped.map(({ cat, subjects }) => (
-              <div key={cat} className="space-y-3">
-                <div className="flex items-center gap-2 pb-1 text-xs font-bold uppercase tracking-wider text-gray-500">
-                  <span className={`size-2 rounded-full ${catDot[cat] ?? "bg-black"}`} />
-                  <span className="text-gray-900">{cat}</span>
-                  <span className="font-normal text-gray-400">({subjects.length})</span>
+                    <div className="space-y-4">
+                      {Object.entries(topicGroups).map(([topTitle, chaps]) => (
+                        <div key={topTitle} className="space-y-1.5">
+                          <p className="text-xs font-bold text-slate-700 tracking-wide uppercase">
+                            {topTitle}
+                          </p>
+                          <div className="space-y-1">
+                            {chaps.map((ch) => (
+                              <button
+                                key={ch.number}
+                                type="button"
+                                onClick={() => goTo(selectedSubject.id, ch.number)}
+                                className="group w-full flex items-center justify-between p-2 rounded-xl text-left hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all cursor-pointer"
+                              >
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                  <span className="size-4 rounded-full border border-slate-300 flex items-center justify-center shrink-0 group-hover:border-slate-900">
+                                    <span className="size-1.5 rounded-full bg-transparent group-hover:bg-slate-900 transition-colors" />
+                                  </span>
+                                  <span className="text-xs font-medium text-slate-700 group-hover:text-slate-900 truncate">
+                                    {ch.title}
+                                  </span>
+                                </div>
+                                <ChevronRight className="size-3.5 text-slate-300 group-hover:text-slate-900 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-
-                <div className="grid grid-cols-1 gap-3">
-                  {subjects.map((sub) => (
-                    <SubjectNoteRow
-                      key={sub.id}
-                      subject={sub}
-                      open={openId === sub.id}
-                      onToggle={() =>
-                        setOpenId(openId === sub.id ? null : sub.id)
-                      }
-                      onSelectChapter={(ch) => goTo(sub.id, ch.number)}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </DashboardLayout>
-    </>
+    );
+  }
+
+  // 3. EXAM BOARD SELECTOR VIEW
+  if (selectedSubject && view === "boards") {
+    return (
+      <DashboardLayout
+        crumbs={[
+          { label: "Courses" },
+          { label: selectedSubject.name },
+          { label: "Revision Notes" },
+        ]}
+      >
+        <div className="w-full max-w-5xl mx-auto py-4">
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={() => goTo(selectedSubject.id, undefined, "hub")}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              <ArrowLeft className="size-4" />
+              <span>Back to {selectedSubject.name} Overview</span>
+            </button>
+          </div>
+
+          <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-200">
+            <div className="max-w-2xl">
+              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                IGCSE {selectedSubject.name} Revision Notes
+              </h1>
+              <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+                Clear, syllabus-aligned revision notes created by verified educators. Our resources focus on exam essentials, practical calculations, and marking schemes so students can revise efficiently with confidence.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center p-6 bg-slate-50 border border-slate-200/80 rounded-2xl shrink-0">
+              <div className="text-center space-y-1">
+                <GraduationCap className="size-12 text-slate-800 mx-auto" />
+                <span className="text-xs font-bold text-slate-900 block">Syllabus Aligned</span>
+                <span className="text-[10px] text-slate-500 block">Updated for 2026/27</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 max-w-3xl">
+            <button
+              type="button"
+              onClick={() => goTo(selectedSubject.id, undefined, "topics", "cie")}
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-4">
+                <div className="size-10 rounded-xl bg-slate-100 font-bold text-xs flex items-center justify-center text-slate-900 shrink-0">
+                  CIE
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-slate-950">
+                    CIE IGCSE {selectedSubject.name} Revision Notes
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Complete syllabus specification with chapter breakdown and diagrams
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="size-5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => goTo(selectedSubject.id, undefined, "topics", "edexcel")}
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-4">
+                <div className="size-10 rounded-xl bg-slate-100 font-bold text-xs flex items-center justify-center text-slate-900 shrink-0">
+                  EDX
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-slate-950">
+                    Edexcel IGCSE {selectedSubject.name} Revision Notes
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Tailored core content with essential formulas and test strategies
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="size-5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => goTo(selectedSubject.id, undefined, "topics", "a-level")}
+              className="group w-full flex items-center justify-between p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
+            >
+              <div className="flex items-center gap-4">
+                <div className="size-10 rounded-xl bg-slate-100 font-bold text-xs flex items-center justify-center text-slate-900 shrink-0">
+                  AL
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-slate-950">
+                    International A-Level {selectedSubject.name} Revision Notes
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Advanced module breakdown for AS and A2 examinations
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="size-5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+            </button>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // 4. SUBJECT REVISION HUB VIEW
+  if (selectedSubject && view === "hub") {
+    return (
+      <DashboardLayout
+        crumbs={[
+          { label: "Courses" },
+          { label: selectedSubject.name },
+        ]}
+      >
+        <div className="w-full max-w-5xl mx-auto py-4">
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={() => goTo(null)}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              <ArrowLeft className="size-4" />
+              <span>All Courses</span>
+            </button>
+          </div>
+
+          <header className="mb-8">
+            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              IGCSE {selectedSubject.name} Revision
+            </h1>
+            <p className="mt-3 text-sm text-slate-600 leading-relaxed max-w-3xl">
+              Equip yourself with comprehensive learning resources designed to build thorough subject mastery. From organized notes and practice questions to targeted flashcards and exam simulations, access everything needed for exam day.
+            </p>
+          </header>
+
+          <section className="mb-12">
+            <h2 className="text-lg font-bold text-slate-900 mb-4">
+              IGCSE {selectedSubject.name} Revision Resources
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Revision Notes Card */}
+              <button
+                type="button"
+                onClick={() => goTo(selectedSubject.id, undefined, "boards")}
+                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                  <BookOpen className="size-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-slate-900">Revision Notes</h3>
+                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              {/* Exam Questions Card */}
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/test" })}
+                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                  <HelpCircle className="size-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-slate-900">Exam Questions</h3>
+                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              {/* Flashcards Card */}
+              <button
+                type="button"
+                onClick={() => goTo(selectedSubject.id, 1)}
+                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                  <Layers className="size-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-slate-900">Flashcards</h3>
+                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+
+              {/* Mock Exams Card */}
+              <button
+                type="button"
+                onClick={() => void navigate({ to: "/test" })}
+                className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
+              >
+                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                  <FileText className="size-4" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <h3 className="font-bold text-sm text-slate-900">Mock Exams</h3>
+                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                  </div>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          {/* Student Resource Articles */}
+          <section>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-5">
+              <h2 className="text-lg font-bold text-slate-900">
+                Articles and resources for IGCSE {selectedSubject.name} students
+              </h2>
+              <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                Latest
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {[
+                {
+                  title: `IGCSE ${selectedSubject.name} Exam Resit Dates 2026/27: Key Deadlines`,
+                  tag: "Key Dates",
+                },
+                {
+                  title: `IGCSE October/November 2026 Timetable and Exam Preparation`,
+                  tag: "Timetable",
+                },
+                {
+                  title: `IGCSE ${selectedSubject.name} Core Topics: Full Syllabus Checklist`,
+                  tag: "Topic Checklist",
+                },
+                {
+                  title: `When Should You Start Revising for Your IGCSEs? Strategy Guide`,
+                  tag: "Revision Tips",
+                },
+                {
+                  title: `How Many IGCSE ${selectedSubject.name} Papers Are There? Component Breakdown`,
+                  tag: "Exam Guides",
+                },
+              ].map((article, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between"
+                >
+                  <div className="space-y-2">
+                    <span className="inline-block px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 uppercase">
+                      {article.tag}
+                    </span>
+                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-snug">
+                      {article.title}
+                    </h3>
+                  </div>
+                  <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                    <span>5 min read</span>
+                    <span className="text-slate-700 font-semibold group-hover:underline">Read &rarr;</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // 5. COURSES DIRECTORY VIEW (ONLY SUBJECTS)
+  return (
+    <DashboardLayout crumbs={[{ label: "Courses" }]}>
+      <div className="w-full py-2 max-w-6xl mx-auto">
+        {/* Hero banner */}
+        <div className="mb-8 rounded-3xl bg-white border border-slate-200/90 p-6 sm:p-8 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span className="inline-block rounded-full bg-slate-900 text-white px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
+                IGCSE & International Curriculum
+              </span>
+              <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Courses & Revision Notes
+              </h1>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500">
+                Choose a subject to explore syllabus-aligned revision notes, formulas, flashcards, and exam practice.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3.5 text-center min-w-[110px]">
+                <span className="text-2xl font-black text-slate-900 block leading-tight">
+                  {SYLLABUS_NOTES.length}
+                </span>
+                <span className="text-[11px] font-semibold text-slate-400">Total Subjects</span>
+              </div>
+              <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3.5 text-center min-w-[110px]">
+                <span className="text-2xl font-black text-slate-900 block leading-tight">
+                  {SYLLABUS_NOTES.reduce((acc, s) => acc + s.chapters.length, 0)}
+                </span>
+                <span className="text-[11px] font-semibold text-slate-400">Chapters</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Search + Category Filter Bar */}
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1 sm:max-w-xs">
+            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search subject or code..."
+              className="w-full rounded-full border border-slate-200 bg-white py-2 pl-9 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none"
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  activeCategory === cat
+                    ? "bg-slate-900 text-white shadow-xs"
+                    : "border border-slate-200 bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Clean Subject Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredSubjects.map((sub) => {
+            const cat = getSubjectCategory(sub.code);
+            return (
+              <button
+                key={sub.id}
+                type="button"
+                onClick={() => goTo(sub.id)}
+                className="group p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-44 cursor-pointer"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                      {sub.code}
+                    </span>
+                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                      {cat}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-base text-slate-900 group-hover:text-slate-950">
+                    {sub.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {sub.chapters.length} revision chapter{sub.chapters.length > 1 ? "s" : ""}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 group-hover:text-slate-950">
+                  <span>Explore Resources</span>
+                  <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </DashboardLayout>
   );
 }
