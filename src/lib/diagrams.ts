@@ -1271,6 +1271,642 @@ export const DIAGRAM_MAP: Record<string, string> = {
   </g>
 </svg>`,
 
+  "glucose-ring-structures.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <defs>
+    <filter id="cardShadow" x="-4%" y="-4%" width="108%" height="108%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="880" height="46" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="25" y="29" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">ISOMERS OF GLUCOSE: ALPHA (α) VS. BETA (β) RING CONFIGURATIONS</text>
+  <rect x="730" y="12" width="125" height="22" rx="11" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="792" y="27" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#059669">C₆H₁₂O₆ (Hexose)</text>
+
+  <!-- Left: Alpha Glucose Card -->
+  <g transform="translate(30, 65)">
+    <rect x="0" y="0" width="395" height="305" rx="12" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    
+    <!-- Badge -->
+    <rect x="20" y="16" width="140" height="26" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="90" y="34" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#1d4ed8">α-Glucose (Alpha)</text>
+
+    <!-- Ring Drawing -->
+    <g transform="translate(195, 155)">
+      <!-- Hexagonal Ring: Oxygen at top right, C1 right, C2 bottom right, C3 bottom left, C4 left, C5 top left -->
+      <!-- O atom -->
+      <circle cx="50" cy="-45" r="14" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+      <text x="50" y="-40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#b91c1c">O</text>
+
+      <!-- Bonds forming ring -->
+      <!-- C5 to O -->
+      <line x1="-35" y1="-50" x2="36" y2="-45" stroke="#334155" stroke-width="2.5"/>
+      <!-- O to C1 -->
+      <line x1="60" y1="-35" x2="80" y2="5" stroke="#334155" stroke-width="2.5"/>
+      <!-- C1 to C2 -->
+      <line x1="80" y1="5" x2="45" y2="60" stroke="#334155" stroke-width="2.5"/>
+      <!-- C2 to C3 -->
+      <line x1="45" y1="60" x2="-45" y2="60" stroke="#334155" stroke-width="2.5"/>
+      <!-- C3 to C4 -->
+      <line x1="-45" y1="60" x2="-80" y2="5" stroke="#334155" stroke-width="2.5"/>
+      <!-- C4 to C5 -->
+      <line x1="-80" y1="5" x2="-35" y2="-50" stroke="#334155" stroke-width="2.5"/>
+
+      <!-- Carbon atom numbers -->
+      <text x="70" y="2" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C1</text>
+      <text x="35" y="52" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C2</text>
+      <text x="-40" y="52" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C3</text>
+      <text x="-70" y="2" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C4</text>
+      <text x="-30" y="-40" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C5</text>
+
+      <!-- Substituents -->
+      <!-- C1: H UP, OH DOWN (KEY FEATURE) -->
+      <line x1="80" y1="5" x2="80" y2="-28" stroke="#334155" stroke-width="2"/>
+      <text x="80" y="-32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">H</text>
+
+      <line x1="80" y1="5" x2="80" y2="38" stroke="#059669" stroke-width="3"/>
+      <!-- Highlight circle for C1 OH -->
+      <rect x="62" y="38" width="36" height="24" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="80" y="55" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#15803d">OH</text>
+
+      <!-- C2: H up, OH down -->
+      <line x1="45" y1="60" x2="45" y2="25" stroke="#334155" stroke-width="1.5"/>
+      <text x="45" y="20" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+      <line x1="45" y1="60" x2="45" y2="92" stroke="#334155" stroke-width="2"/>
+      <text x="45" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">OH</text>
+
+      <!-- C3: OH up, H down -->
+      <line x1="-45" y1="60" x2="-45" y2="25" stroke="#334155" stroke-width="2"/>
+      <text x="-45" y="20" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">OH</text>
+      <line x1="-45" y1="60" x2="-45" y2="92" stroke="#334155" stroke-width="1.5"/>
+      <text x="-45" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+
+      <!-- C4: H up, OH down -->
+      <line x1="-80" y1="5" x2="-80" y2="-28" stroke="#334155" stroke-width="1.5"/>
+      <text x="-80" y="-32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+      <line x1="-80" y1="5" x2="-80" y2="38" stroke="#334155" stroke-width="2"/>
+      <text x="-80" y="52" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">OH</text>
+
+      <!-- C5: H down, CH2OH up (C6) -->
+      <line x1="-35" y1="-50" x2="-35" y2="-20" stroke="#334155" stroke-width="1.5"/>
+      <text x="-35" y="-10" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+      <line x1="-35" y1="-50" x2="-55" y2="-85" stroke="#334155" stroke-width="2.5"/>
+      <text x="-70" y="-90" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0284c7">CH₂OH (C6)</text>
+    </g>
+
+    <!-- Callout Box -->
+    <rect x="20" y="250" width="355" height="42" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+    <text x="32" y="267" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#15803d">KEY FEATURE: Carbon 1 –OH points DOWN (below plane)</text>
+    <text x="32" y="283" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#166534">Polymerises into Starch (plant storage) &amp; Glycogen (animal storage)</text>
+  </g>
+
+  <!-- Right: Beta Glucose Card -->
+  <g transform="translate(455, 65)">
+    <rect x="0" y="0" width="395" height="305" rx="12" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    
+    <!-- Badge -->
+    <rect x="20" y="16" width="140" height="26" rx="6" fill="#faf5ff" stroke="#e9d5ff"/>
+    <text x="90" y="34" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#7e22ce">β-Glucose (Beta)</text>
+
+    <!-- Ring Drawing -->
+    <g transform="translate(195, 155)">
+      <!-- O atom -->
+      <circle cx="50" cy="-45" r="14" fill="#fee2e2" stroke="#ef4444" stroke-width="2"/>
+      <text x="50" y="-40" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#b91c1c">O</text>
+
+      <!-- Bonds forming ring -->
+      <line x1="-35" y1="-50" x2="36" y2="-45" stroke="#334155" stroke-width="2.5"/>
+      <line x1="60" y1="-35" x2="80" y2="5" stroke="#334155" stroke-width="2.5"/>
+      <line x1="80" y1="5" x2="45" y2="60" stroke="#334155" stroke-width="2.5"/>
+      <line x1="45" y1="60" x2="-45" y2="60" stroke="#334155" stroke-width="2.5"/>
+      <line x1="-45" y1="60" x2="-80" y2="5" stroke="#334155" stroke-width="2.5"/>
+      <line x1="-80" y1="5" x2="-35" y2="-50" stroke="#334155" stroke-width="2.5"/>
+
+      <!-- Carbon atom numbers -->
+      <text x="70" y="16" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C1</text>
+      <text x="35" y="52" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C2</text>
+      <text x="-40" y="52" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C3</text>
+      <text x="-70" y="2" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C4</text>
+      <text x="-30" y="-40" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">C5</text>
+
+      <!-- Substituents -->
+      <!-- C1: OH UP (KEY FEATURE), H DOWN -->
+      <line x1="80" y1="5" x2="80" y2="-28" stroke="#7c3aed" stroke-width="3"/>
+      <!-- Highlight circle for C1 OH -->
+      <rect x="62" y="-48" width="36" height="24" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+      <text x="80" y="-32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#6d28d9">OH</text>
+
+      <line x1="80" y1="5" x2="80" y2="38" stroke="#334155" stroke-width="1.5"/>
+      <text x="80" y="52" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">H</text>
+
+      <!-- C2: H up, OH down -->
+      <line x1="45" y1="60" x2="45" y2="25" stroke="#334155" stroke-width="1.5"/>
+      <text x="45" y="20" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+      <line x1="45" y1="60" x2="45" y2="92" stroke="#334155" stroke-width="2"/>
+      <text x="45" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">OH</text>
+
+      <!-- C3: OH up, H down -->
+      <line x1="-45" y1="60" x2="-45" y2="25" stroke="#334155" stroke-width="2"/>
+      <text x="-45" y="20" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">OH</text>
+      <line x1="-45" y1="60" x2="-45" y2="92" stroke="#334155" stroke-width="1.5"/>
+      <text x="-45" y="105" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+
+      <!-- C4: H up, OH down -->
+      <line x1="-80" y1="5" x2="-80" y2="-28" stroke="#334155" stroke-width="1.5"/>
+      <text x="-80" y="-32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+      <line x1="-80" y1="5" x2="-80" y2="38" stroke="#334155" stroke-width="2"/>
+      <text x="-80" y="52" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">OH</text>
+
+      <!-- C5: H down, CH2OH up (C6) -->
+      <line x1="-35" y1="-50" x2="-35" y2="-20" stroke="#334155" stroke-width="1.5"/>
+      <text x="-35" y="-10" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#0f172a">H</text>
+      <line x1="-35" y1="-50" x2="-55" y2="-85" stroke="#334155" stroke-width="2.5"/>
+      <text x="-70" y="-90" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0284c7">CH₂OH (C6)</text>
+    </g>
+
+    <!-- Callout Box -->
+    <rect x="20" y="250" width="355" height="42" rx="6" fill="#fdf4ff" stroke="#f0abfc"/>
+    <text x="32" y="267" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#7e22ce">KEY FEATURE: Carbon 1 –OH points UP (above plane)</text>
+    <text x="32" y="283" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#86198f">Polymerises into Cellulose (straight structural plant cell wall chains)</text>
+  </g>
+
+  <!-- Bottom Tip Banner -->
+  <g transform="translate(30, 385)">
+    <rect x="0" y="0" width="820" height="42" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="20" y="26" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#334155">💡 EXAM TIP: Memorise the rhyme: <tspan font-weight="800" fill="#059669">Alpha is Below</tspan> (AB) and <tspan font-weight="800" fill="#7e22ce">Beta is Above</tspan> (BA) for the C1 hydroxyl position.</text>
+  </g>
+</svg>`,
+
+  "glycosidic-bond-formation.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <!-- Title bar -->
+  <rect x="0" y="0" width="920" height="44" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="25" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">FORMATION OF AN α-1,4-GLYCOSIDIC BOND VIA CONDENSATION (MALTOSE)</text>
+
+  <!-- Step 1: Two Separate Glucose Monomers -->
+  <g transform="translate(40, 60)">
+    <rect x="0" y="0" width="100" height="24" rx="4" fill="#e0f2fe" stroke="#bae6fd"/>
+    <text x="50" y="16" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#0369a1">REACTANTS</text>
+
+    <!-- First Glucose (C1 side) -->
+    <g transform="translate(130, 80)">
+      <!-- Ring polygon -->
+      <polygon points="0,-30 40,-30 65,0 40,30 0,30 -25,0" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
+      <circle cx="35" cy="-25" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="35" y="-22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#dc2626">O</text>
+      <text x="0" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">α-Glucose</text>
+      <text x="50" y="0" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C1</text>
+      <!-- C1 -OH projecting right -->
+      <line x1="65" y1="0" x2="95" y2="0" stroke="#059669" stroke-width="2.5"/>
+      <text x="105" y="4" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#059669">OH</text>
+    </g>
+
+    <!-- Plus sign -->
+    <text x="270" y="85" font-family="system-ui, sans-serif" font-size="24" font-weight="800" fill="#ea580c">+</text>
+
+    <!-- Second Glucose (C4 side) -->
+    <g transform="translate(390, 80)">
+      <!-- Ring polygon -->
+      <polygon points="0,-30 40,-30 65,0 40,30 0,30 -25,0" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
+      <circle cx="35" cy="-25" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="35" y="-22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#dc2626">O</text>
+      <text x="20" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">α-Glucose</text>
+      <text x="-18" y="0" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C4</text>
+      <!-- C4 HO- projecting left -->
+      <line x1="-25" y1="0" x2="-55" y2="0" stroke="#059669" stroke-width="2.5"/>
+      <text x="-75" y="4" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#059669">HO</text>
+    </g>
+
+    <!-- Highlight Box removing H2O -->
+    <rect x="225" y="60" width="115" height="40" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" stroke-dasharray="3 3"/>
+    <text x="282" y="85" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#15803d">H₂O ELIMINATED</text>
+
+    <!-- Arrow showing H2O leaving -->
+    <path d="M282 105 Q282 140 330 145" fill="none" stroke="#0284c7" stroke-width="2.5"/>
+    <polygon points="330,140 340,145 330,150" fill="#0284c7"/>
+    <rect x="345" y="132" width="75" height="26" rx="6" fill="#e0f2fe" stroke="#38bdf8"/>
+    <text x="382" y="149" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0369a1">+ H₂O</text>
+
+    <!-- Large Reaction Arrow down -->
+    <g transform="translate(540, 75)">
+      <text x="60" y="-10" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#ea580c">Condensation Reaction</text>
+      <text x="60" y="5" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">(Water molecule released)</text>
+      <path d="M0 15 L120 15" stroke="#ea580c" stroke-width="3"/>
+      <polygon points="120,9 135,15 120,21" fill="#ea580c"/>
+    </g>
+  </g>
+
+  <!-- Step 2: Maltose Product with 1,4-Glycosidic Bond -->
+  <g transform="translate(40, 240)">
+    <rect x="0" y="0" width="100" height="24" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+    <text x="50" y="16" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#166534">PRODUCT</text>
+
+    <!-- Maltose Structure -->
+    <g transform="translate(180, 70)">
+      <!-- Left Ring -->
+      <polygon points="0,-30 40,-30 65,0 40,30 0,30 -25,0" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+      <circle cx="35" cy="-25" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="35" y="-22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#dc2626">O</text>
+      <text x="15" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Glucose unit 1</text>
+      <text x="50" y="0" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C1</text>
+
+      <!-- Central Glycosidic Bond Bridge -->
+      <line x1="65" y1="0" x2="105" y2="18" stroke="#059669" stroke-width="3.5"/>
+      <circle cx="105" cy="18" r="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="105" y="22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="900" fill="#15803d">O</text>
+      <line x1="105" y1="18" x2="145" y2="0" stroke="#059669" stroke-width="3.5"/>
+
+      <!-- Right Ring -->
+      <g transform="translate(170, 0)">
+        <polygon points="0,-30 40,-30 65,0 40,30 0,30 -25,0" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+        <circle cx="35" cy="-25" r="8" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+        <text x="35" y="-22" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#dc2626">O</text>
+        <text x="20" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Glucose unit 2</text>
+        <text x="-18" y="0" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#64748b">C4</text>
+      </g>
+
+      <!-- Glycosidic bond pointer callout -->
+      <g transform="translate(105, 55)">
+        <line x1="0" y1="-22" x2="0" y2="0" stroke="#16a34a" stroke-width="2"/>
+        <rect x="-85" y="0" width="170" height="30" rx="6" fill="#15803d"/>
+        <text x="0" y="20" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#ffffff">α-1,4-Glycosidic Bond</text>
+      </g>
+    </g>
+
+    <!-- Disaccharide label card on right -->
+    <g transform="translate(560, 40)">
+      <rect x="0" y="0" width="280" height="85" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+      <text x="20" y="28" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">MALTOSE (Disaccharide)</text>
+      <text x="20" y="50" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">• Reducing sugar (positive Benedict's test)</text>
+      <text x="20" y="70" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">• Broken down by enzyme <tspan font-weight="700" fill="#0284c7">maltase</tspan> via hydrolysis</text>
+    </g>
+  </g>
+
+  <!-- Bottom Hydrolysis note -->
+  <g transform="translate(40, 410)">
+    <text x="0" y="16" font-family="system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#64748b">REVERSIBILITY: Hydrolysis uses <tspan font-weight="700" fill="#0284c7">+ H₂O</tspan> to break the glycosidic bond, regenerating separate glucose monomers during digestion.</text>
+  </g>
+</svg>`,
+
+  "chromatography-rf.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <!-- Title bar -->
+  <rect x="0" y="0" width="900" height="46" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="25" y="29" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">THIN LAYER CHROMATOGRAPHY (TLC) SEPARATION OF MONOSACCHARIDES &amp; RF CALCULATION</text>
+
+  <!-- Left: Chromatography Tank & Plate Setup -->
+  <g transform="translate(40, 65)">
+    <!-- Glass Tank Outer Border -->
+    <rect x="0" y="0" width="380" height="385" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="15" y="25" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#64748b">SEALED CHROMATOGRAPHY TANK</text>
+
+    <!-- Solvent Level in Tank -->
+    <rect x="15" y="335" width="350" height="40" fill="#e0f2fe" opacity="0.6"/>
+    <line x1="15" y1="335" x2="365" y2="335" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 2"/>
+    <text x="25" y="360" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#0284c7">Solvent level (Mobile phase)</text>
+
+    <!-- TLC Chromatography Paper/Plate inside tank -->
+    <rect x="55" y="35" width="270" height="330" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+
+    <!-- Solvent Front Line -->
+    <line x1="55" y1="85" x2="325" y2="85" stroke="#dc2626" stroke-width="2" stroke-dasharray="4 2"/>
+    <text x="330" y="90" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#dc2626">Solvent Front</text>
+
+    <!-- Pencil Baseline / Origin -->
+    <line x1="55" y1="310" x2="325" y2="310" stroke="#475569" stroke-width="2"/>
+    <text x="330" y="315" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#475569">Pencil Baseline</text>
+    <text x="65" y="325" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#ef4444">⚠️ MUST be above solvent level</text>
+
+    <!-- Lanes -->
+    <!-- Lane 1: Glucose -->
+    <circle cx="100" cy="310" r="4" fill="#94a3b8"/>
+    <circle cx="100" cy="195" r="8" fill="#3b82f6"/>
+    <text x="100" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Glc</text>
+
+    <!-- Lane 2: Fructose -->
+    <circle cx="155" cy="310" r="4" fill="#94a3b8"/>
+    <circle cx="155" cy="175" r="8" fill="#f59e0b"/>
+    <text x="155" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Fru</text>
+
+    <!-- Lane 3: Galactose -->
+    <circle cx="210" cy="310" r="4" fill="#94a3b8"/>
+    <circle cx="210" cy="210" r="8" fill="#10b981"/>
+    <text x="210" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#334155">Gal</text>
+
+    <!-- Lane 4: Unknown Sample (contains Glucose + Fructose) -->
+    <circle cx="275" cy="310" r="4" fill="#94a3b8"/>
+    <circle cx="275" cy="195" r="8" fill="#3b82f6"/>
+    <circle cx="275" cy="175" r="8" fill="#f59e0b"/>
+    <text x="275" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#7c3aed">Unknown</text>
+
+    <!-- Measurement bracket for solute distance (Glucose) -->
+    <line x1="38" y1="310" x2="38" y2="195" stroke="#2563eb" stroke-width="2"/>
+    <line x1="33" y1="310" x2="43" y2="310" stroke="#2563eb" stroke-width="2"/>
+    <line x1="33" y1="195" x2="43" y2="195" stroke="#2563eb" stroke-width="2"/>
+    <text x="32" y="255" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#2563eb">a = 106 mm</text>
+
+    <!-- Measurement bracket for solvent front -->
+    <line x1="18" y1="310" x2="18" y2="85" stroke="#dc2626" stroke-width="2"/>
+    <line x1="13" y1="310" x2="23" y2="310" stroke="#dc2626" stroke-width="2"/>
+    <line x1="13" y1="85" x2="23" y2="85" stroke="#dc2626" stroke-width="2"/>
+    <text x="12" y="200" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#dc2626">b = 225 mm</text>
+  </g>
+
+  <!-- Right: Rf Formula, Calculations & Method Rules -->
+  <g transform="translate(460, 65)">
+    <!-- Formula Card -->
+    <rect x="0" y="0" width="400" height="120" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+    <text x="20" y="28" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#166534">RETARDATION FACTOR (Rf) FORMULA</text>
+    
+    <g transform="translate(30, 48)">
+      <text x="0" y="24" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#0f172a">Rf =</text>
+      <text x="45" y="14" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#2563eb">distance moved by solute (a)</text>
+      <line x1="45" y1="20" x2="295" y2="20" stroke="#0f172a" stroke-width="2"/>
+      <text x="45" y="38" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#dc2626">distance moved by solvent front (b)</text>
+    </g>
+    <text x="20" y="105" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#15803d">• Rf values always fall between 0 and 1 (NO UNITS!)</text>
+
+    <!-- Example Calculation Table -->
+    <g transform="translate(0, 135)">
+      <rect x="0" y="0" width="400" height="135" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+      <text x="20" y="25" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0f172a">TYPICAL MONOSACCHARIDE Rf VALUES</text>
+      
+      <line x1="20" y1="36" x2="380" y2="36" stroke="#cbd5e1"/>
+      <text x="20" y="55" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#334155">Glucose (Glc):</text>
+      <text x="180" y="55" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">106 mm ÷ 225 mm</text>
+      <text x="320" y="55" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#2563eb">Rf ≈ 0.47</text>
+
+      <text x="20" y="80" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#334155">Fructose (Fru):</text>
+      <text x="180" y="80" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">120 mm ÷ 225 mm</text>
+      <text x="320" y="80" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#d97706">Rf ≈ 0.53</text>
+
+      <text x="20" y="105" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#334155">Galactose (Gal):</text>
+      <text x="180" y="105" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">99 mm ÷ 225 mm</text>
+      <text x="320" y="105" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#059669">Rf ≈ 0.44</text>
+      
+      <text x="20" y="125" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#7c3aed">Result: Unknown contains Glucose + Fructose</text>
+    </g>
+
+    <!-- Key Practical Rules -->
+    <g transform="translate(0, 285)">
+      <rect x="0" y="0" width="400" height="100" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+      <text x="20" y="24" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#1d4ed8">PRACTICAL EXAM MUST-KNOWS</text>
+      <text x="20" y="44" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#1e40af">1. Origin line drawn in <tspan font-weight="800">pencil</tspan> (pen ink dissolves in solvent)</text>
+      <text x="20" y="62" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#1e40af">2. Solvent level MUST be below origin (otherwise spots wash off)</text>
+      <text x="20" y="80" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#1e40af">3. Locating spray + heat required to visualise colourless sugars</text>
+    </g>
+  </g>
+</svg>`,
+
+  "starch-glycogen-structure.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 540" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <!-- Title bar -->
+  <rect x="0" y="0" width="920" height="46" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="25" y="29" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">STRUCTURAL COMPARISON: AMYLOSE, AMYLOPECTIN (STARCH) &amp; GLYCOGEN</text>
+
+  <!-- 1. Amylose Panel -->
+  <g transform="translate(30, 60)">
+    <rect x="0" y="0" width="860" height="135" rx="10" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="15" y="12" width="180" height="24" rx="5" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="105" y="28" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#1d4ed8">AMYLOSE (Plant Starch)</text>
+    
+    <!-- Amylose Helix Drawing -->
+    <g transform="translate(230, 65)">
+      <!-- Helical spring path representing coiled unbranched chain -->
+      <path d="M0,0 Q15,-30 30,0 T60,0 T90,0 T120,0 T150,0 T180,0 T210,0 T240,0 T270,0 T300,0 T330,0" fill="none" stroke="#2563eb" stroke-width="6"/>
+      <!-- Individual monomer dots along helix -->
+      <circle cx="15" cy="-15" r="5" fill="#93c5fd"/>
+      <circle cx="45" cy="15" r="5" fill="#93c5fd"/>
+      <circle cx="75" cy="-15" r="5" fill="#93c5fd"/>
+      <circle cx="105" cy="15" r="5" fill="#93c5fd"/>
+      <circle cx="135" cy="-15" r="5" fill="#93c5fd"/>
+      <circle cx="165" cy="15" r="5" fill="#93c5fd"/>
+      <!-- Iodine molecule inside helix -->
+      <g transform="translate(195, 0)">
+        <ellipse cx="0" cy="0" rx="14" ry="8" fill="#581c87" stroke="#9333ea" stroke-width="2"/>
+        <text x="0" y="4" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#ffffff">I₂</text>
+      </g>
+      <text x="235" y="5" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#6b21a8">Iodine fits inside helix → Blue-Black</text>
+    </g>
+
+    <!-- Features -->
+    <g transform="translate(630, 25)">
+      <text x="0" y="16" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">• Monomer: <tspan font-weight="800" fill="#2563eb">α-glucose</tspan></text>
+      <text x="0" y="38" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">• Bonds: <tspan font-weight="800" fill="#059669">α-1,4-glycosidic ONLY</tspan></text>
+      <text x="0" y="60" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">• Unbranched, tight compact helix</text>
+      <text x="0" y="82" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">• Makes up ~20–30% of plant starch</text>
+    </g>
+  </g>
+
+  <!-- 2. Amylopectin Panel -->
+  <g transform="translate(30, 210)">
+    <rect x="0" y="0" width="860" height="145" rx="10" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="15" y="12" width="200" height="24" rx="5" fill="#ecfdf5" stroke="#a7f3d0"/>
+    <text x="115" y="28" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#047857">AMYLOPECTIN (Plant Starch)</text>
+
+    <!-- Branched chain drawing -->
+    <g transform="translate(230, 75)">
+      <!-- Backbone chain -->
+      <line x1="0" y1="20" x2="350" y2="20" stroke="#059669" stroke-width="5"/>
+      <!-- Glucose dots on backbone -->
+      <circle cx="20" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="60" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="100" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="140" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="180" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="220" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="260" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="300" cy="20" r="5" fill="#a7f3d0"/>
+      <circle cx="340" cy="20" r="5" fill="#a7f3d0"/>
+
+      <!-- Branch point at x=180 -->
+      <line x1="180" y1="20" x2="260" y2="-30" stroke="#d97706" stroke-width="4"/>
+      <line x1="260" y1="-30" x2="360" y2="-30" stroke="#059669" stroke-width="5"/>
+      <circle cx="260" cy="-30" r="5" fill="#a7f3d0"/>
+      <circle cx="300" cy="-30" r="5" fill="#a7f3d0"/>
+      <circle cx="340" cy="-30" r="5" fill="#a7f3d0"/>
+
+      <!-- Branch callout -->
+      <circle cx="180" cy="20" r="9" fill="none" stroke="#d97706" stroke-width="2.5"/>
+      <text x="180" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#d97706">α-1,6 Branch Point (~every 24–30 units)</text>
+    </g>
+
+    <!-- Features -->
+    <g transform="translate(630, 25)">
+      <text x="0" y="16" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">• Monomer: <tspan font-weight="800" fill="#059669">α-glucose</tspan></text>
+      <text x="0" y="38" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">• Bonds: <tspan font-weight="800" fill="#059669">α-1,4</tspan> and <tspan font-weight="800" fill="#d97706">α-1,6</tspan></text>
+      <text x="0" y="60" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">• Branched chain (~70–80% of starch)</text>
+      <text x="0" y="82" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">• More terminal ends for enzyme breakdown</text>
+    </g>
+  </g>
+
+  <!-- 3. Glycogen Panel -->
+  <g transform="translate(30, 370)">
+    <rect x="0" y="0" width="860" height="150" rx="10" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="15" y="12" width="220" height="24" rx="5" fill="#fdf2f8" stroke="#fbcfe8"/>
+    <text x="125" y="28" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#be185d">GLYCOGEN (Animal Storage)</text>
+
+    <!-- Highly branched network drawing -->
+    <g transform="translate(230, 70)">
+      <!-- Main trunk -->
+      <line x1="0" y1="20" x2="350" y2="20" stroke="#be185d" stroke-width="4.5"/>
+      <!-- Frequent Branches -->
+      <line x1="70" y1="20" x2="130" y2="-20" stroke="#9333ea" stroke-width="3.5"/>
+      <line x1="130" y1="-20" x2="220" y2="-20" stroke="#be185d" stroke-width="4"/>
+      <line x1="160" y1="-20" x2="200" y2="-45" stroke="#9333ea" stroke-width="3.5"/>
+      <line x1="200" y1="-45" x2="270" y2="-45" stroke="#be185d" stroke-width="4"/>
+
+      <line x1="180" y1="20" x2="240" y2="-15" stroke="#9333ea" stroke-width="3.5"/>
+      <line x1="240" y1="-15" x2="320" y2="-15" stroke="#be185d" stroke-width="4"/>
+
+      <line x1="120" y1="20" x2="170" y2="45" stroke="#9333ea" stroke-width="3.5"/>
+      <line x1="170" y1="45" x2="270" y2="45" stroke="#be185d" stroke-width="4"/>
+
+      <!-- Free ends highlighted -->
+      <circle cx="350" cy="20" r="5" fill="#ef4444"/>
+      <circle cx="270" cy="-45" r="5" fill="#ef4444"/>
+      <circle cx="320" cy="-15" r="5" fill="#ef4444"/>
+      <circle cx="270" cy="45" r="5" fill="#ef4444"/>
+
+      <text x="260" y="15" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#dc2626">🔴 MULTIPLE FREE TERMINAL ENDS</text>
+      <text x="260" y="30" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748b">(Rapid simultaneous enzymatic attack)</text>
+    </g>
+
+    <!-- Features -->
+    <g transform="translate(630, 25)">
+      <text x="0" y="16" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">• Monomer: <tspan font-weight="800" fill="#be185d">α-glucose</tspan></text>
+      <text x="0" y="38" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f172a">• Stored in: <tspan font-weight="800" fill="#0f172a">Liver &amp; Muscle cells</tspan></text>
+      <text x="0" y="60" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#be185d">• High branching: <tspan font-weight="600" fill="#475569">every ~8–12 units</tspan></text>
+      <text x="0" y="82" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#475569">• Permits rapid glucose release for animal energy demands</text>
+    </g>
+  </g>
+</svg>`,
+
+  "colorimetry-calibration.svg": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="100%" height="auto" class="rounded-2xl bg-white shadow-xs border border-slate-200">
+  <!-- Title bar -->
+  <rect x="0" y="0" width="900" height="46" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="25" y="29" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#0f172a">QUANTITATIVE COLORIMETRY: BENEDICT'S TEST &amp; CALIBRATION CURVE</text>
+
+  <!-- Left: Standard Test Tubes (Serial Dilution) -->
+  <g transform="translate(35, 65)">
+    <rect x="0" y="0" width="370" height="385" rx="10" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5"/>
+    <text x="20" y="25" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0f172a">PREPARING KNOWN GLUCOSE STANDARDS</text>
+    <text x="20" y="42" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#64748b">React each standard with equal Benedict's reagent &amp; heat at 80°C</text>
+
+    <!-- Test tube rack visualization -->
+    <g transform="translate(25, 60)">
+      <!-- Tube 1: 0 mmol (Blue) -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="40" height="130" rx="10" fill="#eff6ff" stroke="#94a3b8" stroke-width="1.5"/>
+        <rect x="2" y="45" width="36" height="80" rx="8" fill="#3b82f6"/>
+        <text x="20" y="150" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">0.0</text>
+        <text x="20" y="165" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748b">Abs: 0.00</text>
+      </g>
+
+      <!-- Tube 2: 2 mmol (Green) -->
+      <g transform="translate(60, 0)">
+        <rect x="0" y="0" width="40" height="130" rx="10" fill="#f0fdf4" stroke="#94a3b8" stroke-width="1.5"/>
+        <rect x="2" y="45" width="36" height="80" rx="8" fill="#22c55e"/>
+        <text x="20" y="150" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">2.0</text>
+        <text x="20" y="165" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748b">Abs: 0.16</text>
+      </g>
+
+      <!-- Tube 3: 4 mmol (Yellow) -->
+      <g transform="translate(120, 0)">
+        <rect x="0" y="0" width="40" height="130" rx="10" fill="#fefce8" stroke="#94a3b8" stroke-width="1.5"/>
+        <rect x="2" y="45" width="36" height="80" rx="8" fill="#eab308"/>
+        <text x="20" y="150" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">4.0</text>
+        <text x="20" y="165" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748b">Abs: 0.32</text>
+      </g>
+
+      <!-- Tube 4: 6 mmol (Orange) -->
+      <g transform="translate(180, 0)">
+        <rect x="0" y="0" width="40" height="130" rx="10" fill="#fff7ed" stroke="#94a3b8" stroke-width="1.5"/>
+        <rect x="2" y="45" width="36" height="80" rx="8" fill="#f97316"/>
+        <text x="20" y="150" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">6.0</text>
+        <text x="20" y="165" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748b">Abs: 0.48</text>
+      </g>
+
+      <!-- Tube 5: 8 mmol (Brick Red) -->
+      <g transform="translate(240, 0)">
+        <rect x="0" y="0" width="40" height="130" rx="10" fill="#fef2f2" stroke="#94a3b8" stroke-width="1.5"/>
+        <rect x="2" y="45" width="36" height="80" rx="8" fill="#dc2626"/>
+        <text x="20" y="150" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155">8.0</text>
+        <text x="20" y="165" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748b">Abs: 0.64</text>
+      </g>
+    </g>
+
+    <!-- Filter Callout Box -->
+    <g transform="translate(20, 255)">
+      <rect x="0" y="0" width="330" height="110" rx="8" fill="#fee2e2" stroke="#fca5a5"/>
+      <text x="15" y="24" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#b91c1c">🔴 COLORIMETER SETTINGS</text>
+      <text x="15" y="46" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#991b1b">• Use a <tspan font-weight="800">RED FILTER (~630–680 nm)</tspan></text>
+      <text x="15" y="65" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#991b1b">• Zero (calibrate) colorimeter using distilled water</text>
+      <text x="15" y="84" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#991b1b">• Filter or centrifuge precipitate before measurement</text>
+      <text x="15" y="100" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#991b1b">• Higher glucose = more precipitate formed</text>
+    </g>
+  </g>
+
+  <!-- Right: Calibration Curve Graph -->
+  <g transform="translate(435, 65)">
+    <rect x="0" y="0" width="430" height="385" rx="10" fill="#fafafa" stroke="#e2e8f0" stroke-width="1.5"/>
+    <text x="25" y="25" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0f172a">CALIBRATION CURVE (ABSORBANCE VS. CONCENTRATION)</text>
+
+    <!-- Graph Plot Area -->
+    <g transform="translate(60, 50)">
+      <!-- Grid lines -->
+      <line x1="0" y1="0" x2="330" y2="0" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="0" y1="50" x2="330" y2="50" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="0" y1="100" x2="330" y2="100" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="0" y1="150" x2="330" y2="150" stroke="#f1f5f9" stroke-width="1"/>
+      <line x1="0" y1="200" x2="330" y2="200" stroke="#f1f5f9" stroke-width="1"/>
+
+      <!-- Y Axis -->
+      <line x1="0" y1="0" x2="0" y2="250" stroke="#334155" stroke-width="2"/>
+      <!-- X Axis -->
+      <line x1="0" y1="250" x2="330" y2="250" stroke="#334155" stroke-width="2"/>
+
+      <!-- Y Axis ticks & labels (Absorbance: 0 to 0.8) -->
+      <text x="-12" y="254" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">0.0</text>
+      <text x="-12" y="190" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">0.2</text>
+      <text x="-12" y="130" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">0.4</text>
+      <text x="-12" y="70" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">0.6</text>
+      <text x="-12" y="10" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">0.8</text>
+      <text x="-40" y="130" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#334155" transform="rotate(-90, -40, 130)">Absorbance (AU)</text>
+
+      <!-- X Axis ticks & labels (Glucose conc: 0 to 10 mmol/dm3) -->
+      <text x="0" y="268" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">0</text>
+      <text x="60" y="268" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">2</text>
+      <text x="120" y="268" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">4</text>
+      <text x="180" y="268" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">6</text>
+      <text x="240" y="268" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">8</text>
+      <text x="300" y="268" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#64748b">10</text>
+      <text x="165" y="288" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#334155">Glucose Concentration (mmol dm⁻³)</text>
+
+      <!-- Line of best fit -->
+      <line x1="0" y1="250" x2="300" y2="10" stroke="#2563eb" stroke-width="3"/>
+
+      <!-- Standard Data Points -->
+      <circle cx="0" cy="250" r="5" fill="#1d4ed8"/>
+      <circle cx="60" cy="202" r="5" fill="#1d4ed8"/>
+      <circle cx="120" cy="154" r="5" fill="#1d4ed8"/>
+      <circle cx="180" cy="106" r="5" fill="#1d4ed8"/>
+      <circle cx="240" cy="58" r="5" fill="#1d4ed8"/>
+
+      <!-- UNKNOWN SAMPLE INTERPOLATION -->
+      <!-- Dotted line from y=130 across to curve (x=150) and down to x-axis -->
+      <line x1="0" y1="130" x2="150" y2="130" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4 3"/>
+      <line x1="150" y1="130" x2="150" y2="250" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="4 3"/>
+      <circle cx="150" cy="130" r="6" fill="#dc2626"/>
+
+      <!-- Unknown annotation callout -->
+      <g transform="translate(160, 115)">
+        <rect x="0" y="0" width="150" height="46" rx="6" fill="#fef2f2" stroke="#ef4444"/>
+        <text x="10" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#b91c1c">Unknown Sample:</text>
+        <text x="10" y="34" font-family="system-ui, sans-serif" font-size="10.5" font-weight="700" fill="#dc2626">Abs = 0.40 → 5.0 mmol dm⁻³</text>
+      </g>
+    </g>
+  </g>
+</svg>`,
+
 };
 
 /**
