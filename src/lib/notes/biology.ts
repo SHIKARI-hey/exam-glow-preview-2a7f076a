@@ -37,7 +37,7 @@ export const BIOLOGY_CHAPTERS: Chapter[] = [
           "Explain the difference between respiration and breathing. [2]",
           "A plant shoot bends towards a light source. Name two life processes shown and identify the evidence for each. [4]"
         ],
-        "figure": "![The 7 Characteristics of Living Organisms (MRS GREN)](mrs-gren.svg)"
+        "figure": "![The 7 Characteristics of Living Organisms (MRS GREN)](/notes/biology/mrs-gren-characteristics.jpg)"
       }
     ]
   },

@@ -765,7 +765,7 @@ function ChapterDoc({
   const scrollRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Group chapters by section and topic for Save My Exams hierarchy
+  // Group chapters by section and topic for ExamGlow hierarchy
   const hierarchy = useMemo(() => {
     const sections: Record<string, Record<string, Chapter[]>> = {};
     allChapters.forEach((ch) => {
@@ -823,7 +823,15 @@ function ChapterDoc({
   }
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: 0 });
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+      scrollRef.current.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
     if (progressBarRef.current) progressBarRef.current.style.transform = "scaleX(0)";
   }, [chapter.number]);
 
@@ -889,7 +897,7 @@ function ChapterDoc({
 
   return (
     <div className="fixed inset-0 z-50 flex overflow-hidden bg-white text-slate-900 font-sans antialiased">
-      {/* ── Left Sidebar: Save My Exams Style 'Revision Notes' ── */}
+      {/* ── Left Sidebar: ExamGlow Style 'Revision Notes' ── */}
       <aside
         className={`w-80 shrink-0 border-r border-slate-200/90 bg-white flex flex-col h-full overflow-hidden transition-all duration-200 ${
           sidebarOpen ? "block" : "hidden lg:flex"
@@ -1106,7 +1114,7 @@ function ChapterDoc({
         </div>
       </aside>
 
-      {/* ── Right Content Area: Save My Exams Document ── */}
+      {/* ── Right Content Area: ExamGlow Document ── */}
       <main
         ref={scrollRef}
         onScroll={handleReaderScroll}
@@ -1164,7 +1172,7 @@ function ChapterDoc({
         </div>
 
         {/* Note Document Article */}
-        <article className="mx-auto w-full max-w-4xl px-5 sm:px-12 py-8 sm:py-12 pb-36">
+        <article className="mx-auto w-full max-w-5xl xl:max-w-6xl px-4 sm:px-8 lg:px-12 py-8 sm:py-12 pb-36">
           {/* Main Chapter Title */}
           <header className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
@@ -1190,7 +1198,7 @@ function ChapterDoc({
           <div className="space-y-12">
             {chapter.subheadings.map((sub, si) => (
               <section id={`section-${si}`} key={si} className="scroll-mt-16">
-                {/* Section Sub-heading matching Save My Exams */}
+                {/* Section Sub-heading matching ExamGlow */}
                 <div className="mb-6 pb-2 border-b border-slate-100">
                   <h2 className="text-2xl sm:text-[28px] font-extrabold text-slate-900 tracking-tight">
                     {sub.title.toLowerCase().startsWith("biological") ? sub.title.toLowerCase() : sub.title}
@@ -1295,7 +1303,7 @@ function ChapterDoc({
             ))}
           </div>
 
-          {/* Bottom 'Get unlimited access' Conversion Card matching Save My Exams */}
+          {/* Bottom 'Get unlimited access' Conversion Card matching ExamGlow */}
           <div className="mt-16 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xs">
             <div className="text-center max-w-xl mx-auto space-y-4">
               <span className="text-3xl block">👏</span>
@@ -1334,12 +1342,12 @@ function ChapterDoc({
                     <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
                       I really think using this site helped me secure my top grades
                     </span>{" "}
-                    in science and maths. You really did save my exams! Thank you."
+                    in science and maths. You really saved my exams and grades! Thank you."
                   </div>
                   <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 leading-relaxed">
                     "This website is soooo useful and I can't ever thank you enough for organising questions by topic like this.{" "}
                     <span className="bg-slate-200 font-semibold text-slate-900 px-1 rounded">
-                      It literally did SAVE MY EXAMS!
+                      It literally SAVED MY GRADES!
                     </span>"
                   </div>
                 </div>

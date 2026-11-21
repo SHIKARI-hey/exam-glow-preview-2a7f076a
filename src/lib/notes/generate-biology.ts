@@ -75,7 +75,7 @@ const specs: Spec[] = [
         title: "Characteristics of Living Organisms",
         rawChapter: 1,
         rawSubheadingIndexes: [0], // MRS GREN
-        customFigure: "![The 7 Characteristics of Living Organisms (MRS GREN)](mrs-gren.svg)",
+        customFigure: "![The 7 Characteristics of Living Organisms (MRS GREN)](/notes/biology/mrs-gren-characteristics.jpg)",
       },
       {
         title: "Concept & Uses of Classification Systems",
