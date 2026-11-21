@@ -19,6 +19,7 @@ export type Chapter = {
   title: string;
   intro: string;
   subheadings: SubHeading[];
+  section?: string;
 };
 
 export type SubjectNotes = {

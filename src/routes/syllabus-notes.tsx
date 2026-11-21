@@ -1377,25 +1377,71 @@ function SubjectNoteRow({
 
       {/* Expanded chapters */}
       {open && (
-        <div className="mt-4 pt-3 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {subject.chapters.map((ch) => (
-            <button
-              key={ch.number}
-              type="button"
-              onClick={() => onSelectChapter(ch)}
-              className="group flex items-center justify-between gap-2 p-2.5 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50/80 transition text-left cursor-pointer"
-            >
-              <div className="min-w-0 flex items-center gap-2.5">
-                <span className="size-6 rounded-full bg-gray-100 text-gray-700 font-bold text-[10px] flex items-center justify-center shrink-0">
-                  {ch.number}
-                </span>
-                <span className="text-xs font-semibold text-gray-800 group-hover:text-black truncate">
-                  {ch.title}
-                </span>
-              </div>
-              <ChevronRight className="size-3.5 text-gray-400 group-hover:text-black shrink-0" />
-            </button>
-          ))}
+        <div className="mt-4 pt-3 border-t border-gray-100">
+          {subject.chapters.some((ch) => ch.section) ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {Array.from(
+                subject.chapters.reduce((acc, ch) => {
+                  const sec = ch.section || "General";
+                  if (!acc.has(sec)) acc.set(sec, []);
+                  acc.get(sec)!.push(ch);
+                  return acc;
+                }, new Map<string, Chapter[]>()),
+              ).map(([secTitle, chList]) => (
+                <div
+                  key={secTitle}
+                  className="rounded-2xl border border-gray-200/90 bg-gray-50/70 p-3.5"
+                >
+                  <div className="flex items-center gap-2 mb-2.5 pb-2 border-b border-gray-200/60">
+                    <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
+                    <h5 className="font-bold text-xs text-gray-900 tracking-tight">{secTitle}</h5>
+                    <span className="text-[10px] text-gray-400 font-medium">({chList.length})</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {chList.map((ch) => (
+                      <button
+                        key={ch.number}
+                        type="button"
+                        onClick={() => onSelectChapter(ch)}
+                        className="group flex w-full items-center justify-between gap-2 p-2 rounded-xl bg-white border border-gray-100 hover:border-gray-300 hover:shadow-xs transition text-left cursor-pointer"
+                      >
+                        <div className="min-w-0 flex items-center gap-2">
+                          <span className="size-5 rounded-md bg-gray-100 text-gray-700 font-bold text-[9px] flex items-center justify-center shrink-0">
+                            {ch.number}
+                          </span>
+                          <span className="text-xs font-medium text-gray-800 group-hover:text-black truncate">
+                            {ch.title}
+                          </span>
+                        </div>
+                        <ChevronRight className="size-3 text-gray-400 group-hover:text-black shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {subject.chapters.map((ch) => (
+                <button
+                  key={ch.number}
+                  type="button"
+                  onClick={() => onSelectChapter(ch)}
+                  className="group flex items-center justify-between gap-2 p-2.5 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50/80 transition text-left cursor-pointer"
+                >
+                  <div className="min-w-0 flex items-center gap-2.5">
+                    <span className="size-6 rounded-full bg-gray-100 text-gray-700 font-bold text-[10px] flex items-center justify-center shrink-0">
+                      {ch.number}
+                    </span>
+                    <span className="text-xs font-semibold text-gray-800 group-hover:text-black truncate">
+                      {ch.title}
+                    </span>
+                  </div>
+                  <ChevronRight className="size-3.5 text-gray-400 group-hover:text-black shrink-0" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
