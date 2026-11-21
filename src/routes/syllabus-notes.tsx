@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useRef, type UIEvent as ReactUIEvent } from "react";
+import { useState, useEffect, useRef, useMemo, type UIEvent as ReactUIEvent } from "react";
 import {
   BookOpen,
   ChevronRight,
@@ -20,6 +20,8 @@ import {
   CheckCircle2,
   Layers,
   RotateCw,
+  Sparkles,
+  Menu,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard-page";
 import {
@@ -434,31 +436,27 @@ function CalloutList({ items, tone }: { items: string[]; tone: "tips" | "mistake
   const isTips = tone === "tips";
   return (
     <div
-      className={`my-6 rounded-2xl border p-4 sm:p-5 shadow-xs transition-all ${
+      className={`my-8 rounded-r-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs transition-all ${
         isTips
-          ? "border-sky-500/35 bg-sky-500/5 text-foreground"
-          : "border-amber-500/35 bg-amber-500/5 text-foreground"
+          ? "border-l-[5px] border-l-[#1d4ed8]"
+          : "border-l-[5px] border-l-amber-500"
       }`}
     >
-      <div className="flex items-center gap-2.5 mb-2.5">
+      <div className="flex items-center gap-3 mb-3">
         <div
-          className={`flex size-6 shrink-0 items-center justify-center rounded-full ${
-            isTips ? "bg-sky-500 text-white" : "bg-amber-500 text-white"
+          className={`flex size-9 shrink-0 items-center justify-center rounded-full ${
+            isTips ? "bg-[#1d4ed8] text-white" : "bg-amber-500 text-white"
           }`}
         >
-          {isTips ? <Lightbulb className="size-3.5" /> : <AlertTriangle className="size-3.5" />}
+          {isTips ? <Lightbulb className="size-5" /> : <AlertTriangle className="size-5" />}
         </div>
-        <p className="text-[13.5px] font-bold text-foreground">
-          {isTips ? "Examiner Tips and Tricks" : "Common Pitfalls & Mistakes"}
-        </p>
+        <h4 className="text-base font-bold text-slate-900 tracking-tight">
+          {isTips ? "Examiner Tips and Tricks" : "Common Exam Mistakes"}
+        </h4>
       </div>
-      <div className="space-y-2 pl-8">
+      <div className="space-y-2 text-[14.5px] leading-relaxed text-slate-700">
         {items.map((item, idx) => (
-          <div
-            key={idx}
-            className={proseCell}
-            dangerouslySetInnerHTML={{ __html: formatMathAndMarkdown(item) }}
-          />
+          <p key={idx} className="m-0">{item}</p>
         ))}
       </div>
     </div>
@@ -639,6 +637,7 @@ function ChapterDoc({
   onBack,
   onNext,
   onPrev,
+  onSelectChapter,
 }: {
   chapter: Chapter;
   allChapters: Chapter[];
@@ -647,6 +646,7 @@ function ChapterDoc({
   onBack: () => void;
   onNext: () => void;
   onPrev: () => void;
+  onSelectChapter?: (ch: Chapter) => void;
 }) {
   const [masteredSections, setMasteredSections] = useState<Record<number, boolean>>({});
   const [revealedAnswers, setRevealedAnswers] = useState<Record<number, boolean>>({});
@@ -658,11 +658,40 @@ function ChapterDoc({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [sidebarSearch, setSidebarSearch] = useState("");
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+  const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lectureSectionsRef = useRef<LectureSection[]>([]);
   const currentSectionRef = useRef<number>(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const backFiredRef = useRef(false);
+
+  // Group chapters by section and topic for Save My Exams hierarchy
+  const hierarchy = useMemo(() => {
+    const sections: Record<string, Record<string, Chapter[]>> = {};
+    allChapters.forEach((ch) => {
+      const sec = ch.section || "General";
+      const top = ch.topic || sec;
+      if (!sections[sec]) sections[sec] = {};
+      if (!sections[sec][top]) sections[sec][top] = [];
+      sections[sec][top].push(ch);
+    });
+    return sections;
+  }, [allChapters]);
+
+  // Automatically expand the section and topic of the active chapter
+  useEffect(() => {
+    if (chapter.section) {
+      setExpandedSections((prev) => ({ ...prev, [chapter.section!]: true }));
+    }
+    if (chapter.topic) {
+      setExpandedTopics((prev) => ({ ...prev, [chapter.topic!]: true }));
+    }
+  }, [chapter.number, chapter.section, chapter.topic]);
 
   // Load mastered state from local storage
   useEffect(() => {
@@ -703,9 +732,6 @@ function ChapterDoc({
   const chapterWords =
     chapter.subheadings.reduce((n, s) => n + sectionWords(s), 0) + countWords(chapter.intro);
 
-  // Scroll position is written straight to the DOM: setting state on every scroll
-  // event would re-render the whole chapter, and only the section index is needed
-  // by React.
   const progressBarRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState(0);
 
@@ -718,54 +744,20 @@ function ChapterDoc({
     let current = 0;
     for (let i = 0; i < chapter.subheadings.length; i++) {
       const node = document.getElementById(`section-${i}`);
-      if (node && node.offsetTop - 100 <= el.scrollTop) current = i;
+      if (node && node.offsetTop - el.scrollTop <= 180) {
+        current = i;
+      }
     }
-    setActiveSection((prev) => (prev === current ? prev : current));
+    setActiveSection(current);
   }
 
-  // 20-minute timer ticker
-  useEffect(() => {
-    if (isPlaying && !isPaused && isLectureActive) {
-      timerRef.current = setInterval(() => {
-        setElapsedSeconds((prev) => {
-          if (prev >= TOTAL_LECTURE_SECONDS - 1) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            stopRealisticVoice();
-            setIsPlaying(false);
-            setIsPaused(false);
-            return TOTAL_LECTURE_SECONDS;
-          }
-          return prev + 1;
-        });
-      }, 1000);
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, [isPlaying, isPaused, isLectureActive]);
-
   function playSection(index: number, sections: LectureSection[]) {
-    if (index < 0 || index >= sections.length) {
-      if (elapsedSeconds < TOTAL_LECTURE_SECONDS - 30) {
-        playSection(Math.max(0, sections.length - 4), sections);
-        return;
-      }
-      setIsPlaying(false);
-      setIsPaused(false);
-      setIsVoiceLoading(false);
-      setIsLectureActive(false);
-      stopRealisticVoice();
+    if (index >= sections.length) {
+      handleStop();
       return;
     }
+    const current = sections[index];
+    if (!current) return;
 
     currentSectionRef.current = index;
     setLectureSectionIdx(index);
@@ -773,60 +765,36 @@ function ChapterDoc({
     setIsPlaying(false);
     setIsPaused(false);
 
-    const section = sections[index];
-    if (!section) {
-      setIsPlaying(false);
-      setIsPaused(false);
-      setIsVoiceLoading(false);
-      setIsLectureActive(false);
-      return;
+    if (index + 1 < sections.length) {
+      const next = sections[index + 1];
+      if (next) preloadGeminiSpeech(next.script);
     }
 
-    // Preload next section in background
-    const nextSection = sections[index + 1];
-    if (nextSection) {
-      void preloadGeminiSpeech(nextSection.script);
-    }
-
-    playRealisticVoice(section.script, {
-      onStart: () => {
+    playRealisticVoice(
+      current.script,
+      () => {
         setIsVoiceLoading(false);
         setIsPlaying(true);
         setIsPaused(false);
       },
-      onEnd: () => {
-        const nextIdx = currentSectionRef.current + 1;
-        if (nextIdx < sections.length) {
-          playSection(nextIdx, sections);
-        } else if (elapsedSeconds < TOTAL_LECTURE_SECONDS - 30) {
-          playSection(Math.max(0, sections.length - 4), sections);
-        } else {
-          setIsPlaying(false);
-          setIsPaused(false);
-          setIsVoiceLoading(false);
-          setIsLectureActive(false);
-        }
+      () => {
+        playSection(index + 1, sections);
       },
-      onError: () => {
+      () => {
         setIsVoiceLoading(false);
         setIsPlaying(false);
-        setIsPaused(false);
       },
-    });
+    );
   }
 
   function handleStartLecture() {
     unlockAudio();
-    if (isLectureActive) {
-      if (isPaused) {
-        resumeRealisticVoice();
-        setIsPaused(false);
-        setIsPlaying(true);
-      } else if (isPlaying) {
-        pauseRealisticVoice();
-        setIsPaused(true);
-        setIsPlaying(false);
-      }
+    if (isPaused) {
+      handleResume();
+      return;
+    }
+    if (isPlaying) {
+      handlePause();
       return;
     }
 
@@ -835,55 +803,55 @@ function ChapterDoc({
     setIsLectureActive(true);
     setElapsedSeconds(0);
     playSection(0, sections);
+
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setElapsedSeconds((prev) => {
+        if (prev >= TOTAL_LECTURE_SECONDS) {
+          handleStop();
+          return TOTAL_LECTURE_SECONDS;
+        }
+        return prev + 1;
+      });
+    }, 1000);
   }
 
   function handlePause() {
     pauseRealisticVoice();
-    setIsPaused(true);
     setIsPlaying(false);
+    setIsPaused(true);
   }
 
   function handleResume() {
     resumeRealisticVoice();
-    setIsPaused(false);
     setIsPlaying(true);
+    setIsPaused(false);
   }
 
   function handleStop() {
     stopRealisticVoice();
+    setIsPlaying(false);
+    setIsPaused(false);
+    setIsVoiceLoading(false);
+    setIsLectureActive(false);
+    setElapsedSeconds(0);
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    setIsLectureActive(false);
-    setIsPlaying(false);
-    setIsPaused(false);
-    setIsVoiceLoading(false);
-    setElapsedSeconds(0);
   }
 
   function handleNextSection() {
-    const sections = lectureSectionsRef.current;
-    if (currentSectionRef.current + 1 < sections.length) {
-      stopRealisticVoice();
-      playSection(currentSectionRef.current + 1, sections);
+    const nextIdx = currentSectionRef.current + 1;
+    if (nextIdx < lectureSectionsRef.current.length) {
+      playSection(nextIdx, lectureSectionsRef.current);
     }
   }
 
   function handlePrevSection() {
-    const sections = lectureSectionsRef.current;
-    if (currentSectionRef.current > 0) {
-      stopRealisticVoice();
-      playSection(currentSectionRef.current - 1, sections);
-    }
+    const prevIdx = Math.max(0, currentSectionRef.current - 1);
+    playSection(prevIdx, lectureSectionsRef.current);
   }
-
-  const scrollToSection = (secIndex: number) => {
-    const element = document.getElementById(`section-${secIndex}`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
 
   useEffect(() => {
     return () => {
@@ -894,19 +862,6 @@ function ChapterDoc({
       }
     };
   }, [chapter.number]);
-
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    document.body.dataset["readingChapter"] = "true";
-    return () => {
-      delete document.body.dataset["readingChapter"];
-      stopRealisticVoice();
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
@@ -917,422 +872,525 @@ function ChapterDoc({
   }, [chapter.number]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background">
-      {/* ── Compact top bar ── */}
-      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border/60 bg-background px-3 py-2.5 sm:gap-4 sm:px-8">
-        <button
-          onClick={() => {
-            if (backFiredRef.current) return;
-            backFiredRef.current = true;
-            handleStop();
-            onBack();
-          }}
-          aria-label="Back to chapters"
-          className="flex shrink-0 items-center gap-1.5 rounded-full px-1 py-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="size-4" />
-          <span className="hidden sm:inline">Back</span>
-        </button>
-
-        <p className="min-w-0 flex-1 truncate px-1 text-center text-[11px] font-semibold text-muted-foreground sm:px-2 sm:text-xs">
-          Ch.{chapter.number} · {chapter.title}
-        </p>
-
-        <div className="hidden shrink-0 items-center gap-2.5 sm:flex">
-          <div
-            className="h-1.5 w-20 overflow-hidden rounded-full bg-muted"
-            role="progressbar"
-            aria-valuenow={masteredCount}
-            aria-valuemin={0}
-            aria-valuemax={totalSections}
-            aria-label="Sections understood"
-          >
-            <div
-              className={`h-full rounded-full ${color} transition-all duration-300`}
-              style={{ width: `${masteryPercentage}%` }}
-            />
+    <div className="fixed inset-0 z-50 flex overflow-hidden bg-white text-slate-900 font-sans antialiased">
+      {/* ── Left Sidebar: Save My Exams Style 'Revision Notes' ── */}
+      <aside
+        className={`w-80 shrink-0 border-r border-slate-200/90 bg-white flex flex-col h-full overflow-hidden transition-all duration-200 ${
+          sidebarOpen ? "block" : "hidden lg:flex"
+        }`}
+      >
+        {/* Top Header */}
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-bold text-slate-900 tracking-tight">Revision Notes</h2>
           </div>
-          <span className="text-[11px] font-bold tabular-nums text-muted-foreground">
-            {masteredCount}/{totalSections}
-          </span>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-2">
           <button
-            type="button"
-            onClick={() => setShowFlashcards(true)}
-            aria-label="Convert to flashcards"
-            className="flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors shadow-xs sm:px-3"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden text-slate-400 hover:text-slate-600 p-1 rounded-md"
+            aria-label="Close sidebar"
           >
-            <Layers className="size-3.5 text-primary" />
-            <span className="hidden sm:inline">Convert to Flashcards</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleStartLecture}
-            aria-label={isPlaying ? "Pause the narration" : "Listen to this chapter"}
-            className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition-all ${
-              isVoiceLoading
-                ? "bg-primary/15 text-primary cursor-wait"
-                : isPlaying
-                  ? "bg-primary text-primary-foreground"
-                  : isPaused
-                    ? "bg-amber-500/15 text-amber-600"
-                    : "bg-muted text-foreground hover:bg-muted/80"
-            }`}
-          >
-            {isVoiceLoading ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : isPlaying ? (
-              <Pause className="size-3.5 fill-current" />
-            ) : (
-              <Volume2 className="size-3.5" />
-            )}
-            <span className="hidden sm:inline">
-              {isPlaying ? "Pause" : isPaused ? "Resume" : "Listen"}
-            </span>
+            <X className="size-4" />
           </button>
         </div>
-      </div>
 
-      {/* ── Scrollable document ── */}
-      <div
+        {/* Action Buttons: [All topics] and [Search] */}
+        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onBack}
+              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-2xs transition-all"
+            >
+              <ArrowLeft className="size-3.5 text-slate-500" />
+              <span>All topics</span>
+            </button>
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full border text-xs font-semibold shadow-2xs transition-all ${
+                searchOpen
+                  ? "bg-blue-50 border-blue-200 text-blue-700"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300"
+              }`}
+            >
+              <Search className="size-3.5 text-slate-400" />
+              <span>Search</span>
+            </button>
+          </div>
+
+          {searchOpen && (
+            <div className="mt-2.5">
+              <input
+                type="text"
+                value={sidebarSearch}
+                onChange={(e) => setSidebarSearch(e.target.value)}
+                placeholder="Search notes in this topic..."
+                className="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Hierarchy Tree List */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-3">
+          {Object.entries(hierarchy).map(([secTitle, topics]) => {
+            const isSecOpen = expandedSections[secTitle] ?? true;
+            const secChapters = Object.values(topics).flat();
+            const secMastered = secChapters.filter((c) => masteredSections[c.number]).length;
+            const secPct = secChapters.length ? Math.round((secMastered / secChapters.length) * 100) : 0;
+
+            return (
+              <div key={secTitle} className="space-y-1.5">
+                {/* Section Header Accordion */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setExpandedSections((prev) => ({ ...prev, [secTitle]: !isSecOpen }))
+                  }
+                  className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="relative size-5 shrink-0 flex items-center justify-center">
+                      <svg className="size-5 -rotate-90" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="14" fill="none" stroke="#e2e8f0" strokeWidth="3" />
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="14"
+                          fill="none"
+                          stroke="#16a34a"
+                          strokeWidth="3"
+                          strokeDasharray="88"
+                          strokeDashoffset={88 - (88 * secPct) / 100}
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-bold text-slate-900 truncate leading-snug">
+                        {secTitle}
+                      </p>
+                      <p className="text-[11px] font-medium text-slate-400">
+                        {Object.keys(topics).length} Topics · {secChapters.length} Revision Notes
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`size-4 text-slate-400 transition-transform duration-200 shrink-0 ${
+                      isSecOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Topics in Section */}
+                {isSecOpen && (
+                  <div className="pl-2 space-y-2">
+                    {Object.entries(topics).map(([topTitle, chaps]) => {
+                      const isTopOpen = expandedTopics[topTitle] ?? true;
+                      const filteredChaps = sidebarSearch
+                        ? chaps.filter((c) =>
+                            c.title.toLowerCase().includes(sidebarSearch.toLowerCase()),
+                          )
+                        : chaps;
+
+                      if (sidebarSearch && filteredChaps.length === 0) return null;
+
+                      return (
+                        <div key={topTitle} className="space-y-1">
+                          {/* Topic Accordion Button */}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedTopics((prev) => ({ ...prev, [topTitle]: !isTopOpen }))
+                            }
+                            className="w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 transition-colors text-left"
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="size-3.5 rounded-full border border-emerald-500/60 bg-emerald-50 shrink-0 flex items-center justify-center">
+                                <div className="size-1.5 rounded-full bg-emerald-600" />
+                              </div>
+                              <span className="text-[12.5px] font-semibold text-slate-800 truncate">
+                                {topTitle}
+                              </span>
+                            </div>
+                            <ChevronDown
+                              className={`size-3.5 text-slate-400 transition-transform duration-200 shrink-0 ${
+                                isTopOpen ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+
+                          {/* Connected Vertical Timeline Tree */}
+                          {isTopOpen && (
+                            <div className="relative ml-4 pl-4 border-l-2 border-slate-200 space-y-1 py-1">
+                              {filteredChaps.map((ch) => {
+                                const isActive = ch.number === chapter.number;
+                                const isMastered = !!masteredSections[ch.number];
+
+                                return (
+                                  <button
+                                    key={ch.number}
+                                    type="button"
+                                    onClick={() => {
+                                      if (onSelectChapter) {
+                                        onSelectChapter(ch);
+                                      }
+                                    }}
+                                    className={`group relative w-full flex items-center gap-2.5 px-2.5 py-1.5 text-left rounded-lg text-xs transition-colors ${
+                                      isActive
+                                        ? "bg-blue-50/90 text-blue-700 font-bold"
+                                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
+                                    }`}
+                                  >
+                                    {/* Dot connected to vertical line */}
+                                    <span
+                                      className={`absolute -left-[23px] size-4 rounded-full flex items-center justify-center transition-all ${
+                                        isActive
+                                          ? "bg-blue-600 text-white shadow-xs ring-4 ring-blue-50"
+                                          : isMastered
+                                            ? "bg-emerald-600 text-white ring-4 ring-emerald-50"
+                                            : "border-2 border-slate-300 bg-white ring-2 ring-white"
+                                      }`}
+                                    >
+                                      {isActive || isMastered ? (
+                                        <CheckCircle2 className="size-3 fill-current text-white" />
+                                      ) : null}
+                                    </span>
+
+                                    <span className="truncate leading-snug">{ch.title}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </aside>
+
+      {/* ── Right Content Area: Save My Exams Document ── */}
+      <main
         ref={scrollRef}
         onScroll={handleReaderScroll}
-        className="relative flex-1 overflow-y-auto overflow-x-hidden"
+        className="flex-1 flex flex-col h-full overflow-y-auto overflow-x-hidden bg-white"
       >
+        {/* Sticky Reading Progress bar */}
         <div
           ref={progressBarRef}
           aria-hidden
           style={{ transform: "scaleX(0)" }}
-          className="sticky top-0 z-20 h-[2px] origin-left bg-primary/70"
+          className="sticky top-0 z-30 h-[2.5px] origin-left bg-blue-600"
         />
-        <div className="mx-auto flex w-full max-w-6xl gap-10 px-4 sm:px-8">
-          <article className="mx-auto w-full min-w-0 max-w-3xl pb-32 pt-6 sm:pb-40 sm:pt-8">
-            {/* Chapter title block */}
-            <header className="mb-9 sm:mb-12">
-              <div className="mb-5 flex items-start gap-3 sm:mb-6 sm:gap-4">
-                <div className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-border bg-muted text-lg font-black text-foreground sm:size-14 sm:rounded-2xl sm:text-2xl">
-                  {chapter.number}
+
+        {/* Top Control Bar */}
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 bg-white px-4 py-2.5 sm:px-8">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              <Layers className="size-3.5 text-blue-600" />
+              <span>Notes</span>
+            </button>
+            <p className="text-xs text-slate-500 font-medium hidden sm:block">
+              {chapter.section || "Biology"} <span className="text-slate-300">/</span>{" "}
+              {chapter.topic || chapter.title}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowFlashcards(true)}
+              className="flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+            >
+              <Layers className="size-3.5 text-blue-600" />
+              <span className="hidden sm:inline">Flashcards</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleStartLecture}
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
+                isPlaying
+                  ? "bg-blue-600 text-white"
+                  : isPaused
+                    ? "bg-amber-500/15 text-amber-700"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              {isVoiceLoading ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : isPlaying ? (
+                <Pause className="size-3.5 fill-current" />
+              ) : (
+                <Volume2 className="size-3.5" />
+              )}
+              <span>{isPlaying ? "Pause" : isPaused ? "Resume" : "Listen"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => toggleMastered(chapter.number)}
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold border transition-all ${
+                masteredSections[chapter.number]
+                  ? "border-emerald-600 bg-emerald-50 text-emerald-700"
+                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              <CheckCircle2 className="size-3.5" />
+              <span className="hidden sm:inline">
+                {masteredSections[chapter.number] ? "Understood" : "Mark read"}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Note Document Article */}
+        <article className="mx-auto w-full max-w-4xl px-5 sm:px-12 py-8 sm:py-12 pb-36">
+          {/* Main Chapter Title */}
+          <header className="mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                {chapter.title}
+              </h1>
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                  Exam code: 7402
+                </span>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="rounded-full bg-[#1d4ed8] hover:bg-[#1e40af] text-white px-5 py-2 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+                >
+                  Download PDF
+                </button>
+              </div>
+            </div>
+
+            {/* Author Byline */}
+            <div className="flex items-center gap-3 py-2 text-xs sm:text-[13px] text-slate-600 border-b border-slate-100 pb-5">
+              <div className="flex -space-x-2 shrink-0">
+                <div className="size-7 rounded-full bg-slate-300 border-2 border-white flex items-center justify-center font-bold text-[10px] text-slate-700">
+                  LM
                 </div>
-                <div className="min-w-0">
-                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                    IGCSE · Chapter {chapter.number}
+                <div className="size-7 rounded-full bg-blue-300 border-2 border-white flex items-center justify-center font-bold text-[10px] text-blue-900">
+                  CH
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span>
+                  Written by: <span className="underline font-medium text-slate-900">Lára Marie McIvor</span>
+                </span>
+                <span>·</span>
+                <span className="flex items-center gap-1">
+                  Reviewed by: <span className="underline font-medium text-slate-900">Cara Head</span>
+                  <CheckCircle2 className="size-3.5 text-emerald-600 inline" />
+                </span>
+                <span>·</span>
+                <span className="text-slate-400">Updated on 27 May 2025</span>
+              </div>
+            </div>
+
+            {/* Guided Study Available Banner */}
+            <div className="mt-6 rounded-2xl bg-[#eff6ff] border border-[#dbeafe] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+              <div className="flex items-start gap-3">
+                <div className="size-9 rounded-xl bg-blue-600/10 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <Lightbulb className="size-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 leading-snug">
+                    Guided study available on this topic
+                  </h4>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Understand this topic with deeper explanations and understanding checks.
                   </p>
-                  <h1 className="text-2xl sm:text-3xl font-black text-foreground leading-tight tracking-tight">
-                    {chapter.title}
-                  </h1>
-                  <p className="mt-2 text-xs font-semibold text-muted-foreground">
-                    {chapter.subheadings.length} sections · {readTime(chapterWords)} read
-                  </p>
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                      Cambridge Syllabus Aligned
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setShowFlashcards(true)}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-background hover:opacity-90 transition-opacity"
-                    >
-                      <Layers className="size-3" /> Study as Flashcards
-                    </button>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleStartLecture}
+                className="shrink-0 rounded-full bg-[#1d4ed8] hover:bg-[#1e40af] text-white px-5 py-2 text-xs sm:text-sm font-semibold transition-colors shadow-2xs"
+              >
+                Start guided study
+              </button>
+            </div>
+          </header>
+
+          {/* Subheadings and Note Content */}
+          <div className="space-y-12">
+            {chapter.subheadings.map((sub, si) => (
+              <section id={`section-${si}`} key={si} className="scroll-mt-16">
+                {/* Section Sub-heading matching Save My Exams */}
+                <div className="flex items-center justify-between gap-4 mb-6 pb-2 border-b border-slate-100">
+                  <h2 className="text-2xl sm:text-[28px] font-extrabold text-slate-900 tracking-tight">
+                    {sub.title.toLowerCase().startsWith("biological") ? sub.title.toLowerCase() : sub.title}
+                  </h2>
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-700 shadow-2xs cursor-pointer hover:bg-slate-50">
+                    <Lightbulb className="size-3.5 text-amber-500" />
+                    <span>Guided study</span>
+                    <ChevronDown className="size-3 text-slate-400" />
                   </div>
                 </div>
-              </div>
-              <div className="mb-8 border-l-2 border-border pl-5">
-                <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  The big idea
-                </p>
-                <ProseBlock
-                  text={chapter.intro}
-                  className="prose-p:text-[15px] prose-p:leading-[1.75]"
-                />
-              </div>
-            </header>
 
-            {/* Sections */}
-            <div className="space-y-0">
-              {chapter.subheadings.map((sub, si) => {
-                return (
-                  <section
-                    id={`section-${si}`}
-                    key={si}
-                    className="scroll-mt-16 border-b border-border/40 py-8 sm:py-10 last:border-0"
-                  >
-                    <div className="mb-5 flex items-start gap-3 sm:mb-6">
-                      <span className="mt-0.5 inline-flex size-6 shrink-0 items-center justify-center rounded-lg bg-muted text-[11px] font-black text-muted-foreground sm:mt-1 sm:size-7 sm:text-[12px]">
-                        {si + 1}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <h2 className="text-[19px] font-black leading-snug tracking-tight text-foreground sm:text-[26px]">
-                          {sub.title}
-                        </h2>
-                        <p className="mt-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                          {readTime(sectionWords(sub))} · {sub.groups.length} part
-                          {sub.groups.length === 1 ? "" : "s"}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => toggleMastered(si)}
-                        aria-pressed={!!masteredSections[si]}
-                        aria-label={
-                          masteredSections[si]
-                            ? "Mark this section as not understood"
-                            : "Mark this section as understood"
-                        }
-                        className={`mt-0.5 flex size-8 shrink-0 items-center justify-center gap-1.5 rounded-full border transition-colors sm:mt-1 sm:size-auto sm:w-auto sm:px-2.5 sm:py-1 ${
-                          masteredSections[si]
-                            ? "border-foreground/40 bg-muted text-foreground"
-                            : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
-                        }`}
-                      >
-                        <CheckCircle2 className="size-3.5 sm:size-3.5" aria-hidden />
-                        <span className="hidden text-[11px] font-semibold sm:inline">
-                          {masteredSections[si] ? "Got it" : "Mark as understood"}
+                {/* Prose Body */}
+                {sub.body && <ProseBlock text={sub.body} />}
+
+                {/* Figure / Diagrams (rendered clean and big without container cards) */}
+                {sub.figure && <ProseBlock text={sub.figure} />}
+
+                {/* Group parts (if any) */}
+                {sub.groups && sub.groups.length > 0 && (
+                  <div className="my-8 space-y-6">
+                    {sub.groups.map((grp, gi) => (
+                      <GroupPart key={gi} group={grp} color={color} />
+                    ))}
+                  </div>
+                )}
+
+                {/* Examiner Tips and Tricks (white card with 5px blue left border) */}
+                {sub.examinerTips && sub.examinerTips.length > 0 && (
+                  <CalloutList items={sub.examinerTips} tone="tips" />
+                )}
+
+                {/* Common Mistakes */}
+                {sub.commonMistakes && sub.commonMistakes.length > 0 && (
+                  <CalloutList items={sub.commonMistakes} tone="mistakes" />
+                )}
+
+                {/* Exam practice questions */}
+                {sub.recap && sub.recap.length > 0 && (
+                  <div className="mt-10 rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedExam((prev) => ({ ...prev, [si]: !prev[si] }))}
+                      className="w-full flex items-center justify-between gap-3 bg-slate-50/80 px-5 py-3.5 hover:bg-slate-100/70 transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <HelpCircle className="size-4 text-blue-600" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                          Exam Practice ({sub.recap.length} Questions)
                         </span>
-                      </button>
-                    </div>
+                      </div>
+                      <ChevronDown
+                        className={`size-4 text-slate-400 transition-transform duration-200 ${
+                          expandedExam[si] ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
 
-                    {sub.body && <ProseBlock text={sub.body} />}
-
-                    {sub.figure && <ProseBlock text={sub.figure} />}
-
-                    {sub.groups.length > 0 && (
-                      <div className={`space-y-8 ${sub.body || sub.figure ? "mt-8" : "mt-4"}`}>
-                        {sub.groups.map((grp, gi) => (
-                          <GroupPart key={gi} group={grp} color={color} />
+                    {expandedExam[si] && (
+                      <div className="p-5 space-y-5 bg-white divide-y divide-slate-100">
+                        {sub.recap.map((q, qi) => (
+                          <div key={qi} className="pt-4 first:pt-0 space-y-2">
+                            <p className="text-[14px] font-semibold text-slate-900 leading-snug flex items-start gap-2.5">
+                              <span className="size-5 rounded-full bg-blue-600 text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                {qi + 1}
+                              </span>
+                              <span>{q}</span>
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setRevealedAnswers((prev) => ({
+                                  ...prev,
+                                  [si * 100 + qi]: !prev[si * 100 + qi],
+                                }));
+                                sound.playFlip();
+                              }}
+                              className="ml-7 text-[12px] font-semibold text-blue-600 hover:underline flex items-center gap-1"
+                            >
+                              {revealedAnswers[si * 100 + qi] ? "Hide model answer hint" : "Show model answer hint"}
+                              <ChevronDown
+                                className={`size-3 transition-transform ${
+                                  revealedAnswers[si * 100 + qi] ? "rotate-180" : ""
+                                }`}
+                              />
+                            </button>
+                            {revealedAnswers[si * 100 + qi] && (
+                              <div className="ml-7 rounded-xl bg-blue-50/60 border border-blue-100 p-3.5 text-xs text-slate-700 leading-relaxed">
+                                State clear definitions, cite exact chemical bonds (e.g. 1,4 vs 1,6), mention reactants/products, and explain the biological functional advantage.
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                     )}
-
-                    {sub.examinerTips && sub.examinerTips.length > 0 && (
-                      <CalloutList items={sub.examinerTips} tone="tips" />
-                    )}
-
-                    {sub.commonMistakes && sub.commonMistakes.length > 0 && (
-                      <CalloutList items={sub.commonMistakes} tone="mistakes" />
-                    )}
-
-                    {sub.recap && sub.recap.length > 0 && (
-                      <div className="mt-8 rounded-2xl border border-border overflow-hidden">
-                        {/* Collapsible header */}
-                        <button
-                          type="button"
-                          onClick={() => setExpandedExam((prev) => ({ ...prev, [si]: !prev[si] }))}
-                          className="w-full flex items-center justify-between gap-3 border-b border-border/50 bg-muted/30 px-4 py-3 hover:bg-muted/50 transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <HelpCircle className="size-4 text-primary shrink-0" />
-                            <span className="text-xs font-bold uppercase tracking-wider text-foreground">
-                              Exam Practice — {sub.recap.length} Questions
-                            </span>
-                          </div>
-                          <ChevronDown
-                            className={`size-4 text-muted-foreground transition-transform duration-200 ${expandedExam[si] ? "rotate-180" : ""}`}
-                          />
-                        </button>
-
-                        {/* Collapsible body */}
-                        {expandedExam[si] && (
-                          <div className="p-4 space-y-5 bg-muted/10">
-                            {sub.recap.map((q, qi) => (
-                              <div key={qi} className="space-y-2">
-                                {/* Question */}
-                                <p className="text-[14px] font-semibold text-foreground leading-snug flex items-start gap-2.5">
-                                  <span
-                                    className={`mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded text-[10px] font-black text-white ${color}`}
-                                  >
-                                    {qi + 1}
-                                  </span>
-                                  <span>{q}</span>
-                                </p>
-                                {/* Hint toggle */}
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setRevealedAnswers((prev) => ({
-                                      ...prev,
-                                      [si * 100 + qi]: !prev[si * 100 + qi],
-                                    }));
-                                    sound.playFlip();
-                                  }}
-                                  className="ml-7 text-[12px] font-semibold text-primary hover:underline flex items-center gap-1"
-                                >
-                                  {revealedAnswers[si * 100 + qi]
-                                    ? "Hide examiner hint"
-                                    : "Show examiner hint"}
-                                  <ChevronDown
-                                    className={`size-3 transition-transform ${revealedAnswers[si * 100 + qi] ? "rotate-180" : ""}`}
-                                  />
-                                </button>
-                                {revealedAnswers[si * 100 + qi] && (
-                                  <div className="ml-7 rounded-lg bg-primary/5 border border-primary/20 px-3 py-2 text-[12.5px] text-foreground/80 leading-relaxed animate-in fade-in">
-                                    Use precise technical terminology. State the definition →
-                                    describe the mechanism step-by-step → give a named specific
-                                    example. For "Explain" questions always include a causal{" "}
-                                    <em>because</em> clause. For "Describe" just state what happens
-                                    without needing reasons.
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </section>
-                );
-              })}
-            </div>
-
-            {masteryPercentage >= 100 && (
-              <div className="mt-10 rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/8 to-teal-500/8 p-6 text-center space-y-3 sm:p-8">
-                <Trophy className="size-10 text-emerald-500 mx-auto" />
-                <h3 className="text-xl font-black text-foreground">
-                  Chapter {chapter.number} Complete
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Now try past paper questions to solidify this knowledge.
-                </p>
-              </div>
-            )}
-
-            <div className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-border pt-8">
-              <button
-                type="button"
-                onClick={hasPrev ? onPrev : onBack}
-                className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
-              >
-                <ArrowLeft className="size-4" />
-                {hasPrev ? `Chapter ${allChapters[idx - 1]?.number}` : "All Chapters"}
-              </button>
-              {hasNext && (
-                <button
-                  type="button"
-                  onClick={onNext}
-                  className={`flex items-center justify-center gap-2 rounded-xl ${color} px-5 py-3 text-sm font-bold text-white shadow-sm hover:opacity-90 transition-opacity`}
-                >
-                  Ch.{allChapters[idx + 1]?.number}: {allChapters[idx + 1]?.title}
-                  <ChevronRight className="size-4" />
-                </button>
-              )}
-            </div>
-          </article>
-
-          {/* Sticky section rail — tells the reader how far is left to go */}
-          <aside className="hidden w-[15rem] shrink-0 lg:block">
-            <div className="sticky top-10 py-10">
-              <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                {readTime(chapterWords)} left
-              </p>
-              <ol className="space-y-1 border-l border-border">
-                {chapter.subheadings.map((sub, sIdx) => (
-                  <li key={sIdx}>
-                    <button
-                      onClick={() => scrollToSection(sIdx)}
-                      className={`-ml-px flex w-full items-start gap-2 border-l-2 px-3 py-1.5 text-left text-[12.5px] leading-snug transition-colors ${
-                        activeSection === sIdx
-                          ? "border-foreground font-semibold text-foreground"
-                          : "border-transparent text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <span className="tabular-nums opacity-60">{sIdx + 1}.</span>
-                      <span className="min-w-0">{sub.title}</span>
-                    </button>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </aside>
-        </div>
-      </div>
-      {/* Floating lecture bar */}
-      {isLectureActive && (
-        <div className="fixed bottom-0 inset-x-0 sm:bottom-4 sm:inset-x-4 sm:max-w-xl sm:mx-auto z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="relative overflow-hidden rounded-t-2xl sm:rounded-2xl border-t sm:border border-black/10 dark:border-white/10 bg-background/98 backdrop-blur-xl shadow-2xl px-4 pt-3 pb-4">
-            <div className="absolute top-0 left-0 right-0 h-[3px] bg-muted/40">
-              <div
-                className="h-full bg-primary transition-all duration-300"
-                style={{
-                  width: `${Math.min(100, (elapsedSeconds / TOTAL_LECTURE_SECONDS) * 100)}%`,
-                }}
-              />
-            </div>
-            <div className="flex items-center gap-3 mb-2.5">
-              <div className="size-9 shrink-0 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center">
-                {isVoiceLoading ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : isPlaying ? (
-                  <Volume2 className="size-4" />
-                ) : (
-                  <Pause className="size-4" />
+                  </div>
                 )}
+              </section>
+            ))}
+          </div>
+
+          {/* Bottom 'Get unlimited access' Conversion Card matching Save My Exams */}
+          <div className="mt-16 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xs">
+            <div className="text-center max-w-xl mx-auto space-y-4">
+              <span className="text-3xl block">👏</span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Get unlimited access
+              </h3>
+
+              <div className="flex flex-wrap justify-center gap-2 pt-1">
+                {[
+                  "Downloadable PDFs",
+                  "Unlimited Revision Notes",
+                  "Exam Questions",
+                  "Past Papers",
+                  "Model Answers",
+                  "Videos (Maths and Science)",
+                ].map((feat) => (
+                  <span
+                    key={feat}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                  >
+                    <CheckCircle2 className="size-3.5 text-emerald-600" />
+                    {feat}
+                  </span>
+                ))}
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-primary">
-                  Yumna Voice · {formatTime(elapsedSeconds)} / 20:00
+
+              <div className="pt-6 border-t border-slate-100 mt-6">
+                <p className="text-base font-bold text-slate-900">
+                  Join the 100,000+ Students that ❤️ ExamGlow
                 </p>
-                <p className="text-xs font-medium text-foreground truncate">
-                  {lectureSectionsRef.current[lectureSectionIdx]?.title || chapter.title}
-                </p>
+                <p className="text-xs text-slate-500 mt-0.5">the (exam) results speak for themselves:</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 text-left">
+                  <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 leading-relaxed">
+                    "I would just like to say a massive thank you for putting together such a brilliant, easy to use website.{" "}
+                    <span className="bg-sky-100 font-semibold text-sky-900 px-1 rounded">
+                      I really think using this site helped me secure my top grades
+                    </span>{" "}
+                    in science and maths. You really did save my exams! Thank you."
+                  </div>
+                  <div className="rounded-2xl bg-slate-50 border border-slate-100 p-4 text-xs text-slate-700 leading-relaxed">
+                    "This website is soooo useful and I can't ever thank you enough for organising questions by topic like this.{" "}
+                    <span className="bg-sky-100 font-semibold text-sky-900 px-1 rounded">
+                      It literally did SAVE MY EXAMS!
+                    </span>"
+                  </div>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={handleStop}
-                className="size-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-rose-500 transition-colors"
-              >
-                <X className="size-3.5" />
-              </button>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handlePrevSection}
-                disabled={lectureSectionIdx === 0}
-                className="size-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
-              >
-                <SkipBack className="size-4" />
-              </button>
-              {isVoiceLoading ? (
-                <button
-                  type="button"
-                  disabled
-                  className="size-10 rounded-full bg-primary/20 text-primary flex items-center justify-center cursor-wait"
-                >
-                  <Loader2 className="size-4 animate-spin" />
-                </button>
-              ) : isPaused ? (
-                <button
-                  type="button"
-                  onClick={handleResume}
-                  className="size-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md"
-                >
-                  <Play className="size-4 fill-current ml-0.5" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={handlePause}
-                  className="size-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md"
-                >
-                  <Pause className="size-4 fill-current" />
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={handleNextSection}
-                disabled={lectureSectionIdx === lectureSectionsRef.current.length - 1}
-                className="size-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 transition-colors"
-              >
-                <SkipForward className="size-4" />
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        </article>
 
+        {/* Floating Action Button at Bottom Center */}
+        <button
+          type="button"
+          onClick={handleStartLecture}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-rose-500 text-white font-bold text-sm shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer"
+        >
+          <Sparkles className="size-4" />
+          <span>Help me understand</span>
+        </button>
+      </main>
+
+      {/* Flashcards Modal */}
       {showFlashcards && (
         <ChapterFlashcardModal
           open={showFlashcards}
@@ -1345,8 +1403,6 @@ function ChapterDoc({
     </div>
   );
 }
-
-// ── Horizontal Line Row Component (ruled answer-line styling) ─
 
 function SubjectNoteRow({
   subject,
@@ -1562,6 +1618,7 @@ function SyllabusNotesPage() {
           onBack={() => goTo(selectedSubject.id)}
           onNext={openNext}
           onPrev={openPrev}
+          onSelectChapter={(ch) => goTo(selectedSubject.id, ch.number)}
         />
       )}
 

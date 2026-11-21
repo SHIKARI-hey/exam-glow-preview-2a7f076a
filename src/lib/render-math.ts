@@ -17,19 +17,21 @@ function escHtml(s: string): string {
 }
 
 function renderSvgBlock(title: string, svgContent: string): string {
-  return `<figure class="my-6 not-prose">
-    <div class="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
-      <div class="flex items-center gap-2 border-b border-border/60 bg-muted/30 px-4 py-2.5">
-        <svg class="size-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="1" y="1" width="14" height="14" rx="2"/>
-          <path d="M4 8h8M8 4v8"/>
-        </svg>
-        <span class="text-xs font-semibold text-foreground">${title}</span>
-      </div>
-      <div class="flex justify-center items-center p-4 overflow-x-auto bg-background/60">
-        ${svgContent.trim()}
-      </div>
+  // Strip outer card styling or border classes so it renders cleanly and big like Save My Exams
+  let cleanSvg = svgContent
+    .replace(/class="[^"]*rounded-2xl[^"]*"/gi, 'class="w-full max-w-4xl h-auto block mx-auto"')
+    .replace(/class="[^"]*shadow-[^"]*"/gi, 'class="w-full max-w-4xl h-auto block mx-auto"')
+    .replace(/<rect[^>]*class="[^"]*rounded-2xl[^"]*"[^>]*\/?>/gi, '');
+
+  if (!cleanSvg.includes('class="')) {
+    cleanSvg = cleanSvg.replace(/<svg\s+/i, '<svg class="w-full max-w-4xl h-auto block mx-auto" ');
+  }
+
+  return `<figure class="my-8 sm:my-10 not-prose flex flex-col items-center">
+    <div class="w-full flex justify-center py-2 overflow-x-auto">
+      ${cleanSvg.trim()}
     </div>
+    ${title ? `<figcaption class="mt-3.5 text-center text-[13.5px] sm:text-[14px] font-semibold italic text-foreground/85 max-w-2xl px-4 leading-relaxed">${title}</figcaption>` : ''}
   </figure>`;
 }
 
@@ -371,15 +373,26 @@ function renderMarkdown(text: string): string {
 
     // Unordered list
     if (isUnorderedItem(line)) {
-      const items: string[] = [];
+      const listNodes: { indent: number; text: string }[] = [];
       while (i < lines.length && isUnorderedItem(lines[i]!)) {
-        items.push(lines[i]!.replace(/^\s*[-•]\s*/, ""));
+        const raw = lines[i]!;
+        const match = raw.match(/^(\s*)[-•]\s*(.*)$/);
+        const indent = match ? match[1]!.length : 0;
+        const text = match ? match[2]! : raw.trim();
+        listNodes.push({ indent, text });
         i++;
       }
-      const itemsHtml = items.map((it) =>
-        `<li class="pl-1.5 text-[14.5px] leading-7 text-foreground/85">${formatInline(it, mathBlocks)}</li>`
-      ).join("");
-      html.push(`<ul class="my-3 ml-5 list-disc space-y-2 not-prose">${itemsHtml}</ul>`);
+
+      let listHtml = '<ul class="my-3 space-y-2 not-prose text-slate-800">';
+      for (const node of listNodes) {
+        if (node.indent >= 2) {
+          listHtml += `<li class="ml-7 pl-1.5 list-[circle] text-[14.5px] leading-relaxed text-slate-700">${formatInline(node.text, mathBlocks)}</li>`;
+        } else {
+          listHtml += `<li class="ml-4 pl-1.5 list-disc text-[15px] sm:text-[15.5px] leading-relaxed font-normal text-slate-900">${formatInline(node.text, mathBlocks)}</li>`;
+        }
+      }
+      listHtml += '</ul>';
+      html.push(listHtml);
       continue;
     }
 
