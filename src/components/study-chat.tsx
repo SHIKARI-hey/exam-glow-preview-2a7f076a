@@ -17,6 +17,20 @@ import {
   Trash2,
   Loader2,
   Video,
+  Copy,
+  Check,
+  RotateCcw,
+  Sparkles,
+  History,
+  Calculator,
+  Atom,
+  Dna,
+  Globe2,
+  Code2,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Square,
+  Clock,
 } from "lucide-react";
 
 import {
@@ -26,14 +40,9 @@ import {
 } from "@/components/ai-elements/conversation";
 import { MessageResponse } from "@/components/ai-elements/message";
 import { Shimmer } from "@/components/ai-elements/shimmer";
-import { callGemini, type ChatMessage } from "@/lib/ai-router";
-import {
-  incrementAiMessageCount,
-} from "@/lib/onboarding";
+import { callGemini, cleanUnnecessaryDollars, type ChatMessage } from "@/lib/ai-router";
+import { incrementAiMessageCount } from "@/lib/onboarding";
 import { playRealisticVoice, stopRealisticVoice } from "@/lib/gemini-tts";
-import studentDesk from "@/assets/student-desk.jpg";
-import studentsGrass from "@/assets/students-grass.jpg";
-import logoMark from "@/assets/logo-mark.png";
 
 type UploadedAttachment = {
   name: string;
@@ -55,17 +64,21 @@ const ACTIVE_SESSION_KEY = "examglow.active_chat_id";
 
 function extractYouTubeId(text: string): string | null {
   if (!text) return null;
-  const match = text.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
+  const match = text.match(
+    /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i
+  );
   return match ? match[1]! : null;
 }
 
 function YouTubeVideoCard({ videoId }: { videoId: string }) {
   return (
-    <div className="my-3 overflow-hidden rounded-2xl border border-border bg-card">
-      <div className="flex items-center gap-2 border-b border-border bg-secondary/50 px-3.5 py-2 text-xs font-medium">
-        <span className="flex size-2 rounded-full bg-lavender animate-pulse" />
-        <span className="text-foreground">Watching with Yumna</span>
-        <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground ml-auto">Ask about any timestamp</span>
+    <div className="my-4 overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm max-w-2xl">
+      <div className="flex items-center gap-2 border-b border-black/5 bg-neutral-50 px-4 py-2.5 text-xs font-medium">
+        <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="text-foreground font-semibold">Video Study Session</span>
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground ml-auto">
+          YouTube Player
+        </span>
       </div>
       <div className="relative aspect-video w-full bg-black">
         <iframe
@@ -80,21 +93,59 @@ function YouTubeVideoCard({ videoId }: { videoId: string }) {
   );
 }
 
-const VIDEO_SUGGESTION_PLACEHOLDER = "https://www.youtube.com/watch?v=";
+const subjectsList = [
+  { name: "All Topics", icon: Sparkles },
+  { name: "Mathematics", icon: Calculator },
+  { name: "Physics", icon: Atom },
+  { name: "Biology & Chem", icon: Dna },
+  { name: "Computer Science", icon: Code2 },
+  { name: "Humanities", icon: Globe2 },
+];
 
-const suggestions = [
-  { label: "Paste a YouTube link — I'll watch & teach it", meta: "Video walkthroughs", Icon: Video, isVideo: true, tone: "bg-lilac" },
-  { label: "Explain photosynthesis step-by-step", meta: "Biology explainer", Icon: BookOpen, isVideo: false, tone: "bg-mint" },
-  { label: "Quiz me on quadratic equations", meta: "Practice questions", Icon: ListChecks, isVideo: false, tone: "bg-lavender" },
-  { label: "How do electric circuits work?", meta: "Physics basics", Icon: Layers, isVideo: false, tone: "bg-surface" },
-] as const;
+const topicStarters = [
+  {
+    subject: "Mathematics",
+    title: "Master Calculus Derivatives",
+    prompt: "Explain the chain rule and product rule in calculus with 2 intuitive step-by-step examples.",
+    badge: "Calculus",
+  },
+  {
+    subject: "Physics",
+    title: "Electromagnetic Induction",
+    prompt: "Explain Faraday's Law and Lenz's Law with practical everyday diagrams and past paper tips.",
+    badge: "Physics",
+  },
+  {
+    subject: "Biology & Chem",
+    title: "Cellular Respiration vs Photosynthesis",
+    prompt: "Compare Cellular Respiration and Photosynthesis with a detailed comparison table and energy balance.",
+    badge: "Biology",
+  },
+  {
+    subject: "Computer Science",
+    title: "Algorithms & Time Complexity",
+    prompt: "Explain Big O notation (O(1), O(n), O(n log n), O(n^2)) using real-world sorting analogies.",
+    badge: "Algorithms",
+  },
+  {
+    subject: "Humanities",
+    title: "Macroeconomics Inflation Models",
+    prompt: "Explain Demand-Pull vs Cost-Push inflation and how central banks use interest rates to intervene.",
+    badge: "Economics",
+  },
+  {
+    subject: "All Topics",
+    title: "Watch & Explain YouTube Lesson",
+    prompt: "https://www.youtube.com/watch?v=",
+    badge: "Video Tutor",
+  },
+];
 
-// Helper to strip emojis from speech text so speech synthesizer never speaks emoji descriptions
 function cleanSpeechText(text: string): string {
   return text
     .replace(
       /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}]/gu,
-      "",
+      ""
     )
     .replace(/[*_#`$]/g, "")
     .replace(/\[.*?\]/g, "")
@@ -127,22 +178,34 @@ export function StudyChat({
   });
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [status, setStatus] = useState<"ready" | "submitted">("ready");
+  const [input, setInput] = useState(() => {
+    if (typeof window === "undefined") return "";
+    const pending = localStorage.getItem("examglow.pending_ai_query");
+    if (pending) {
+      localStorage.removeItem("examglow.pending_ai_query");
+      return pending;
+    }
+    return "";
+  });
+  const [status, setStatus] = useState<"ready" | "submitted" | "streaming">("ready");
   const [error, setError] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState("All Topics");
   const [playingMsgIdx, setPlayingMsgIdx] = useState<number | null>(null);
   const [voiceLoadingIdx, setVoiceLoadingIdx] = useState<number | null>(null);
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
+  // Abort controller for in-flight requests
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Dictation Speech-to-Text (inside the input box)
+  // Dictation Speech-to-Text
   const [isDictating, setIsDictating] = useState(false);
   const dictationRecoRef = useRef<any>(null);
 
   const [uploadOpen, setUploadOpen] = useState(false);
   const [attachment, setAttachment] = useState<UploadedAttachment | null>(null);
 
-  // Mobile input focus & viewport docking
+  // Mobile virtual keyboard viewport offset
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [viewportBottomOffset, setViewportBottomOffset] = useState(0);
 
@@ -151,7 +214,6 @@ export function StudyChat({
   const imgInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
 
-  // Listen to mobile virtual keyboard visualViewport changes
   useEffect(() => {
     if (typeof window === "undefined" || !window.visualViewport) return;
     const updateViewport = () => {
@@ -179,7 +241,7 @@ export function StudyChat({
     }
   }, [currentSessionId]);
 
-  // Save active session to localStorage whenever messages change
+  // Save active session to localStorage
   useEffect(() => {
     if (messages.length === 0) return;
 
@@ -213,6 +275,14 @@ export function StudyChat({
       return next;
     });
   }, [messages, currentSessionId]);
+
+  function stopGenerating() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setStatus("ready");
+  }
 
   function toggleDictation() {
     if (isDictating) {
@@ -252,8 +322,7 @@ export function StudyChat({
 
   async function send(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || status === "submitted") return;
-
+    if (!trimmed || status !== "ready") return;
 
     const userMsg: ChatMessage = {
       role: "user",
@@ -273,7 +342,6 @@ export function StudyChat({
     setStatus("submitted");
     incrementAiMessageCount();
 
-    // Context from student learning activity to tailor response (only for substantive study questions, not simple greetings)
     let studentContext = "";
     const isGreeting = /^(hey|hi|hello|yo|sup|greetings|good\s+(morning|afternoon|evening))\b/i.test(trimmed);
     if (!isGreeting && trimmed.length > 5) {
@@ -296,47 +364,101 @@ export function StudyChat({
       },
     ];
 
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ messages: fullMessages }),
+        body: JSON.stringify({ messages: fullMessages, stream: true }),
+        signal: abortController.signal,
       });
-      const data = (await res.json()) as { text?: string; error?: string };
-      let replyText = data.text;
 
-      // Fallback: If server returned nothing, error, or an extremely short reply, call Gemini API directly in-browser!
-      if (!replyText || data.error || replyText.trim().length < 20) {
-        const clientRes = await callGemini(fullMessages);
-        if (clientRes?.text) {
-          replyText = clientRes.text;
+      const contentType = res.headers.get("content-type") || "";
+
+      if (contentType.includes("text/event-stream") && res.body) {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let accumulatedText = "";
+        let hasStartedContent = false;
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            if (!trimmedLine || !trimmedLine.startsWith("data:")) continue;
+            const dataStr = trimmedLine.slice(5).trim();
+            if (dataStr === "[DONE]") continue;
+
+            try {
+              const parsed = JSON.parse(dataStr);
+              if (parsed.type === "thinking") {
+                // Keep showing the thinking stopwatch
+                continue;
+              }
+              if (parsed.type === "content" && parsed.delta) {
+                accumulatedText += parsed.delta;
+                if (!hasStartedContent) {
+                  hasStartedContent = true;
+                  setStatus("streaming");
+                }
+                setMessages([...next, { role: "assistant", content: accumulatedText }]);
+              } else if (parsed.type === "done") {
+                break;
+              }
+            } catch {}
+          }
+        }
+
+        if (!accumulatedText) {
+          const clientRes = await callGemini(fullMessages);
+          if (clientRes?.text) {
+            setMessages([...next, { role: "assistant", content: clientRes.text }]);
+          } else {
+            setError("Yumna is taking a moment to reply. Please try again.");
+          }
+        }
+      } else {
+        const data = (await res.json()) as { text?: string; error?: string };
+        let replyText = data.text;
+        if (!replyText || data.error || replyText.trim().length < 20) {
+          const clientRes = await callGemini(fullMessages);
+          if (clientRes?.text) replyText = clientRes.text;
+        }
+        if (!replyText) {
+          setError("Yumna is taking a moment to reply. Please try again.");
+        } else {
+          setMessages([...next, { role: "assistant", content: replyText }]);
         }
       }
-
-      if (!replyText) {
-        setError("Yumna is taking a moment to reply. Please try again.");
-      } else {
-        setMessages([...next, { role: "assistant", content: replyText }]);
-      }
-    } catch {
-      // Direct browser fallback if /api/chat network failed
+    } catch (err: any) {
+      if (err?.name === "AbortError") return;
       try {
         const directRes = await callGemini(fullMessages);
         if (directRes?.text) {
           setMessages([...next, { role: "assistant", content: directRes.text }]);
         } else {
-          setError("Network error — check your connection and try again.");
+          setError("Network connection issue. Please check your internet and try again.");
         }
       } catch {
-        setError("Network error — check your connection and try again.");
+        setError("Network connection issue. Please check your internet and try again.");
       }
     } finally {
       setStatus("ready");
+      abortControllerRef.current = null;
       inputRef.current?.focus();
     }
   }
 
   function handleNewChat() {
+    stopGenerating();
     const newId = `chat-${Date.now()}`;
     setCurrentSessionId(newId);
     setMessages([]);
@@ -350,6 +472,7 @@ export function StudyChat({
   }
 
   function handleSelectSession(s: ChatSession) {
+    stopGenerating();
     setCurrentSessionId(s.id);
     setMessages(s.messages);
     setShowHistory(false);
@@ -370,7 +493,12 @@ export function StudyChat({
     }
   }
 
-  // Handle file uploads with base64 conversion for Gemini Multimodal Vision
+  function handleCopy(text: string, idx: number) {
+    navigator.clipboard.writeText(text);
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2000);
+  }
+
   async function handleFileUpload(file: File, type: "pdf" | "image" | "doc") {
     setUploadOpen(false);
     if (file.size > 10_000_000) {
@@ -408,9 +536,14 @@ export function StudyChat({
     }
   }
 
-  return (
-    <div className={`relative flex h-full w-full flex-col bg-background ${className}`}>
+  const currentSession = sessions.find((s) => s.id === currentSessionId);
+  const filteredStarters =
+    selectedSubject === "All Topics"
+      ? topicStarters
+      : topicStarters.filter((t) => t.subject === selectedSubject || t.subject === "All Topics");
 
+  return (
+    <div className={`relative flex h-full w-full flex-col bg-[#FAFAFA] text-foreground ${className}`}>
       {/* Hidden file inputs */}
       <input
         ref={pdfInputRef}
@@ -443,369 +576,482 @@ export function StudyChat({
         }}
       />
 
-      {/* Chat header */}
-      <header className="shrink-0 border-b border-border bg-background py-3.5 pl-14 pr-4 md:px-8">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
-          <p className="flex shrink-0 items-baseline gap-3">
-            <span className="font-display text-[21px] leading-none">Yumna</span>
-            <span className="hidden truncate text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground lg:block">
-              AI Study Tutor
-            </span>
-          </p>
-          <nav className="flex shrink-0 items-center gap-2">
-            <button
-              type="button"
-              onClick={handleNewChat}
-              className="flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-xs font-medium text-ink-foreground transition-opacity hover:opacity-90"
-            >
-              <Plus className="size-3.5" />
-              <span className="hidden sm:inline">New chat</span>
-            </button>
+      {/* ── TOP NAV BAR (Expansive & Sleek) ── */}
+      <header className="shrink-0 border-b border-black/[0.08] bg-white/95 px-6 py-3.5 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
+          {/* Left: Chat info + History Toggle */}
+          <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setShowHistory((v) => !v)}
-              className={`rounded-full border px-3.5 py-2 text-xs font-medium transition-colors ${
-                showHistory
-                  ? "border-foreground/40 bg-secondary text-foreground"
-                  : "border-border text-muted-foreground hover:text-foreground"
-              }`}
+              className="flex size-9 items-center justify-center rounded-xl border border-black/10 bg-neutral-50 text-neutral-700 hover:bg-neutral-100 transition cursor-pointer"
+              title="Toggle Chat History"
             >
-              <span className="hidden sm:inline">History</span>
-              <span className="sm:hidden">Chat</span>
-              {sessions.length > 0 && (
-                <span className="ml-1.5 text-[10px] tabular-nums opacity-70">{sessions.length}</span>
-              )}
+              {showHistory ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
             </button>
+
+            <div className="min-w-0 flex items-center gap-2.5">
+              <span className="font-semibold text-base text-neutral-900 truncate">
+                {currentSession?.title && currentSession.title !== "New Chat"
+                  ? currentSession.title
+                  : "Study Tutor"}
+              </span>
+            </div>
+          </div>
+
+          {/* Right: New Chat & Action buttons */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleNewChat}
+              className="flex items-center gap-1.5 rounded-xl bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-neutral-800 transition shadow-sm cursor-pointer"
+            >
+              <Plus className="size-3.5" />
+              <span>New Chat</span>
+            </button>
+
             {onClose && (
               <button
                 type="button"
                 onClick={onClose}
-                className="flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                className="flex size-9 items-center justify-center rounded-xl border border-black/10 text-neutral-500 hover:bg-neutral-100 transition cursor-pointer"
               >
                 <X className="size-4" />
               </button>
             )}
-          </nav>
+          </div>
         </div>
       </header>
 
-      {/* History Slide-Over Drawer */}
-      {showHistory && (
-        <div className="absolute inset-y-0 left-0 z-30 flex w-80 max-w-[85%] flex-col border-r border-border bg-card animate-in slide-in-from-left duration-200">
-          <div className="flex items-center justify-between border-b border-border px-5 py-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">Chat history</p>
-            <button
-              type="button"
-              onClick={() => setShowHistory(false)}
-              className="size-7 flex items-center justify-center rounded-full hover:bg-secondary text-muted-foreground"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
+      {/* ── MAIN CHAT AREA (Wide Layout with Slide History) ── */}
+      <div className="relative flex flex-1 min-h-0 w-full overflow-hidden">
+        {/* Left Drawer / Sidebar: Chat History */}
+        {showHistory && (
+          <aside className="absolute inset-y-0 left-0 z-40 flex w-80 max-w-[85%] flex-col border-r border-black/10 bg-white shadow-2xl animate-in slide-in-from-left duration-200">
+            <div className="flex items-center justify-between border-b border-black/5 px-5 py-4">
+              <div className="flex items-center gap-2">
+                <History className="size-4 text-neutral-500" />
+                <span className="text-sm font-semibold text-neutral-900">Conversations</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHistory(false)}
+                className="size-7 flex items-center justify-center rounded-lg hover:bg-neutral-100 text-neutral-500 transition cursor-pointer"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
 
-          <div className="flex-1 overflow-y-auto p-3">
-            {sessions.length === 0 ? (
-              <div className="py-12 text-center text-xs text-muted-foreground">
-                No past conversations yet.
+            <div className="flex-1 overflow-y-auto p-3 space-y-1">
+              {sessions.length === 0 ? (
+                <div className="py-16 text-center text-xs text-neutral-400">
+                  No past conversations yet.
+                </div>
+              ) : (
+                sessions.map((s) => {
+                  const isActive = s.id === currentSessionId;
+                  return (
+                    <div
+                      key={s.id}
+                      onClick={() => handleSelectSession(s)}
+                      className={`group flex items-center justify-between gap-2 rounded-xl px-3.5 py-3 text-left transition cursor-pointer ${
+                        isActive
+                          ? "bg-black text-white"
+                          : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
+                      }`}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className={`text-sm truncate font-medium ${isActive ? "text-white" : ""}`}>
+                          {s.title}
+                        </p>
+                        <p
+                          className={`text-[10px] mt-0.5 ${
+                            isActive ? "text-neutral-300" : "text-neutral-400"
+                          }`}
+                        >
+                          {new Date(s.updatedAt).toLocaleDateString([], {
+                            month: "short",
+                            day: "numeric",
+                          })}{" "}
+                          · {s.messages.length} messages
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => handleDeleteSession(s.id, e)}
+                        className={`size-6 shrink-0 flex items-center justify-center rounded-lg transition opacity-0 group-hover:opacity-100 ${
+                          isActive
+                            ? "hover:bg-white/20 text-white/80"
+                            : "hover:bg-red-50 text-red-500"
+                        }`}
+                        title="Delete chat"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div className="border-t border-black/5 p-3">
+              <button
+                type="button"
+                onClick={handleNewChat}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-xs font-semibold text-white hover:bg-neutral-800 transition cursor-pointer"
+              >
+                <Plus className="size-3.5" />
+                Start Fresh Session
+              </button>
+            </div>
+          </aside>
+        )}
+
+        {/* ── CHAT SCROLL STREAM (Spaciously Spread Max-W-5XL) ── */}
+        <Conversation className="flex-1 overflow-y-auto">
+          <ConversationContent className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-8 lg:px-12">
+            {messages.length === 0 ? (
+              /* ── SPREAD OUT EMPTY STATE ── */
+              <div className="w-full py-4 space-y-8 animate-in fade-in duration-300">
+                {/* Hero section */}
+                <div className="flex flex-col items-center text-center max-w-2xl mx-auto pt-6 pb-2">
+                  <div className="flex size-14 items-center justify-center rounded-2xl bg-black text-white font-bold text-xl shadow-md mb-4">
+                    Y
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-900">
+                    What are we mastering today?
+                  </h1>
+                  <p className="mt-2.5 text-sm sm:text-base text-neutral-500 leading-relaxed">
+                    Ask Yumna anything from past exam questions, difficult formulas, or paste a video link to study together.
+                  </p>
+                </div>
+
+                {/* Subject Selector Tabs */}
+                <div className="flex items-center justify-center gap-1.5 overflow-x-auto pb-2 scrollbar-none">
+                  {subjectsList.map(({ name, icon: Icon }) => (
+                    <button
+                      key={name}
+                      type="button"
+                      onClick={() => setSelectedSubject(name)}
+                      className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition cursor-pointer shrink-0 ${
+                        selectedSubject === name
+                          ? "bg-black text-white shadow-sm"
+                          : "bg-white border border-black/10 text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                      }`}
+                    >
+                      <Icon className="size-3.5" />
+                      <span>{name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Prompt Starters Grid */}
+                <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+                  {filteredStarters.map(({ title, prompt, badge }) => (
+                    <button
+                      key={title}
+                      type="button"
+                      onClick={() => {
+                        if (prompt.includes("youtube.com")) {
+                          setInput("https://www.youtube.com/watch?v=");
+                          setTimeout(() => inputRef.current?.focus(), 50);
+                        } else {
+                          void send(prompt);
+                        }
+                      }}
+                      className="group flex flex-col justify-between rounded-2xl border border-black/[0.08] bg-white p-5 text-left transition hover:border-black/20 hover:shadow-md cursor-pointer"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neutral-600">
+                            {badge}
+                          </span>
+                          <ArrowUpRight className="size-4 text-neutral-400 group-hover:text-black group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-neutral-900 group-hover:text-black transition">
+                          {title}
+                        </h3>
+                        <p className="mt-1.5 text-xs text-neutral-500 line-clamp-2 leading-relaxed">
+                          {prompt}
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : (
-              sessions.map((s) => {
-                const isActive = s.id === currentSessionId;
-                return (
-                  <div
-                    key={s.id}
-                    onClick={() => handleSelectSession(s)}
-                    className={`group flex items-center justify-between gap-2 border-b border-border/60 px-2 py-3.5 text-left transition-colors cursor-pointer last:border-b-0 hover:bg-secondary/50 ${
-                      isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className={`text-sm truncate ${isActive ? "font-display text-[15px]" : "font-medium"}`}>{s.title}</p>
-                      <p className="text-[10px] uppercase tracking-[0.14em] mt-0.5 opacity-70">
-                        {new Date(s.updatedAt).toLocaleDateString([], { month: "short", day: "numeric" })} · {s.messages.length} msgs
-                      </p>
+              /* ── MESSAGES: USER HAS BUBBLE, AI HAS NO BUBBLE (SPREAD OUT) ── */
+              messages.map((m, i) => {
+                const isUser = m.role === "user";
+
+                if (isUser) {
+                  return (
+                    /* User Message: Styled Bubble on the Right */
+                    <div key={i} className="flex justify-end w-full">
+                      <div className="flex max-w-[80%] sm:max-w-[70%] flex-col items-end gap-2">
+                        {extractYouTubeId(m.content) && (
+                          <YouTubeVideoCard videoId={extractYouTubeId(m.content)!} />
+                        )}
+                        <div className="rounded-3xl rounded-tr-sm bg-neutral-900 px-5 py-3.5 text-sm sm:text-[15px] leading-relaxed text-white shadow-sm">
+                          <p className="whitespace-pre-wrap">{m.content}</p>
+                        </div>
+                      </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={(e) => handleDeleteSession(s.id, e)}
-                      className="size-6 shrink-0 flex items-center justify-center rounded hover:bg-destructive/10 hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 className="size-3.5" />
-                    </button>
+                  );
+                }
+
+                /* AI Message: NO BUBBLE, NO BORDER, NO BACKGROUND BOX - SPREAD NATURALLY */
+                const isLastStreaming = status === "streaming" && i === messages.length - 1;
+
+                return (
+                  <div key={i} className="flex items-start gap-4 w-full group py-2">
+                    {/* Yumna Avatar Mark */}
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-black text-white font-bold text-xs mt-1 shadow-sm">
+                      Y
+                    </div>
+
+                    {/* Clean unboxed body flowing across the reading width */}
+                    <div className="min-w-0 flex-1 space-y-3">
+                      {/* Name / author bar */}
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-neutral-900">Yumna</span>
+                        <span className="text-[11px] font-medium text-neutral-400">AI Study Tutor</span>
+                        {isLastStreaming && (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full ml-1">
+                            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            Streaming live…
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Content: Clean Markdown directly on the canvas without bubble */}
+                      <div className="text-sm sm:text-[15px] leading-relaxed text-neutral-800">
+                        <MessageResponse>{cleanUnnecessaryDollars(m.content)}</MessageResponse>
+                      </div>
+
+                      {/* Bottom utility bar: Listen, Copy, Stop */}
+                      {!isLastStreaming && (
+                        <div className="flex items-center gap-3 pt-2 text-xs text-neutral-500">
+                          {/* Copy button */}
+                          <button
+                            type="button"
+                            onClick={() => handleCopy(cleanUnnecessaryDollars(m.content), i)}
+                            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 hover:bg-neutral-200/60 transition cursor-pointer"
+                            title="Copy message"
+                          >
+                            {copiedIdx === i ? (
+                              <>
+                                <Check className="size-3.5 text-emerald-600" />
+                                <span className="text-emerald-600 font-medium">Copied</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="size-3.5" />
+                                <span>Copy</span>
+                              </>
+                            )}
+                          </button>
+
+                          {/* Voice Listen Button */}
+                          {playingMsgIdx === i ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                stopRealisticVoice();
+                                setPlayingMsgIdx(null);
+                                setVoiceLoadingIdx(null);
+                              }}
+                              className="flex items-center gap-1.5 rounded-lg bg-black px-3 py-1 font-medium text-white transition hover:bg-neutral-800 cursor-pointer"
+                            >
+                              <VolumeX className="size-3.5" />
+                              <span>Stop</span>
+                            </button>
+                          ) : voiceLoadingIdx === i ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                stopRealisticVoice();
+                                setVoiceLoadingIdx(null);
+                              }}
+                              className="flex items-center gap-1.5 rounded-lg border border-black/10 px-2.5 py-1 text-neutral-600 hover:bg-neutral-100 transition cursor-pointer"
+                            >
+                              <Loader2 className="size-3.5 animate-spin" />
+                              <span>Preparing voice…</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setVoiceLoadingIdx(i);
+                                playRealisticVoice(cleanSpeechText(cleanUnnecessaryDollars(m.content)), {
+                                  onStart: () => {
+                                    setVoiceLoadingIdx(null);
+                                    setPlayingMsgIdx(i);
+                                  },
+                                  onEnd: () => {
+                                    setVoiceLoadingIdx(null);
+                                    setPlayingMsgIdx(null);
+                                  },
+                                  onError: () => {
+                                    setVoiceLoadingIdx(null);
+                                    setPlayingMsgIdx(null);
+                                  },
+                                });
+                              }}
+                              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 hover:bg-neutral-200/60 transition cursor-pointer"
+                              title="Listen with realistic voice"
+                            >
+                              <Volume2 className="size-3.5" />
+                              <span>Listen</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 );
               })
             )}
-          </div>
-        </div>
-      )}
 
-      {/* Conversation */}
-      <Conversation className="flex-1 overflow-y-auto">
-        <ConversationContent className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-6 sm:px-6">
-          {messages.length === 0 ? (
-            <div className="w-full py-4">
-              {/* Ink hero band — matches the home page */}
-              <section className="relative overflow-hidden rounded-[28px] bg-ink px-6 py-8 text-ink-foreground sm:px-8 sm:py-10">
-                <img
-                  src={logoMark}
-                  alt=""
-                  width={512}
-                  height={512}
-                  className="pointer-events-none absolute -right-8 -top-10 size-52 opacity-10 invert"
-                />
-                <div className="relative grid gap-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
-                  <div className="min-w-0">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-ink-foreground/10 px-3 py-1 text-xs font-semibold">
-                      <span className="size-1.5 rounded-full bg-lavender" aria-hidden />
-                      The study desk
-                    </span>
-                    <h2 className="mt-4 text-[clamp(1.9rem,4.5vw,2.8rem)] leading-[1.05]">
-                      Hi, I&apos;m <span className="display-italic">Yumna</span>
-                    </h2>
-                    <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-foreground/75">
-                      Your dedicated IGCSE study tutor. Paste a problem, ask me to explain a theorem,
-                      review past paper questions — or paste any YouTube link and I&apos;ll watch it with you.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <figure>
-                      <img
-                        src={studentDesk}
-                        alt="A student working at a library computer desk"
-                        className="aspect-[0.85] w-[130px] rounded-2xl object-cover sm:w-[150px]"
-                      />
-                      <figcaption className="mt-1.5 text-[10px] uppercase tracking-[0.16em] text-ink-foreground/50">
-                        Study desk
-                      </figcaption>
-                    </figure>
-                    <figure>
-                      <img
-                        src={studentsGrass}
-                        alt="Students sitting on the grass after class"
-                        className="aspect-[0.85] w-[130px] rounded-2xl object-cover sm:w-[150px]"
-                      />
-                      <figcaption className="mt-1.5 text-[10px] uppercase tracking-[0.16em] text-ink-foreground/50">
-                        After class
-                      </figcaption>
-                    </figure>
-                  </div>
+            {/* ── CLEAN THINKING TEXT WITH 2-SECOND LIGHT GLAZE ── */}
+            {status === "submitted" && (
+              <div className="flex items-start gap-4 w-full py-2 animate-in fade-in duration-200">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-black text-white font-bold text-xs mt-1 shadow-sm">
+                  Y
                 </div>
-              </section>
 
-              {/* Suggestion tiles — home quick-action style */}
-              <p className="mt-8 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Try asking</p>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {suggestions.map(({ label, meta, Icon, isVideo, tone }) => (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => {
-                      if (isVideo) {
-                        setInput(VIDEO_SUGGESTION_PLACEHOLDER);
-                        setTimeout(() => inputRef.current?.focus(), 50);
-                      } else {
-                        void send(label);
-                      }
-                    }}
-                    className={`group rounded-3xl ${tone} p-5 text-left transition-transform hover:-translate-y-1`}
-                  >
-                    <span className="flex size-10 items-center justify-center rounded-2xl bg-card">
-                      <Icon className="size-4.5" aria-hidden />
-                    </span>
-                    <strong className="mt-4 flex items-center gap-1.5 text-[15px] font-semibold">
-                      <span className="min-w-0">{label}</span>
-                      <ArrowUpRight className="size-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
-                    </strong>
-                    <span className="mt-1 block text-sm text-foreground/60">{meta}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : (
-            messages.map((m, i) => {
-              const mine = m.role !== "assistant";
-              return (
-                <div key={i} className={`flex items-end gap-2.5 ${mine ? "justify-end" : ""}`}>
-                  {!mine && (
-                    <span className="mb-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-ink font-display text-[13px] text-ink-foreground">
-                      Y
-                    </span>
-                  )}
-                  {mine ? (
-                    <div className="flex max-w-[82%] flex-col items-end gap-2 sm:max-w-[75%]">
-                      {extractYouTubeId(m.content) && (
-                        <YouTubeVideoCard videoId={extractYouTubeId(m.content)!} />
-                      )}
-                      <div className="rounded-3xl rounded-br-md bg-ink px-4 py-3 text-sm leading-relaxed text-ink-foreground">
-                        <p className="whitespace-pre-wrap">{m.content}</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="min-w-0 text-sm leading-relaxed">
-                      <MessageResponse>{m.content}</MessageResponse>
-                      <div className="mt-2 flex items-center gap-2">
-                        {playingMsgIdx === i ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              stopRealisticVoice();
-                              setPlayingMsgIdx(null);
-                              setVoiceLoadingIdx(null);
-                            }}
-                            className="flex items-center gap-1.5 rounded-full bg-ink px-3 py-1 text-[11px] font-medium text-ink-foreground transition-opacity hover:opacity-90"
-                          >
-                            <VolumeX className="size-3.5" />
-                            <span>Stop speaking</span>
-                          </button>
-                        ) : voiceLoadingIdx === i ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              stopRealisticVoice();
-                              setVoiceLoadingIdx(null);
-                            }}
-                            className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
-                            title="Preparing realistic voice with Yumna... Click to cancel"
-                          >
-                            <Loader2 className="size-3.5 animate-spin" />
-                            <span>Preparing voice…</span>
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setVoiceLoadingIdx(i);
-                              playRealisticVoice(m.content, {
-                                onStart: () => {
-                                  setVoiceLoadingIdx(null);
-                                  setPlayingMsgIdx(i);
-                                },
-                                onEnd: () => {
-                                  setVoiceLoadingIdx(null);
-                                  setPlayingMsgIdx(null);
-                                },
-                                onError: () => {
-                                  setVoiceLoadingIdx(null);
-                                  setPlayingMsgIdx(null);
-                                },
-                              });
-                            }}
-                            className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-secondary/70 hover:text-foreground"
-                          >
-                            <Volume2 className="size-3.5" />
-                            <span>Listen to explanation</span>
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                <div className="min-w-0 flex-1 pt-1.5 flex items-center gap-3">
+                  <span className="thinking-glaze text-[15px] font-medium tracking-tight select-none">
+                    Thinking…
+                  </span>
                 </div>
-              );
-            })
-          )}
-
-          {status === "submitted" && (
-            <div className="flex items-end gap-2.5">
-              <span className="mb-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-ink font-display text-[13px] text-ink-foreground">
-                Y
-              </span>
-              <div className="flex items-center gap-2 py-1.5">
-                <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
-                <Shimmer className="text-sm text-muted-foreground">Yumna is thinking…</Shimmer>
               </div>
-            </div>
-          )}
+            )}
 
-          {error && (
-            <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-2.5 text-xs text-destructive">
-              {error}
-            </div>
-          )}
-        </ConversationContent>
-        <ConversationScrollButton />
-      </Conversation>
+            {error && (
+              <div className="rounded-2xl border border-red-200 bg-red-50/80 px-5 py-3 text-sm text-red-600 flex items-center justify-between">
+                <span>{error}</span>
+                <button
+                  type="button"
+                  onClick={() => setError(null)}
+                  className="text-red-400 hover:text-red-700 font-bold cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
+      </div>
 
-      {/* Composer */}
+      {/* ── EXPANSIVE BOTTOM DOCK / COMPOSER ── */}
       <div
         style={viewportBottomOffset > 0 ? { transform: `translateY(-${viewportBottomOffset}px)` } : undefined}
-        className="z-30 shrink-0 border-t border-border bg-background px-4 pb-4 pt-3 transition-all duration-200 sm:px-6"
+        className="z-30 shrink-0 border-t border-black/[0.08] bg-white/95 px-6 pb-6 pt-3.5 backdrop-blur-md transition-all duration-200"
       >
-        <div className="mx-auto w-full max-w-3xl">
-          {/* Attachment banner */}
+        <div className="mx-auto w-full max-w-5xl">
+          {/* Active Attachment preview */}
           {attachment && (
-            <div className="mb-2 flex items-center justify-between gap-3 rounded-2xl bg-secondary px-3 py-1.5 text-xs text-foreground">
+            <div className="mb-2.5 flex items-center justify-between gap-3 rounded-xl border border-black/10 bg-neutral-50 px-3.5 py-2 text-xs text-neutral-800">
               <span className="flex min-w-0 items-center gap-2">
-                <Paperclip className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                <Paperclip className="size-3.5 shrink-0 text-neutral-500" aria-hidden />
                 <span className="truncate font-semibold">{attachment.name}</span>
-                <span className="shrink-0 rounded bg-card px-1.5 py-0.5 text-[10px] font-bold uppercase text-muted-foreground">
+                <span className="shrink-0 rounded-md bg-white border border-black/10 px-1.5 py-0.5 text-[10px] font-bold uppercase text-neutral-500">
                   {attachment.type}
                 </span>
               </span>
               <button
                 type="button"
                 onClick={() => setAttachment(null)}
-                aria-label="Remove attachment"
-                className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+                className="shrink-0 text-neutral-400 hover:text-neutral-800 transition cursor-pointer"
               >
                 <X className="size-3.5" />
               </button>
             </div>
           )}
 
-          {/* Upload Popover */}
+          {/* Upload Dropdown Popover */}
           {uploadOpen && (
-            <div className="mb-2 w-72 rounded-3xl border border-border bg-card p-2.5 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.45)]">
-              <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                Upload &amp; analyze
+            <div className="mb-3 w-72 rounded-2xl border border-black/10 bg-white p-2.5 shadow-xl">
+              <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+                Upload &amp; Analyze
               </p>
-              <div className="mt-1 flex flex-col">
+              <div className="mt-1 flex flex-col gap-1">
                 <button
                   type="button"
                   onClick={() => pdfInputRef.current?.click()}
-                  className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-xs font-medium transition-colors hover:bg-secondary/60"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-medium hover:bg-neutral-100 transition cursor-pointer"
                 >
-                  <FileText className="size-4 shrink-0 text-muted-foreground" />
-                  <span>
-                    <span className="block font-medium">PDF document</span>
-                    <span className="block text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Syllabus or past exam paper</span>
-                  </span>
+                  <FileText className="size-4 shrink-0 text-neutral-500" />
+                  <div>
+                    <span className="block font-semibold text-neutral-800">PDF Past Paper</span>
+                    <span className="block text-[10px] text-neutral-400">Upload exam questions or mark scheme</span>
+                  </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => imgInputRef.current?.click()}
-                  className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-xs font-medium transition-colors hover:bg-secondary/60"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-medium hover:bg-neutral-100 transition cursor-pointer"
                 >
-                  <ImageIcon className="size-4 shrink-0 text-muted-foreground" />
-                  <span>
-                    <span className="block font-medium">Image / diagram</span>
-                    <span className="block text-[10px] uppercase tracking-[0.12em] text-muted-foreground">Homework photo or chart</span>
-                  </span>
+                  <ImageIcon className="size-4 shrink-0 text-neutral-500" />
+                  <div>
+                    <span className="block font-semibold text-neutral-800">Image / Diagram</span>
+                    <span className="block text-[10px] text-neutral-400">Homework photo or circuit graph</span>
+                  </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => docInputRef.current?.click()}
-                  className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-xs font-medium transition-colors hover:bg-secondary/60"
+                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-medium hover:bg-neutral-100 transition cursor-pointer"
                 >
-                  <FileUp className="size-4 shrink-0 text-muted-foreground" />
-                  <span>
-                    <span className="block font-medium">Text / notes</span>
-                    <span className="block text-[10px] uppercase tracking-[0.12em] text-muted-foreground">.txt or markdown notes</span>
-                  </span>
+                  <FileUp className="size-4 shrink-0 text-neutral-500" />
+                  <div>
+                    <span className="block font-semibold text-neutral-800">Text Notes</span>
+                    <span className="block text-[10px] text-neutral-400">Upload .txt or markdown summary</span>
+                  </div>
                 </button>
               </div>
             </div>
           )}
 
+          {/* Tutor Mode Quick Launcher Chips */}
+          <div className="mb-2.5 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 shrink-0">
+              Tutor:
+            </span>
+            {[
+              { label: "💡 Explain Simply", prefix: "Explain this step-by-step with simple intuitive analogies: " },
+              { label: "📝 Solve Exam Question", prefix: "Solve this past paper problem with full mark scheme workings: " },
+              { label: "⚡ 3-Question Drill", prefix: "Give me 3 rigorous examination questions on: " },
+              { label: "📐 Formula Sheet", prefix: "List all key formulas, units, and definitions for: " },
+              { label: "🎯 Common Mistakes", prefix: "What are the most frequent student mistakes examiners look for in: " },
+            ].map(({ label, prefix }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => {
+                  setInput(prefix);
+                  inputRef.current?.focus();
+                }}
+                className="rounded-full border border-black/[0.08] bg-white px-3 py-1 text-[11px] font-medium text-neutral-700 hover:bg-neutral-100 hover:text-black transition cursor-pointer shrink-0"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Wide Composer Input Form */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              if (status !== "ready") return;
               inputRef.current?.blur();
               setIsInputFocused(false);
               void send(input);
             }}
-            className={`rounded-3xl border bg-card p-2.5 transition-colors sm:p-3 ${
-              isInputFocused ? "border-foreground/40" : "border-border"
+            className={`rounded-2xl border bg-white p-2.5 transition shadow-sm ${
+              isInputFocused ? "border-black/40 ring-2 ring-black/5" : "border-black/10"
             }`}
           >
             <textarea
@@ -818,64 +1064,80 @@ export function StudyChat({
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
+                  if (status !== "ready") return;
                   inputRef.current?.blur();
                   setIsInputFocused(false);
                   void send(input);
                 }
               }}
-              placeholder="Ask Yumna anything… (paste a question, formula, or link)"
-              className="max-h-40 w-full resize-none bg-transparent px-2 py-1.5 text-[15px] leading-relaxed text-foreground outline-none placeholder:text-muted-foreground"
+              placeholder="Ask Yumna anything… (paste a question, formula, or YouTube video link)"
+              className="max-h-48 w-full resize-none bg-transparent px-3 py-1.5 text-sm sm:text-base leading-relaxed text-neutral-900 outline-none placeholder:text-neutral-400"
             />
-            <div className="mt-1 flex items-center justify-between">
-              <div className="flex items-center gap-1">
+
+            <div className="mt-1 flex items-center justify-between border-t border-black/5 pt-2 px-1">
+              <div className="flex items-center gap-1.5">
                 {!isMini && (
                   <button
                     type="button"
                     onClick={() => setUploadOpen((v) => !v)}
                     title="Upload file or image"
-                    className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-secondary ${
-                      uploadOpen ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+                    className={`flex size-8 items-center justify-center rounded-xl transition cursor-pointer ${
+                      uploadOpen
+                        ? "bg-neutral-200 text-neutral-900"
+                        : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
                     }`}
                   >
                     <Plus className="size-4" />
                   </button>
                 )}
+
                 <button
                   type="button"
                   onClick={toggleDictation}
-                  title={isDictating ? "Stop Dictation" : "Dictate with voice"}
-                  className={`flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors ${
+                  title={isDictating ? "Stop voice dictation" : "Voice dictation"}
+                  className={`flex h-8 items-center gap-1.5 rounded-xl px-2.5 text-xs font-medium transition cursor-pointer ${
                     isDictating
-                      ? "bg-lavender text-ink-foreground"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      ? "bg-rose-500 text-white"
+                      : "text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
                   }`}
                 >
-                  <Mic className="size-4" />
-                  <span className="hidden sm:inline">{isDictating ? "Listening…" : "Dictate"}</span>
+                  <Mic className="size-3.5" />
+                  <span className="hidden sm:inline">
+                    {isDictating ? "Listening…" : "Dictate"}
+                  </span>
                 </button>
               </div>
-              <button
-                type="submit"
-                onClick={() => {
-                  inputRef.current?.blur();
-                  setIsInputFocused(false);
-                }}
-                disabled={!input.trim() && !attachment}
-                title="Send message"
-                className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-all ${
-                  input.trim() || attachment
-                    ? "cursor-pointer bg-ink text-ink-foreground hover:opacity-90"
-                    : "cursor-not-allowed bg-secondary text-muted-foreground opacity-50"
-                }`}
-              >
-                <ArrowUp className="size-4" />
-              </button>
+
+              <div className="flex items-center gap-2">
+                <span className="hidden text-[11px] text-neutral-400 sm:inline">
+                  Enter to send · Shift+Enter for newline
+                </span>
+
+                {status !== "ready" ? (
+                  <button
+                    type="button"
+                    onClick={stopGenerating}
+                    title="Stop generating"
+                    className="flex size-8 items-center justify-center rounded-xl bg-neutral-900 text-white hover:bg-neutral-700 transition cursor-pointer shadow-sm"
+                  >
+                    <Square className="size-3 fill-white" />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={!input.trim() && !attachment}
+                    className={`flex size-8 items-center justify-center rounded-xl transition cursor-pointer ${
+                      input.trim() || attachment
+                        ? "bg-black text-white hover:bg-neutral-800 shadow-sm"
+                        : "bg-neutral-100 text-neutral-400 cursor-not-allowed"
+                    }`}
+                  >
+                    <ArrowUp className="size-4" />
+                  </button>
+                )}
+              </div>
             </div>
           </form>
-
-          <p className="mt-1.5 hidden text-center text-[11px] text-muted-foreground sm:block">
-            Press <kbd className="rounded bg-secondary px-1 font-sans">Enter</kbd> to send · <kbd className="rounded bg-secondary px-1 font-sans">Shift+Enter</kbd> for new line
-          </p>
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ export type ChatMessage = {
   role: "system" | "user" | "assistant";
   content: string;
   attachment?: ChatAttachment;
+  reasoning?: string;
 };
 
 export const YUMNA_SYSTEM_PROMPT = `You are Yumna, the official AI study tutor for ExamGlow (https://examglow.com).
@@ -28,12 +29,14 @@ Core Persona & Rules:
    - Emojis: Include tasteful, expressive emojis naturally in every message (1 to 3 emojis per response, never too many or spammy) like ✨, 😉, 💡, 📚, 💫.
 3. Identity: When asked your name, who you are, or who made you, say you are Yumna, the ExamGlow AI study tutor. Never mention Google or Gemini. You are Yumna, developed natively for ExamGlow.
 4. CRITICAL: Do NOT begin messages with "Hello! I am Yumna..." or repetitive introductions. Never re-introduce yourself unless the user explicitly asks who you are. Jump directly into addressing the student's question with thoughtful, charismatic guidance.
-5. Formatting: Use rich Markdown formatting:
+5. Formatting & Math Symbols:
+   - NEVER wrap basic arithmetic, numbers, simple expressions, or single variables in dollar signs ($).
+   - Write standard numbers, equations, and expressions as clean, readable plain text (e.g. write "1 + 1 = 2", "a + b", "F = ma", "x = 5" with NO dollar signs).
+   - DO NOT use dollar signs ($) for simple math or numbers. Dollar signs should only be used for actual monetary currency (e.g. $100) or complex multi-line display math in $$...$$. Never use inline single dollar signs ($) for basic arithmetic.
    - Clear headings (###) for distinct concepts
    - Bold (**term**) for key syllabus definitions and principles
    - Step-by-step numbered lists for procedures and workings
    - Markdown tables for comparisons (e.g. Mitosis vs Meiosis, RAM vs ROM)
-   - Standard LaTeX math ($...$ for inline, $$...$$ for display formulas)
 6. Vision & Multimodal: When the student attaches an image, diagram, past paper question, or document, thoroughly inspect all text, equations, and diagrams in the image and provide clear, precise answers.
 7. Video Learning & Ground Truth Accuracy (STRICT & ACCURATE):
    - When a student shares ANY video link or asks about a video previously shared in the chat, use the Ground Truth video overview, description, and chapters provided.
@@ -88,6 +91,178 @@ const readEnv = (name: string): string | undefined => {
 // The previously embedded demo keys were disabled by Google (401) and removed.
 // Provide a key via GEMINI_API_KEY (env var before `npm run dev`, or
 // `npx wrangler secret put GEMINI_API_KEY` for the deployed worker).
+export const TOGETHER_API_KEY =
+  readEnv("TOGETHER_API_KEY") || "tgp_v1_1aQf9DSPUrcmb2D9uMjOEeSbu7LTBpV0luQWfs-Gi40";
+export const TOGETHER_MODEL = "Prism-ML/Ternary-Bonsai-27B";
+
+/**
+ * Strips unnecessary single dollar signs ($) that LLMs erroneously place around
+ * basic arithmetic (like "$1 + 1$"), plain variables ("$x$"), and formulas ("$a + b$"),
+ * while preserving legitimate display math ($$...$$) and currency amounts.
+ */
+export function cleanUnnecessaryDollars(text: string): string {
+  if (!text || !text.includes("$")) return text;
+
+  // Protect display math blocks $$...$$
+  const displayBlocks: string[] = [];
+  const protectedText = text.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
+    displayBlocks.push(match);
+    return `___DISPLAY_MATH_${displayBlocks.length - 1}___`;
+  });
+
+  // Strip pairs of single dollar signs wrapping simple math, numbers, or variables:
+  // e.g. "$1 + 1$" -> "1 + 1", "$a + b$" -> "a + b", "$x$" -> "x", "$2$" -> "2", "$F = ma$" -> "F = ma"
+  let cleaned = protectedText.replace(
+    /(^|[^$])\$([a-zA-Z0-9\s+\-*\/=^_.,()]+?)\$(?!\$)/g,
+    (_, prefix, expr) => `${prefix}${expr.trim()}`
+  );
+
+  // Strip unclosed dollar signs right before variables or math operators (e.g. "...For whole numbers, $a + b")
+  cleaned = cleaned.replace(
+    /(^|\s)\$([a-zA-Z][a-zA-Z0-9\s+\-*\/=^_.,()]*)/g,
+    (_, prefix, expr) => `${prefix}${expr.trim()}`
+  );
+
+  // Restore display math blocks
+  return cleaned.replace(/___DISPLAY_MATH_(\d+)___/g, (_, idx) => displayBlocks[Number(idx)] || "");
+}
+
+export async function callTogetherAiStream(
+  messages: ChatMessage[],
+  maxTokens = 2048,
+  temperature = 0.7,
+): Promise<ReadableStream<Uint8Array> | null> {
+  try {
+    const formattedMessages = [
+      { role: "system", content: YUMNA_SYSTEM_PROMPT },
+      ...messages
+        .filter((m) => (m.role === "user" || m.role === "assistant") && m.content.trim().length > 0)
+        .map((m) => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.content })),
+    ];
+
+    const res = await fetch("https://api.together.xyz/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${TOGETHER_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: TOGETHER_MODEL,
+        messages: formattedMessages,
+        max_tokens: maxTokens,
+        temperature,
+        stream: true,
+      }),
+      signal: AbortSignal.timeout(45000),
+    });
+
+    if (!res.ok || !res.body) {
+      return null;
+    }
+
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    const reader = res.body.getReader();
+
+    return new ReadableStream<Uint8Array>({
+      async start(controller) {
+        let buffer = "";
+        try {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || !trimmed.startsWith("data:")) continue;
+              const dataStr = trimmed.slice(5).trim();
+              if (dataStr === "[DONE]") {
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`));
+                continue;
+              }
+              try {
+                const parsed = JSON.parse(dataStr);
+                const delta = parsed.choices?.[0]?.delta;
+                if (delta?.content) {
+                  controller.enqueue(
+                    encoder.encode(`data: ${JSON.stringify({ type: "content", delta: delta.content })}\n\n`)
+                  );
+                } else if (delta?.reasoning_content) {
+                  controller.enqueue(
+                    encoder.encode(`data: ${JSON.stringify({ type: "thinking" })}\n\n`)
+                  );
+                }
+              } catch {}
+            }
+          }
+        } catch (err) {
+          controller.error(err);
+        } finally {
+          controller.close();
+        }
+      },
+    });
+  } catch (err) {
+    console.warn("Together AI stream failed:", err);
+    return null;
+  }
+}
+
+export async function callTogetherAi(
+  messages: ChatMessage[],
+  maxTokens = 2048,
+  temperature = 0.7,
+): Promise<{ text: string; reasoning?: string; model: string } | null> {
+  try {
+    const formattedMessages = [
+      { role: "system", content: YUMNA_SYSTEM_PROMPT },
+      ...messages
+        .filter((m) => (m.role === "user" || m.role === "assistant") && m.content.trim().length > 0)
+        .map((m) => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.content })),
+    ];
+
+    const res = await fetch("https://api.together.xyz/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${TOGETHER_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: TOGETHER_MODEL,
+        messages: formattedMessages,
+        max_tokens: maxTokens,
+        temperature,
+      }),
+      signal: AbortSignal.timeout(35000),
+    });
+
+    if (!res.ok) {
+      console.warn("Together AI response not OK:", res.status);
+      return null;
+    }
+
+    const data = (await res.json()) as any;
+    const choice = data?.choices?.[0];
+    const message = choice?.message;
+    const text = message?.content || "";
+    const reasoning = message?.reasoning_content || undefined;
+
+    if (!text && !reasoning) return null;
+
+    return {
+      text: cleanUnnecessaryDollars(text || reasoning || ""),
+      reasoning,
+      model: TOGETHER_MODEL,
+    };
+  } catch (err) {
+    console.warn("Together AI request failed:", err);
+    return null;
+  }
+}
+
 export const GEMINI_API_KEYS: string[] = Array.from(
   new Set(
     [readEnv("GEMINI_API_KEY"), readEnv("VITE_GEMINI_API_KEY")].filter(
@@ -556,19 +731,30 @@ export async function callWorkersAi(
 export async function routeChat(
   rawMessages: ChatMessage[],
   opts: { maxTokens?: number; temperature?: number } = {},
-): Promise<RouterResult> {
-  const { maxTokens = 1024, temperature = 0.7 } = opts;
+): Promise<RouterResult & { reasoning?: string }> {
+  const { maxTokens = 2048, temperature = 0.7 } = opts;
 
   // Enrich ALL messages with persistent ground truth if any video was linked in the conversation
   const messages = await enrichMessagesWithFullVideoContext(rawMessages);
 
-  // 1. Primary Live Model: Cloudflare Workers AI (free tier, bound in the worker / REST in dev)
+  // 1. Primary Live Model: Together AI with Prism-ML/Ternary-Bonsai-27B
+  const togetherReply = await callTogetherAi(messages, maxTokens, temperature);
+  if (togetherReply) {
+    return {
+      text: togetherReply.text,
+      reasoning: togetherReply.reasoning,
+      provider: "Together AI (Bonsai-27B)",
+      model: togetherReply.model,
+    };
+  }
+
+  // 2. Secondary Live Model: Cloudflare Workers AI (free tier, bound in the worker / REST in dev)
   const workersAiReply = await callWorkersAi(messages, maxTokens, temperature);
   if (workersAiReply) {
     return { text: workersAiReply.text, provider: "Yumna-AI", model: workersAiReply.model };
   }
 
-  // 2. Secondary Live Model: Gemini 2.5 / 2.0, when GEMINI_API_KEY is configured
+  // 3. Tertiary Live Model: Gemini 2.5 / 2.0, when GEMINI_API_KEY is configured
   const geminiReply = await callGemini(messages, maxTokens, temperature);
   if (geminiReply) {
     return { text: geminiReply.text, provider: "Yumna-AI", model: geminiReply.model };

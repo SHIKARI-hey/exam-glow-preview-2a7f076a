@@ -1,272 +1,337 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
-  ArrowRight,
   ArrowUpRight,
-  BookOpen,
-  CheckCircle2,
-  ClipboardCheck,
-  Clock3,
-  FileText,
-  MessageCircle,
-  Plus,
+  ChevronDown,
+  ChevronRight,
+  GraduationCap,
+  Search,
+  Settings,
 } from "lucide-react";
 
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
-import { ProfileAvatar } from "@/components/dashboard-page";
-import {
-  readProfile,
-  type OnboardingProfile,
-} from "@/lib/onboarding";
 
 export const Route = createFileRoute("/home")({
   head: () => ({
     meta: [
-      { title: "Study dashboard | ExamGlow" },
+      { title: "Study Dashboard | ExamGlow" },
       {
         name: "description",
-        content:
-          "Plan your studies, review your progress and prepare for every exam in one focused ExamGlow workspace.",
+        content: "Course search made smarter and simpler. Find courses with high admission chances.",
       },
-      { property: "og:title", content: "Study dashboard | ExamGlow" },
+      { property: "og:title", content: "Study Dashboard | ExamGlow" },
       {
         property: "og:description",
-        content: "Your focused workspace for notes, assignments, quizzes and exam preparation.",
+        content: "Explore new opportunities, courses, destinations and university partnerships.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: HomePage,
 });
 
-const quickActions = [
-  { title: "Ask the tutor", meta: "Instant explanations & quiz", to: "/chat", Icon: MessageCircle },
-  { title: "Quizzes & Tests", meta: "Topical practice & mocks", to: "/test", Icon: ClipboardCheck },
-  { title: "My Notes", meta: "Write & edit rich notes", to: "/notes", Icon: FileText },
-  { title: "Syllabus Notes", meta: "Full syllabus chapters", to: "/syllabus-notes", Icon: BookOpen },
-] as const;
+const courses = [
+  {
+    title: "Doctoral Certificate in Applied Computer Science",
+    price: "$10,280",
+    university: "Westcliff University, US",
+  },
+  {
+    title: "PhD Health Economics",
+    price: "$11,584",
+    university: "University of Colorado Denver, US",
+  },
+  {
+    title: "Doctoral Certificate in Applied Computer Science",
+    price: "$18,343",
+    university: "University of North Carolina at Gree...",
+  },
+];
 
-type StudyTask = {
-  id: string;
-  title: string;
-  time: string;
-  done: boolean;
-};
+const destinations = [
+  {
+    country: "Canada",
+    sub: "Your best destination",
+    img: "https://images.unsplash.com/photo-1562774053-701939374585?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Oxford",
+    sub: "Your best destination",
+    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Colorado",
+    sub: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=600&auto=format&fit=crop&q=80",
+  },
+  {
+    country: "Texas",
+    sub: "Your best destination",
+    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=600&auto=format&fit=crop&q=80",
+  },
+];
 
-const TASKS_KEY = "examglow.home_study_tasks";
+const partnerships = [
+  {
+    name: "University of Colorado",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1592280771190-3e2e4d571952?w=100&auto=format&fit=crop&q=80",
+    highlight: true,
+  },
+  {
+    name: "University of Texas",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=100&auto=format&fit=crop&q=80",
+    highlight: false,
+  },
+  {
+    name: "University of Canada",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1562774053-701939374585?w=100&auto=format&fit=crop&q=80",
+    highlight: false,
+  },
+  {
+    name: "University of Toronto",
+    location: "United States (USA)",
+    img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=100&auto=format&fit=crop&q=80",
+    highlight: false,
+  },
+];
 
-export function HomePage() {
-  const [profile, setProfile] = useState<OnboardingProfile>({});
-  const [tasks, setTasks] = useState<StudyTask[]>([]);
-  const [newTask, setNewTask] = useState("");
-  const [notesCount, setNotesCount] = useState(0);
-
-  useEffect(() => {
-    setProfile(readProfile());
-
-    try {
-      const savedTasks = window.localStorage.getItem(TASKS_KEY);
-      if (savedTasks) setTasks(JSON.parse(savedTasks));
-
-      const rawNotes = window.localStorage.getItem("examglow.student_notes");
-      if (rawNotes) {
-        const list = JSON.parse(rawNotes);
-        if (Array.isArray(list)) setNotesCount(list.length);
-      }
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const toggleTask = (id: string) => {
-    setTasks((prev) => {
-      const next = prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
-      try {
-        window.localStorage.setItem(TASKS_KEY, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-  };
-
-  const addTask = () => {
-    const title = newTask.trim();
-    if (!title) return;
-    setTasks((prev) => {
-      const next = [
-        ...prev,
-        { id: crypto.randomUUID(), title, time: "15 min", done: false },
-      ];
-      try {
-        window.localStorage.setItem(TASKS_KEY, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-    setNewTask("");
-  };
-
-  const firstName = profile.name?.split(" ")[0] ?? "there";
-  const completedTasks = tasks.filter((t) => t.done).length;
-
-  // Real dynamic date
-  const todayFormatted = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-
-  // Dynamic next upcoming deadline day
-  const nextTargetDay = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString("en-US", {
-    weekday: "long",
-  });
-
-  const focusTitle = profile.goal
-    ? `${profile.goal} Focused Revision`
-    : "IGCSE Curriculum Review";
+function HomePage() {
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <div className="flex h-dvh overflow-hidden app-frame">
+      {/* Restored application sidebar */}
       <DashboardSidebar />
-      <main className="app-panel font-apple min-w-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-[1080px] px-5 pb-24 pt-20 md:px-10 md:pt-10">
-          <header className="flex items-center justify-between">
-            <p className="text-sm font-medium text-muted-foreground">{todayFormatted}</p>
-            <ProfileAvatar className="shrink-0" />
+
+      {/* Main right-hand panel matching the screenshot design */}
+      <main className="app-panel min-w-0 flex-1 overflow-y-auto bg-white">
+        <div className="mx-auto max-w-[1200px] p-5 sm:p-7 lg:p-8">
+          {/* Top Bar: Search & User Header */}
+          <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6">
+            <div className="relative w-full max-w-sm">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className="w-full bg-[#F4F5F7] rounded-full pl-9 pr-4 py-2 text-xs text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 transition"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 self-end sm:self-auto">
+              <button
+                type="button"
+                className="size-8 rounded-full bg-[#F4F5F7] flex items-center justify-center text-gray-500 hover:text-gray-800 transition cursor-pointer"
+                aria-label="Settings"
+              >
+                <Settings className="size-4" />
+              </button>
+
+              <div className="flex items-center gap-2 pl-1 cursor-pointer">
+                <img
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
+                  alt="Sudarsan"
+                  className="size-8 rounded-full object-cover ring-1 ring-gray-200"
+                />
+                <div className="text-left">
+                  <p className="text-xs font-bold text-gray-900 leading-tight">Sudarsan</p>
+                  <p className="text-[10px] text-gray-400 leading-tight">Student</p>
+                </div>
+                <ChevronDown className="size-3 text-gray-400" />
+              </div>
+            </div>
           </header>
 
-          <section className="mt-16 text-center md:mt-20">
-            <p className="text-sm font-semibold text-muted-foreground">{focusTitle}</p>
-            <h1 className="font-apple mx-auto mt-3 max-w-3xl text-[clamp(2.6rem,6.5vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.035em]">
-              Good to see you, {firstName}.
-            </h1>
-            <p className="mx-auto mt-5 max-w-lg text-[clamp(1.05rem,1.6vw,1.3rem)] leading-relaxed text-muted-foreground">
-              Every chapter, note and AI tutor session. All in one place.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-              <Link
-                to="/syllabus-notes"
-                className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-6 py-3 text-[15px] font-medium text-background transition-opacity hover:opacity-85"
-              >
-                Continue learning
-              </Link>
-              <Link to="/notes" className="inline-flex items-center gap-1 text-[15px] font-medium text-foreground hover:underline underline-offset-4">
-                Open my notes <ArrowRight className="size-4" aria-hidden />
-              </Link>
-            </div>
-          </section>
-
-          <section className="mt-20 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <StatCard value="All" label="Syllabus open" />
-            <StatCard value={notesCount.toString()} label="Personal notes" />
-            <StatCard value={profile.streakDays ? `${profile.streakDays}d` : "On"} label="Study streak" />
-            <StatCard value="∞" label="AI tutor" />
-          </section>
-
-          <section className="mt-20">
-            <h2 className="font-apple text-[clamp(1.6rem,2.6vw,2rem)] font-semibold tracking-[-0.025em]">Get started.</h2>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {quickActions.map(({ title, meta, to, Icon }) => (
-                <Link key={title} to={to} className="apple-tile apple-tile-hover group flex items-center gap-5 p-6">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-background">
-                    <Icon className="size-5 text-foreground" aria-hidden />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[17px] font-semibold tracking-tight">{title}</span>
-                    <span className="mt-0.5 block truncate text-sm text-muted-foreground">{meta}</span>
-                  </span>
-                  <ArrowUpRight className="size-5 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden />
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          <div className="mt-20 grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_minmax(280px,1fr)]">
-            <section className="apple-tile p-7 md:p-8">
-              <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-apple text-2xl font-semibold tracking-[-0.02em]">Today’s goals</h2>
-                {tasks.length > 0 && (
-                  <span className="text-sm text-muted-foreground">{completedTasks} of {tasks.length}</span>
-                )}
+          {/* Hero Banner Row: 2 Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mt-1">
+            {/* Yellow Banner (7 cols) */}
+            <div className="lg:col-span-7 bg-[#FFD634] rounded-[24px] p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between shadow-xs">
+              {/* Decorative background student illustration */}
+              <div className="absolute right-0 bottom-0 pointer-events-none opacity-90 translate-x-3 translate-y-3">
+                <svg width="180" height="150" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="90" y="125" width="70" height="14" rx="3" fill="#333333" />
+                  <rect x="85" y="112" width="80" height="13" rx="3" fill="#FFFFFF" stroke="#333" strokeWidth="2" />
+                  <rect x="95" y="100" width="65" height="12" rx="3" fill="#333333" />
+                  <circle cx="130" cy="55" r="14" fill="#333333" />
+                  <path d="M120 70 C120 62 140 62 140 70 L145 105 L115 105 Z" fill="#FFFFFF" stroke="#333" strokeWidth="2" />
+                  <path d="M122 72 L112 50 L118 48 L126 68 Z" fill="#FFFFFF" stroke="#333" strokeWidth="1.5" />
+                  <path d="M112 50 C110 44 115 40 118 43 C120 45 118 50 112 50 Z" fill="#FFE2B8" stroke="#333" strokeWidth="1.5" />
+                  <path d="M165 40 L168 45 L173 48 L168 51 L165 56 L162 51 L157 48 L162 45 Z" fill="#FFFFFF" />
+                  <circle cx="175" cy="70" r="2" fill="#333333" />
+                  <circle cx="90" cy="65" r="1.5" fill="#333333" />
+                </svg>
               </div>
-              {tasks.length > 0 && (
-                <div className="mt-4 h-1 overflow-hidden rounded-full bg-background">
-                  <div className="h-full rounded-full bg-foreground transition-all duration-500" style={{ width: `${(completedTasks / tasks.length) * 100}%` }} />
-                </div>
-              )}
-              <div className="mt-6 flex items-center gap-3 rounded-2xl bg-background px-4 py-3">
-                <Plus className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-                <input
-                  type="text"
-                  value={newTask}
-                  onChange={(e) => setNewTask(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addTask()}
-                  placeholder="Add a study goal"
-                  className="min-w-0 flex-1 bg-transparent text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none"
-                />
-                <button type="button" onClick={addTask} disabled={!newTask.trim()} className="shrink-0 text-sm font-medium text-foreground transition-opacity hover:opacity-60 disabled:opacity-30">
-                  Add
+
+              <div className="relative z-10 max-w-md">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-950">
+                  Explore new opportunities
+                </h2>
+                <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-gray-800 max-w-[320px]">
+                  Course search made smarter and simpler. Use our magical AI system, to find courses with high admission chances.
+                </p>
+              </div>
+
+              <div className="relative z-10 mt-6">
+                <button
+                  type="button"
+                  className="bg-white text-gray-950 font-bold text-xs px-5 py-2.5 rounded-full shadow-xs hover:bg-gray-50 transition cursor-pointer"
+                >
+                  Try now
                 </button>
               </div>
-              {tasks.length === 0 ? (
-                <p className="mt-5 text-sm text-muted-foreground">No goals yet. Add one to start tracking today.</p>
-              ) : (
-                <div className="mt-3">
-                  {tasks.map((task) => (
-                    <button
-                      key={task.id}
-                      type="button"
-                      onClick={() => toggleTask(task.id)}
-                      className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-b border-border/60 py-3.5 text-left last:border-0"
-                    >
-                      {task.done ? (
-                        <CheckCircle2 className="size-5 shrink-0 text-foreground" />
-                      ) : (
-                        <span className="size-5 shrink-0 rounded-full border-[1.5px] border-muted-foreground/40" />
-                      )}
-                      <span className={`min-w-0 truncate text-[15px] ${task.done ? "text-muted-foreground line-through" : "text-foreground"}`}>{task.title}</span>
-                      <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
-                        <Clock3 className="size-3.5" />
-                        {task.time}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </section>
+            </div>
 
-            <section className="apple-tile flex flex-col p-7 md:p-8">
-              <p className="text-sm font-medium text-muted-foreground">Next checkpoint · {nextTargetDay}</p>
-              <h2 className="font-apple mt-2 text-2xl font-semibold leading-snug tracking-[-0.02em]">
-                {profile.goal ? `${profile.goal} Mock Assessment` : "IGCSE Mock Test"}
-              </h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
-                Practise past questions and review your formula flashcards.
-              </p>
-              <div className="mt-auto flex flex-col gap-2 pt-8">
-                <Link to="/test" className="inline-flex items-center gap-1 text-[15px] font-medium text-foreground hover:underline underline-offset-4">
-                  Open quizzes &amp; tests <ArrowRight className="size-4" />
-                </Link>
-                <Link to="/calendar" className="inline-flex items-center gap-1 text-[15px] font-medium text-muted-foreground hover:text-foreground">
-                  Revision calendar <ArrowRight className="size-4" />
-                </Link>
+            {/* Black Event Banner (5 cols) */}
+            <div className="lg:col-span-5 bg-[#0D0D0D] rounded-[24px] p-5 sm:p-6 text-white flex items-center justify-between gap-3 relative shadow-xs">
+              <div className="flex-1 min-w-0 pr-1">
+                <span className="text-[11px] font-medium text-gray-400">Up-coming Events</span>
+                <h3 className="mt-1 text-sm font-bold text-white leading-snug">
+                  IETLS Speaking - Part 3- Tow-way discussion
+                </h3>
+                <p className="mt-1 text-[10px] text-gray-400">United Kingdom | 09am - 12am</p>
+                <button
+                  type="button"
+                  className="mt-4 bg-[#FFD634] text-gray-950 font-bold text-xs px-4 py-2 rounded-full hover:bg-amber-300 transition cursor-pointer shadow-xs"
+                >
+                  View Details
+                </button>
               </div>
-            </section>
+
+              {/* White Flyer Thumbnail Preview */}
+              <div className="relative shrink-0 flex items-center">
+                <div className="w-24 bg-white rounded-2xl p-2.5 text-gray-900 shadow-md text-center">
+                  <p className="text-[8px] font-bold text-gray-400 tracking-wider">✦ Educare</p>
+                  <p className="text-xs font-extrabold text-black mt-0.5">Hello</p>
+                  <img
+                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&auto=format&fit=crop&q=80"
+                    alt="Student"
+                    className="size-11 mx-auto rounded-lg object-cover my-1"
+                  />
+                  <p className="text-[7px] text-gray-500 font-medium leading-none">Feels Good to the EVENT</p>
+                  <div className="flex justify-center gap-1 mt-1.5">
+                    <span className="size-1 rounded-full bg-black" />
+                    <span className="size-1 rounded-full bg-gray-300" />
+                  </div>
+                </div>
+
+                {/* Circular Floating Arrow Button */}
+                <button
+                  type="button"
+                  className="absolute -right-3 top-1/2 -translate-y-1/2 size-7 rounded-full bg-white text-black shadow-md flex items-center justify-center hover:scale-105 transition"
+                  aria-label="Next event"
+                >
+                  <ChevronRight className="size-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Courses Section */}
+          <div className="mt-7">
+            <div className="flex items-center justify-between pb-3">
+              <h3 className="text-sm sm:text-base font-bold text-gray-900">Courses</h3>
+              <button type="button" className="text-xs font-medium text-gray-400 hover:text-gray-700 transition">
+                See all
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {courses.map((course, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:border-gray-200 transition"
+                >
+                  <h4 className="text-xs font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[32px]">
+                    {course.title}
+                  </h4>
+                  <p className="mt-2 text-sm font-bold text-gray-950">{course.price}</p>
+                  <div className="mt-3 flex items-center gap-1.5 text-[10px] text-gray-400">
+                    <span className="size-4 rounded-full bg-black text-[#FFD634] flex items-center justify-center shrink-0">
+                      <GraduationCap className="size-2.5" />
+                    </span>
+                    <span className="truncate">{course.university}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom 2-Column: Your destinations & Partnerships */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-7">
+            {/* Destinations Grid (7 cols) */}
+            <div className="lg:col-span-7">
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-gray-900">Your destinations</h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">Providers 120 world class education in 8 countries</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3.5 mt-3">
+                {destinations.map((dest, idx) => (
+                  <div
+                    key={idx}
+                    className="group relative rounded-2xl overflow-hidden aspect-[16/10] bg-gray-100 shadow-xs cursor-pointer"
+                  >
+                    <img
+                      src={dest.img}
+                      alt={dest.country}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-3">
+                      <h4 className="text-xs font-bold text-white leading-tight">{dest.country}</h4>
+                      <p className="text-[10px] text-gray-300 leading-tight mt-0.5">{dest.sub}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Partnerships List (5 cols) */}
+            <div className="lg:col-span-5">
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-gray-900">Partnerships</h3>
+                <p className="text-[11px] text-gray-400 mt-0.5">Partnered over 120 world class University</p>
+              </div>
+
+              <div className="mt-3 space-y-2">
+                {partnerships.map((partner, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-2 rounded-2xl hover:bg-gray-50 transition cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={partner.img}
+                        alt={partner.name}
+                        className="size-10 rounded-xl object-cover shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-semibold text-gray-900 truncate">{partner.name}</h4>
+                        <p className="text-[10px] text-gray-400 truncate">{partner.location}</p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className={`size-7 rounded-full flex items-center justify-center shrink-0 transition ${
+                        partner.highlight
+                          ? "bg-black text-white hover:bg-gray-800"
+                          : "bg-[#F4F5F7] text-gray-500 hover:text-gray-900"
+                      }`}
+                      aria-label={`View ${partner.name}`}
+                    >
+                      <ArrowUpRight className="size-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </main>
-    </div>
-  );
-}
-
-function StatCard({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="apple-tile flex flex-col items-center justify-center px-4 py-8 text-center">
-      <strong className="font-apple block text-[clamp(2rem,3.4vw,2.6rem)] font-semibold leading-none tracking-[-0.03em]">{value}</strong>
-      <span className="mt-2 text-sm text-muted-foreground">{label}</span>
     </div>
   );
 }

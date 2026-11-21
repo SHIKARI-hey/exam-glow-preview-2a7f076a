@@ -1346,62 +1346,56 @@ function SubjectNoteRow({
   onSelectChapter: (c: Chapter) => void;
 }) {
   return (
-    <div className="border-b border-border/80 last:border-b-0">
-      {/* Clickable horizontal line row */}
+    <div className="rounded-2xl border border-gray-200/80 bg-white p-4 shadow-xs mb-3 transition hover:border-gray-300">
+      {/* Clickable header */}
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center gap-3 py-3.5 px-4 sm:px-0 text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
+        className="flex w-full items-center justify-between gap-3 text-left cursor-pointer"
       >
-        <ChevronRight
-          className={`size-4 shrink-0 transition-transform duration-200 ${open ? "rotate-90 text-foreground" : ""}`}
-        />
-        <div className={`size-2.5 rounded-full ${subject.color}`} />
-        <span className="font-bold text-foreground">{subject.name}</span>
-        <span className="font-mono text-xs">{subject.code}</span>
-        <span className="text-xs">
-          {subject.chapters.length} chapter
-          {subject.chapters.length > 1 ? "s" : ""}
-          <span className="hidden sm:inline"> comprehensive</span>
-        </span>
-        <div className="flex-1" />
-        <span className="text-xs font-semibold text-muted-foreground/70">
-          {open ? "Hide chapters" : "View chapters"}
-        </span>
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gray-100 font-bold text-xs shrink-0 text-gray-900">
+            {subject.code}
+          </div>
+          <div className="min-w-0">
+            <h4 className="font-bold text-sm text-gray-900 truncate">{subject.name}</h4>
+            <p className="text-[11px] text-gray-400">
+              {subject.chapters.length} comprehensive chapter{subject.chapters.length > 1 ? "s" : ""}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-200 transition">
+            {open ? "Hide Chapters" : "Browse Chapters"}
+          </span>
+          <ChevronRight
+            className={`size-4 text-gray-400 transition-transform duration-200 ${open ? "rotate-90 text-black" : ""}`}
+          />
+        </div>
       </button>
 
-      {/* Expanded chapter rail: a dot per chapter, joined by a single line */}
+      {/* Expanded chapters */}
       {open && (
-        <div className="-mx-4 pb-5 pt-1 sm:mx-0 sm:pl-4">
-          <ol className="flex flex-col gap-0">
-            {subject.chapters.map((ch, ci) => {
-              const isLast = ci === subject.chapters.length - 1;
-              return (
-                <li key={ch.number} className="flex gap-3.5">
-                  <div className="flex flex-col items-center">
-                    <span className="mt-3 size-2.5 shrink-0 rounded-full bg-foreground/70" />
-                    {!isLast && <span className="w-px flex-1 bg-border" />}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => onSelectChapter(ch)}
-                    className="group flex flex-1 items-baseline gap-3 border-b border-border/40 py-3 pr-2 text-left last:border-b-0 hover:bg-muted/30 transition-colors"
-                  >
-                    <span className="text-[11px] font-bold tabular-nums text-muted-foreground">
-                      {String(ch.number).padStart(2, "0")}
-                    </span>
-                    <span className="min-w-0 flex-1 text-[14.5px] font-semibold text-foreground/85 group-hover:text-foreground">
-                      {ch.title}
-                    </span>
-                    <span className="hidden shrink-0 text-[11px] font-semibold text-muted-foreground sm:inline">
-                      {ch.subheadings.length} topics
-                    </span>
-                    <ChevronRight className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
+        <div className="mt-4 pt-3 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {subject.chapters.map((ch) => (
+            <button
+              key={ch.number}
+              type="button"
+              onClick={() => onSelectChapter(ch)}
+              className="group flex items-center justify-between gap-2 p-2.5 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50/80 transition text-left cursor-pointer"
+            >
+              <div className="min-w-0 flex items-center gap-2.5">
+                <span className="size-6 rounded-full bg-gray-100 text-gray-700 font-bold text-[10px] flex items-center justify-center shrink-0">
+                  {ch.number}
+                </span>
+                <span className="text-xs font-semibold text-gray-800 group-hover:text-black truncate">
+                  {ch.title}
+                </span>
+              </div>
+              <ChevronRight className="size-3.5 text-gray-400 group-hover:text-black shrink-0" />
+            </button>
+          ))}
         </div>
       )}
     </div>
@@ -1514,25 +1508,30 @@ function SyllabusNotesPage() {
       <DashboardLayout crumbs={[{ label: "Course" }, { label: "Syllabus Notes" }]}>
         <div className="w-full py-2">
           {/* Hero banner */}
-          <div className="mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-lavender/60 via-lilac/40 to-mint/50 px-6 py-8 sm:px-10">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mb-6 rounded-3xl bg-white border border-gray-200/80 p-6 sm:p-8 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                  IGCSE
-                </p>
-                <h1 className="mt-1 font-serif text-3xl font-bold sm:text-4xl text-foreground">
-                  Syllabus Notes
+                <span className="inline-block rounded-full bg-black text-white px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
+                  Cambridge IGCSE Curriculum
+                </span>
+                <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                  Syllabus Revision Notes
                 </h1>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {SYLLABUS_NOTES.length} subjects · Comprehensive chapter breakdowns · Full IGCSE
-                  coverage
+                <p className="mt-1 text-xs sm:text-sm text-gray-500">
+                  Comprehensive, high-yield chapter guides with worked formulas, voice lectures, and practice checks.
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-2 rounded-2xl bg-card/70 px-5 py-3 backdrop-blur shadow-sm">
-                <BookOpen className="size-5 text-muted-foreground" aria-hidden />
-                <div>
-                  <p className="text-xl font-bold">{SYLLABUS_NOTES.length}</p>
-                  <p className="text-xs text-muted-foreground">Subjects</p>
+
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="rounded-2xl bg-gray-50 border border-gray-100 p-3.5 text-center min-w-[110px]">
+                  <span className="text-2xl font-black text-gray-900 block leading-tight">{SYLLABUS_NOTES.length}</span>
+                  <span className="text-[11px] font-semibold text-gray-400">Total Subjects</span>
+                </div>
+                <div className="rounded-2xl bg-gray-50 border border-gray-100 p-3.5 text-center min-w-[110px]">
+                  <span className="text-2xl font-black text-gray-900 block leading-tight">
+                    {SYLLABUS_NOTES.reduce((acc, s) => acc + s.chapters.length, 0)}
+                  </span>
+                  <span className="text-[11px] font-semibold text-gray-400">Chapters</span>
                 </div>
               </div>
             </div>
@@ -1569,16 +1568,16 @@ function SyllabusNotesPage() {
           </div>
 
           {/* Subjects List */}
-          <div className="rounded-none sm:rounded-3xl border-y sm:border border-border bg-card sm:px-6 py-4 shadow-sm -mx-4 sm:mx-0">
+          <div className="space-y-6">
             {grouped.map(({ cat, subjects }) => (
-              <div key={cat} className="mb-6 last:mb-0">
-                <div className="flex items-center gap-2 border-b border-border pb-2 pt-2 text-xs font-bold uppercase tracking-wider text-muted-foreground px-4 sm:px-0">
-                  <span className={`size-2 rounded-full ${catDot[cat] ?? "bg-foreground"}`} />
-                  <span>{cat}</span>
-                  <span className="font-normal text-muted-foreground/60">({subjects.length})</span>
+              <div key={cat} className="space-y-3">
+                <div className="flex items-center gap-2 pb-1 text-xs font-bold uppercase tracking-wider text-gray-500">
+                  <span className={`size-2 rounded-full ${catDot[cat] ?? "bg-black"}`} />
+                  <span className="text-gray-900">{cat}</span>
+                  <span className="font-normal text-gray-400">({subjects.length})</span>
                 </div>
 
-                <div className="divide-y divide-border/60">
+                <div className="grid grid-cols-1 gap-3">
                   {subjects.map((sub) => (
                     <SubjectNoteRow
                       key={sub.id}
