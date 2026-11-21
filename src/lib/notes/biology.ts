@@ -9,74 +9,75 @@ export const BIOLOGY_CHAPTERS: Chapter[] = [
     "subheadings": [
       {
         "title": "Biological Molecules: Key Terms",
-        "body": "### Biological Molecules: Key Terms\n\nKey notes, biological definitions, reaction schemes, and exam focus points for **Biological Molecules: Key Terms** will be detailed here.",
+        "body": "### Biological Molecules: Key Terms\n\n- Although organisms exhibit immense biological diversity both within and across species, their fundamental biochemical framework remains remarkably shared across all forms of life.\n- The principal chemical compounds necessary for assembling biological structures and sustaining living processes include:\n  - **carbohydrates**\n  - **proteins**\n  - **lipids**\n  - **nucleic acids**\n  - **water**\n\n- **Monomers** represent the elementary, individual building blocks utilized to synthesize larger, more complex molecules.\n- **Polymers** are macromolecular structures created by bonding numerous monomers together in extended chains through a reaction pathway termed **polymerisation**.\n- **Organic compounds** comprise carbohydrates, proteins, lipids, and nucleic acids because they invariably incorporate both **carbon (C)** and **hydrogen (H)** within their molecular backbone.\n- **Macromolecules** are exceptionally large biological structures:\n  - They typically contain 1,000 or more atoms, giving them a very **high molecular mass**.\n  - While polymers represent a category of macromolecules, **not all macromolecules qualify as polymers**, because polymer chains require identical, repeating subunits.",
+        "figure": "![Biological molecules: Lipids and Nucleic Acids](/notes/biology/carbohydrates/biological-molecules-lipids-nucleic.png)\n\n![Biological molecules: Inorganic Water, Proteins and Carbohydrates](/notes/biology/carbohydrates/biological-molecules-protein-carbs.png)\n\n![Monomers make up polymers, which make up living organisms](/notes/biology/carbohydrates/biological-molecules-organisms.png)",
         "groups": [
           {
-            "subTitle": "Core Concepts",
+            "subTitle": "Core Molecular Classifications",
             "bullets": [
-              "Fundamental principles and definitions for Biological Molecules: Key Terms.",
-              "Key terminology and specification learning outcomes.",
-              "Common exam context and data interpretation."
+              "**Monomer:** The single repeating subunit from which polymers are built (e.g., monosaccharides, amino acids, nucleotides).",
+              "**Polymer:** Large chain formed by many covalently bonded monomers during polymerisation.",
+              "**Macromolecule:** Any molecule with very high relative molecular mass (1000+ atoms); note that lipids are macromolecules but not polymers because they are assembled from different subunits rather than repeating chains."
             ]
           }
         ],
         "examinerTips": [
-          "Pay close attention to exact command words when answering questions on Biological Molecules: Key Terms.",
-          "Always use precise biological terminology in explanations."
+          "When defining monomers and polymers in an exam question, state the formal definition and always provide concrete biological examples—for instance, emphasize that a **nucleic acid** represents a polymer assembled from **nucleotide monomers**."
         ],
         "commonMistakes": [
-          "Confusing similar terms or omitting key conditions required by mark schemes."
+          "Assuming all macromolecules are polymers. Lipids (such as triglycerides) are macromolecules due to their high molecular mass, but they are NOT polymers because they are not composed of repeated identical monomer units."
         ],
         "recap": [
-          "Explain the key significance of Biological Molecules: Key Terms in biological systems."
+          "Define the terms monomer and polymer, providing one biological example of each.",
+          "Explain why a triglyceride molecule is classified as a macromolecule but not a polymer."
         ]
       },
       {
         "title": "Biological Molecules: Reactions",
-        "body": "### Biological Molecules: Reactions\n\nKey notes, biological definitions, reaction schemes, and exam focus points for **Biological Molecules: Reactions** will be detailed here.",
+        "body": "### Biological Molecules: Reactions\n\n- A wide range of biochemical processes in living organisms rely on the generation of strong **covalent bonds**, which impart structural integrity and mechanical durability to molecules.\n- Two fundamental **chemical reactions** govern the synthesis and breakdown of these covalent linkages:\n  - **Condensation reactions**\n  - **Hydrolysis reactions**\n\n#### Condensation reactions\n- A **condensation reaction** (frequently referred to as dehydration synthesis) takes place when individual **monomers** link via covalent bonds to yield **polymers** (during polymerisation) or macromolecules, with a molecule of **water released** in the process.",
+        "figure": "![Written and symbolic illustrations of condensation reaction](/notes/biology/carbohydrates/condensation-reaction-diagram.png)\n\n| Organic molecules | Covalent Bonds | Diagram of covalent bond |\n| :--- | :--- | :--- |\n| **Carbohydrates** | Glycosidic | `C — O — C` |\n| **Proteins** | Peptide | `O=C — N — H` |\n| **Lipids** | Ester | `C — O — C=O` |\n| **Nucleic Acids** | Phosphodiester | `PO₄²⁻ — Pentose sugar` |\n\n![Covalent bonds in organic molecules formed during condensation reactions](/notes/biology/carbohydrates/covalent-bonds-table-1.jpg)\n![Covalent bond linkages detail](/notes/biology/carbohydrates/covalent-bonds-table-2.jpg)\n\n#### Hydrolysis reactions\n- The term hydrolysis is derived from *'lysis'* (signifying cleavage or breaking) alongside *'hydro'* (signifying water).\n- During the hydrolysis of biological polymers, **covalent bonds are cleaved through the addition of water molecules**.\n\n![Written and symbolic illustrations of hydrolysis reaction](/notes/biology/carbohydrates/hydrolysis-reaction-diagram.jpg)",
         "groups": [
           {
-            "subTitle": "Core Concepts",
+            "subTitle": "Key Reaction Pathways",
             "bullets": [
-              "Fundamental principles and definitions for Biological Molecules: Reactions.",
-              "Key terminology and specification learning outcomes.",
-              "Common exam context and data interpretation."
+              "**Condensation:** Two molecules combine to form a larger molecule with the elimination of water. Forms glycosidic bonds in carbohydrates, peptide bonds in proteins, and ester bonds in lipids.",
+              "**Hydrolysis:** Cleavage of a chemical bond by the addition of water. Breaks polymers down into their constituent monomers during digestion and cellular recycling."
             ]
           }
         ],
         "examinerTips": [
-          "Pay close attention to exact command words when answering questions on Biological Molecules: Reactions.",
-          "Always use precise biological terminology in explanations."
+          "You must be able to accurately recognise and identify the location of covalent bonds in molecular diagrams, as well as sketch them clearly. Note that these molecules may appear unfamiliar in examination contexts, but the functional groups remain identical."
         ],
         "commonMistakes": [
-          "Confusing similar terms or omitting key conditions required by mark schemes."
+          "Mixing up where water enters or leaves: remember that condensation PRODUCES water (water is removed from the monomers), whereas hydrolysis CONSUMES water (water is added to break the bond)."
         ],
         "recap": [
-          "Explain the key significance of Biological Molecules: Reactions in biological systems."
+          "Distinguish between a condensation reaction and a hydrolysis reaction, citing the role of water in each.",
+          "Name the specific covalent bond formed during the condensation of two amino acids, and identify the functional groups involved."
         ]
       },
       {
         "title": "Monosaccharides",
-        "body": "### Monosaccharides\n\nKey notes, biological definitions, reaction schemes, and exam focus points for **Monosaccharides** will be detailed here.",
+        "body": "### Monosaccharides: Common Examples\n\n#### Carbohydrates\n- Carbohydrates constitute one of the fundamental carbon-centered families of molecules found across living organisms.\n- Every molecule within this chemical class is composed of **carbon**, **hydrogen**, and **oxygen**.\n- Carbohydrates are grouped into three primary categories:\n  - **monosaccharides**\n  - **disaccharides**\n  - **polysaccharides**\n\n| Type | Definition | Examples |\n| :--- | :--- | :--- |\n| **Monosaccharide** | Single reducing sugar monomer unit | Glucose, Fructose, Deoxyribose |\n| **Disaccharide** | A sugar synthesized from two monosaccharides joined by a glycosidic bond during a condensation reaction | Maltose, Sucrose, Lactose |\n| **Polysaccharide** | A polymer synthesized from numerous monosaccharides joined by glycosidic bonds during condensation reactions | Cellulose, Starch, Glycogen |\n\n#### Monosaccharides\n- Monosaccharides represent the simplest form of **sugars**.\n- These discrete sugar monomers serve as the primary units that bond together to assemble **higher-order carbohydrates**, including both disaccharides and polysaccharides.\n- Sugars are classified as either **reducing or non-reducing sugars**, based upon their capacity to donate electrons:\n  - **Reducing sugars** possess the ability to donate electrons (their carbonyl group becomes oxidised), meaning the sugars act as **reducing agents**.\n    - Reducing sugars are detected using Benedict's reagent because they reduce soluble blue copper(II) sulfate to insoluble brick-red copper(I) oxide precipitate.\n    - Examples of reducing sugars include: **glucose, fructose, and galactose**.\n    - *Note:* Fructose and galactose share the identical molecular formula ($C_6H_{12}O_6$) with glucose, yet display distinct structural configurations (isomers).\n  - **Non-reducing sugars** cannot donate electrons, meaning they cannot undergo direct oxidation.\n    - To test for non-reducing sugars, the sample must first be **hydrolysed** by boiling with dilute acid to break disaccharide glycosidic bonds into individual monosaccharides before neutralizing and heating with Benedict's reagent.\n    - Principal example: **sucrose**.\n\n| Reducing sugars | Non-reducing sugars |\n| :--- | :--- |\n| Glucose | Sucrose |\n| Galactose | |\n| Fructose | |",
+        "figure": "",
         "groups": [
           {
-            "subTitle": "Core Concepts",
+            "subTitle": "Classification & Testing",
             "bullets": [
-              "Fundamental principles and definitions for Monosaccharides.",
-              "Key terminology and specification learning outcomes.",
-              "Common exam context and data interpretation."
+              "**Reducing Sugar Action:** Donates electrons to alkaline copper(II) ions ($Cu^{2+}$), precipitating insoluble red copper(I) oxide ($Cu_2O$).",
+              "**Non-Reducing Sugar Protocol:** Must first be heated with dilute hydrochloric acid ($HCl$) to hydrolyse glycosidic bonds, then neutralised with sodium hydrogencarbonate ($NaHCO_3$) prior to Benedict's testing."
             ]
           }
         ],
         "examinerTips": [
-          "Pay close attention to exact command words when answering questions on Monosaccharides.",
-          "Always use precise biological terminology in explanations."
+          "You need to be able to name examples of monosaccharides and distinguish between reducing and non-reducing sugars. Be sure to memorize the examples in the table for immediate recall in short-answer questions."
         ],
         "commonMistakes": [
-          "Confusing similar terms or omitting key conditions required by mark schemes."
+          "Forgetting that sucrose is a non-reducing sugar and will produce a negative (blue) Benedict's test unless it is first hydrolysed with acid."
         ],
         "recap": [
-          "Explain the key significance of Monosaccharides in biological systems."
+          "Explain the chemical basis of the distinction between reducing and non-reducing sugars.",
+          "Describe the steps required to confirm the presence of a non-reducing sugar such as sucrose in a biological sample."
         ]
       },
       {

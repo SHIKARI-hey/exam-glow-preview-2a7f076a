@@ -431,22 +431,36 @@ function sectionWords(sub: SubHeading): number {
 }
 
 function CalloutList({ items, tone }: { items: string[]; tone: "tips" | "mistakes" }) {
+  const isTips = tone === "tips";
   return (
-    <div className="mt-6">
-      <p className="text-[13.5px] font-bold text-foreground">
-        {tone === "tips" ? "Examiner's Tips" : "Common Mistakes"}
-      </p>
-      <ul className="mt-2 space-y-2">
+    <div
+      className={`my-6 rounded-2xl border p-4 sm:p-5 shadow-xs transition-all ${
+        isTips
+          ? "border-sky-500/35 bg-sky-500/5 text-foreground"
+          : "border-amber-500/35 bg-amber-500/5 text-foreground"
+      }`}
+    >
+      <div className="flex items-center gap-2.5 mb-2.5">
+        <div
+          className={`flex size-6 shrink-0 items-center justify-center rounded-full ${
+            isTips ? "bg-sky-500 text-white" : "bg-amber-500 text-white"
+          }`}
+        >
+          {isTips ? <Lightbulb className="size-3.5" /> : <AlertTriangle className="size-3.5" />}
+        </div>
+        <p className="text-[13.5px] font-bold text-foreground">
+          {isTips ? "Examiner Tips and Tricks" : "Common Pitfalls & Mistakes"}
+        </p>
+      </div>
+      <div className="space-y-2 pl-8">
         {items.map((item, idx) => (
-          <li key={idx} className="flex items-start gap-3">
-            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-muted-foreground/55" />
-            <div
-              className={proseCell}
-              dangerouslySetInnerHTML={{ __html: formatMathAndMarkdown(item) }}
-            />
-          </li>
+          <div
+            key={idx}
+            className={proseCell}
+            dangerouslySetInnerHTML={{ __html: formatMathAndMarkdown(item) }}
+          />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
