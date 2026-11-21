@@ -556,15 +556,6 @@ export function DashboardLayout({
           </div>
         </main>
       </div>
-
-      {/* ── 3. Floating DueOtter AI Assistant Launcher (Bottom Right) ── */}
-      <Link
-        to="/chat"
-        className="fixed bottom-5 right-5 z-40 size-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all group"
-        title="Chat with DueOtter AI Tutor"
-      >
-        <Sparkles className="size-5 group-hover:rotate-12 transition-transform" />
-      </Link>
     </div>
   );
 }
