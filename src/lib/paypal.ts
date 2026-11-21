@@ -5,7 +5,7 @@
 
 export const PAYPAL_CLIENT_ID =
   (import.meta.env["VITE_PAYPAL_CLIENT_ID"] as string | undefined)?.trim() ||
-  "test";
+  "EL8rb4m_-Uhvve-tVfLR9ngyhp2roT36rmA3vcJLf7CwQumma8zSpqS3iRFC2eIHxc7V2yDrXpiOT9zG";
 
 // ─── Currency ─────────────────────────────────────────────────────────────────
 

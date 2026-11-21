@@ -74,6 +74,10 @@ export function DashboardSidebar() {
       setUser({ name: p.name || "Student", email: p.email || "" });
       const pic = localStorage.getItem("examglow.google_picture");
       if (pic) setGooglePicture(pic);
+      if (sessionStorage.getItem("examglow.show_upgrade_on_login") === "true") {
+        sessionStorage.removeItem("examglow.show_upgrade_on_login");
+        setPaywallOpen(true);
+      }
     } catch {}
   }, []);
   const pathname = useRouterState({ select: (state) => state.location.pathname });

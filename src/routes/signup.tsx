@@ -53,6 +53,7 @@ function SignUpPage() {
     try {
       if (typeof window !== "undefined") {
         window.localStorage.setItem("examglow.auth_method", "email");
+        window.sessionStorage.setItem("examglow.show_upgrade_on_login", "true");
       }
     } catch { /* ignore */ }
     markLoggedIn();

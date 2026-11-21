@@ -51,6 +51,9 @@ export function AuthLayout({ title, children }: { title: string; children: React
       } catch { /* ignore */ }
 
       markLoggedIn();
+      try {
+        window.sessionStorage.setItem("examglow.show_upgrade_on_login", "true");
+      } catch {}
       navigate({ to: "/home", replace: true });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Google sign-in failed.";

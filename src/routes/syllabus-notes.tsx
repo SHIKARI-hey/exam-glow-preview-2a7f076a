@@ -54,6 +54,8 @@ import {
   type FlashcardItem,
 } from "@/lib/syllabus-notes";
 import { formatMathAndMarkdown } from "@/lib/render-math";
+import { STUDY_ARTICLES, type Article } from "@/lib/articles-data";
+import { STUDY_GUIDES, type Article } from "@/lib/articles-data";
 import { sound } from "@/components/arcade/sound-fx";
 
 // Which subject row is expanded and which chapter is being read live in the URL,
@@ -63,6 +65,7 @@ type NotesSearch = {
   chapter?: number;
   view?: string;
   board?: string;
+  article?: string;
 };
 
 export const Route = createFileRoute("/syllabus-notes")({
@@ -73,6 +76,7 @@ export const Route = createFileRoute("/syllabus-notes")({
     if (Number.isInteger(chapter) && chapter > 0) next.chapter = chapter;
     if (typeof raw["view"] === "string" && raw["view"]) next.view = raw["view"];
     if (typeof raw["board"] === "string" && raw["board"]) next.board = raw["board"];
+    if (typeof raw["article"] === "string" && raw["article"]) next.article = raw["article"];
     return next;
   },
   head: () => ({
@@ -758,30 +762,64 @@ function ChapterDoc({
     if (progressBarRef.current) progressBarRef.current.style.transform = "scaleX(0)";
   }, [chapter.number]);
 
-  const handleSendChat = () => {
-    if (!chatInput.trim()) return;
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
+  const handleSendChat = async () => {
+    if (!chatInput.trim() || isAiLoading) return;
     const userText = chatInput.trim();
     const userMsg = { id: Date.now().toString(), role: "user" as const, text: userText };
     setMessages((prev) => [...prev, userMsg]);
     setChatInput("");
+    setIsAiLoading(true);
 
-    // Simulate smart context-aware tutor response
-    setTimeout(() => {
-      let reply = `In ${chapter.title}, this is a crucial exam point. Make sure to clearly state definitions, name the specific chemical bonds involved, and explain how the molecular structure directly enables its biological function.`;
-      if (userText.toLowerCase().includes("reduce") || userText.toLowerCase().includes("reducing")) {
-        reply = "Reducing sugars donate electrons to copper(II) ions in Benedict's reagent, reducing soluble blue Cu²⁺ to insoluble brick-red Cu₂O precipitate upon heating. Glucose, fructose, and galactose are reducing sugars. Sucrose is non-reducing because both anomeric carbons are engaged in the glycosidic bond.";
-      } else if (userText.toLowerCase().includes("maltose") || userText.toLowerCase().includes("disaccharide")) {
-        reply = "Maltose is formed by condensation of two α-glucose monomers via an α-1,4-glycosidic bond. Sucrose is α-glucose + β-fructose (α-1,2 bond). Lactose is β-galactose + β-glucose (β-1,4 bond).";
-      } else if (userText.toLowerCase().includes("test") || userText.toLowerCase().includes("question")) {
-        reply = `Exam Question Check: "Describe how a glycosidic bond forms between two monosaccharides and explain why sucrose gives a negative Benedict's test." Would you like the model answer points?`;
+    try {
+      const topicContext = `You are DueOtter AI, a high-speed, direct tutor for ExamGlow. The student is currently studying "${chapter.title}" in ${subjectId}. Subtopics: ${chapter.subheadings.map((s) => s.title).join(", ")}. Answer the student's question directly, concisely, and accurately based on exam marking points and key definitions. Keep responses focused on this topic under 3 short paragraphs.`;
+
+      const apiMessages = [
+        { role: "system", content: topicContext },
+        ...messages.map((m) => ({
+          role: m.role === "agent" ? "assistant" : "user",
+          content: m.text,
+        })),
+        { role: "user", content: userText },
+      ];
+
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: apiMessages }),
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as { text?: string };
+        if (data.text) {
+          setMessages((prev) => [
+            ...prev,
+            { id: (Date.now() + 1).toString(), role: "agent" as const, text: data.text! },
+          ]);
+          setIsAiLoading(false);
+          chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
       }
+    } catch (e) {
+      console.warn("Real-time AI fetch error, falling back:", e);
+    }
 
-      setMessages((prev) => [
-        ...prev,
-        { id: (Date.now() + 1).toString(), role: "agent" as const, text: reply },
-      ]);
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 450);
+    // High-speed fallback
+    let reply = `In ${chapter.title}, remember to cite the exact chemical bonds, definitions, and functions.`;
+    if (userText.toLowerCase().includes("reduce") || userText.toLowerCase().includes("reducing")) {
+      reply = "Reducing sugars donate electrons to Cu²⁺ in Benedict's solution, forming a brick-red Cu₂O precipitate. Glucose, fructose, and galactose are reducing. Sucrose is non-reducing because both anomeric carbons are bonded.";
+    } else if (userText.toLowerCase().includes("maltose") || userText.toLowerCase().includes("disaccharide")) {
+      reply = "Maltose forms from two α-glucose molecules via an α-1,4-glycosidic bond. Sucrose is α-glucose + β-fructose (α-1,2). Lactose is β-galactose + β-glucose (β-1,4).";
+    }
+
+    setMessages((prev) => [
+      ...prev,
+      { id: (Date.now() + 1).toString(), role: "agent" as const, text: reply },
+    ]);
+    setIsAiLoading(false);
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -1216,23 +1254,27 @@ function ChapterDoc({
           </div>
         </article>
 
-        {/* ── Chatbot Floating Action Button (Right Edge) ── */}
-        <button
-          type="button"
-          onClick={() => setChatOpen(true)}
-          aria-label="Open AI Tutor Chat"
-          className="fixed right-6 bottom-6 z-40 size-12 rounded-full bg-slate-900 text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white cursor-pointer"
-        >
-          <Bot className="size-6 text-white" />
-        </button>
+        {/* Floating AI Action Button (When panel is closed) */}
+        {!chatOpen && (
+          <button
+            type="button"
+            onClick={() => setChatOpen(true)}
+            aria-label="Open AI Tutor Chat"
+            className="fixed right-6 bottom-6 z-40 size-12 rounded-full bg-slate-900 text-white shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white cursor-pointer"
+          >
+            <Bot className="size-6 text-white" />
+          </button>
+        )}
+      </main>
 
-        {/* ── AI Chatbot Slide-Out Panel (Matching media_1795273520836_423dc96f.png) ── */}
-        {chatOpen && (
-          <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white border-l border-slate-200 shadow-2xl flex flex-col animate-in slide-in-from-right duration-250">
+      {/* Docked AI Chat Panel (Non-hovering, space/margin from edges, matching image) */}
+      {chatOpen && (
+        <aside className="w-full sm:w-[420px] shrink-0 h-full p-4 pl-0 flex flex-col bg-slate-100/70 border-l border-slate-200 transition-all duration-200">
+          <div className="h-full w-full rounded-3xl border border-slate-200/90 bg-white shadow-xl flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-white">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white">
               <div className="flex items-center gap-2.5">
-                <div className="size-8 rounded-lg bg-black text-white flex items-center justify-center font-bold text-xs">
+                <div className="size-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
                   <Bot className="size-5" />
                 </div>
                 <div>
@@ -1240,12 +1282,12 @@ function ChapterDoc({
                 </div>
               </div>
 
-              {/* Action Icons: History, Edit/New, Trash, Close */}
-              <div className="flex items-center gap-2 text-slate-500">
+              {/* Action Icons */}
+              <div className="flex items-center gap-1.5 text-slate-400">
                 <button
                   type="button"
                   title="History"
-                  className="p-1 hover:text-slate-900 rounded transition-colors"
+                  className="p-1 hover:text-slate-800 rounded transition-colors"
                 >
                   <RotateCcw className="size-4" />
                 </button>
@@ -1261,7 +1303,7 @@ function ChapterDoc({
                       },
                     ])
                   }
-                  className="p-1 hover:text-slate-900 rounded transition-colors"
+                  className="p-1 hover:text-slate-800 rounded transition-colors"
                 >
                   <SquarePen className="size-4" />
                 </button>
@@ -1269,7 +1311,7 @@ function ChapterDoc({
                   type="button"
                   title="Clear chat"
                   onClick={() => setMessages([])}
-                  className="p-1 hover:text-slate-900 rounded transition-colors"
+                  className="p-1 hover:text-slate-800 rounded transition-colors"
                 >
                   <Trash2 className="size-4" />
                 </button>
@@ -1277,7 +1319,7 @@ function ChapterDoc({
                   type="button"
                   title="Close panel"
                   onClick={() => setChatOpen(false)}
-                  className="p-1 hover:text-slate-900 rounded transition-colors ml-1"
+                  className="p-1 hover:text-slate-800 rounded transition-colors ml-1"
                 >
                   <X className="size-4" />
                 </button>
@@ -1285,7 +1327,7 @@ function ChapterDoc({
             </div>
 
             {/* Chat Body with subtle dot-grid background */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] bg-slate-50/40">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] bg-slate-50/50">
               {messages.map((m) => (
                 <div
                   key={m.id}
@@ -1335,11 +1377,17 @@ function ChapterDoc({
                   )}
                 </div>
               ))}
+              {isAiLoading && (
+                <div className="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs flex items-center gap-2 text-xs text-slate-500">
+                  <Loader2 className="size-4 animate-spin text-slate-700" />
+                  <span>Thinking...</span>
+                </div>
+              )}
               <div ref={chatEndRef} />
             </div>
 
             {/* Input Footer */}
-            <div className="p-3 border-t border-slate-200 bg-white">
+            <div className="p-3 border-t border-slate-100 bg-white">
               <div className="rounded-2xl border border-slate-300 bg-white p-2.5 shadow-2xs flex items-end gap-2 focus-within:border-slate-800 transition-all">
                 <textarea
                   value={chatInput}
@@ -1357,7 +1405,7 @@ function ChapterDoc({
                 <button
                   type="button"
                   onClick={handleSendChat}
-                  disabled={!chatInput.trim()}
+                  disabled={!chatInput.trim() || isAiLoading}
                   className="size-8 rounded-full bg-slate-900 text-white flex items-center justify-center shrink-0 hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-slate-900 transition-colors"
                 >
                   <ArrowUp className="size-4" />
@@ -1365,8 +1413,8 @@ function ChapterDoc({
               </div>
             </div>
           </div>
-        )}
-      </main>
+        </aside>
+      )}
 
       {/* Flashcards Modal */}
       {showFlashcards && (
@@ -1385,16 +1433,22 @@ function ChapterDoc({
 // ─── Main Courses & Syllabus Notes Page Component ─────────────────────────────
 
 export function SyllabusNotesPage() {
-  const { subject: subjectId, chapter: chapterNumber, view: rawView, board } = Route.useSearch();
+  const { subject: subjectId, chapter: chapterNumber, view: rawView, board, article: articleId } = Route.useSearch();
   const navigate = useNavigate();
 
   const selectedSubject = SYLLABUS_NOTES.find((s) => s.id === subjectId) ?? null;
   const activeChapter = selectedSubject?.chapters.find((c) => c.number === chapterNumber) ?? null;
+  const activeArticle = STUDY_ARTICLES.find((a) => a.id === articleId || a.slug === articleId) ?? null;
 
-  // Determine current active view state
-  const view = rawView || (activeChapter ? "reader" : subjectId ? "hub" : "directory");
+  const view = rawView || (activeChapter ? "reader" : activeArticle ? "article" : subjectId ? "hub" : "directory");
 
-  const goTo = (subject: string | null, chapter?: number, viewState?: string, boardName?: string) => {
+  const goTo = (
+    subject: string | null,
+    chapter?: number,
+    viewState?: string,
+    boardName?: string,
+    articleSlug?: string
+  ) => {
     void navigate({
       to: "/syllabus-notes",
       search: () => {
@@ -1403,6 +1457,7 @@ export function SyllabusNotesPage() {
         if (chapter) next.chapter = chapter;
         if (viewState) next.view = viewState;
         if (boardName) next.board = boardName;
+        if (articleSlug) next.article = articleSlug;
         return next;
       },
     });
@@ -1459,7 +1514,7 @@ export function SyllabusNotesPage() {
     if (idx > 0) goTo(selectedSubject.id, selectedSubject.chapters[idx - 1]!.number);
   };
 
-  // 1. FULL NOTE READER VIEW
+  // 1. NOTE READER VIEW
   if (activeChapter && selectedSubject) {
     return (
       <ChapterDoc
@@ -1475,9 +1530,65 @@ export function SyllabusNotesPage() {
     );
   }
 
-  // 2. TOPICS GRID VIEW
+  // 2. ARTICLE READER VIEW
+  if (activeArticle && selectedSubject) {
+    return (
+      <DashboardLayout
+        crumbs={[
+          { label: "IGCSE" },
+          { label: selectedSubject.name },
+          { label: "Guides" },
+          { label: activeArticle.title },
+        ]}
+      >
+        <div className="w-full max-w-4xl mx-auto py-6 font-sans">
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={() => goTo(selectedSubject.id, undefined, "hub")}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+            >
+              <ArrowLeft className="size-4" />
+              <span>Back to {selectedSubject.name} Revision</span>
+            </button>
+          </div>
+
+          <article className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xs">
+            <header className="mb-6 pb-6 border-b border-slate-100">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md">
+                  {activeArticle.category}
+                </span>
+                <span className="text-xs text-slate-400 font-medium">· {activeArticle.readTime}</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                {activeArticle.title}
+              </h1>
+              <p className="mt-2 text-sm text-slate-500">{activeArticle.snippet}</p>
+            </header>
+
+            <div className="prose prose-slate max-w-none text-sm sm:text-base leading-relaxed text-slate-700 space-y-4">
+              <div dangerouslySetInnerHTML={{ __html: formatMathAndMarkdown(activeArticle.body) }} />
+            </div>
+
+            <div className="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => goTo(selectedSubject.id, undefined, "boards")}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors"
+              >
+                <span>Explore {selectedSubject.name} Revision Notes</span>
+                <ChevronRight className="size-4" />
+              </button>
+            </div>
+          </article>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // 3. TOPICS GRID VIEW
   if (selectedSubject && view === "topics") {
-    // Group chapters by section and topic
     const sections: Record<string, Record<string, Chapter[]>> = {};
     selectedSubject.chapters.forEach((ch) => {
       const sec = ch.section || "General";
@@ -1490,13 +1601,13 @@ export function SyllabusNotesPage() {
     return (
       <DashboardLayout
         crumbs={[
-          { label: "Courses" },
+          { label: "IGCSE" },
           { label: selectedSubject.name },
           { label: "Revision Notes" },
           { label: "Topics" },
         ]}
       >
-        <div className="w-full max-w-6xl mx-auto py-4">
+        <div className="w-full max-w-6xl mx-auto py-4 font-sans">
           <div className="mb-6 flex items-center justify-between">
             <button
               type="button"
@@ -1507,7 +1618,7 @@ export function SyllabusNotesPage() {
               <span>Back to Exam Boards</span>
             </button>
             <span className="text-xs text-slate-400 font-medium">
-              {board ? board.toUpperCase() : "CIE"} Syllabus Specification
+              {board ? board.toUpperCase() : "CIE"} Syllabus
             </span>
           </div>
 
@@ -1580,17 +1691,17 @@ export function SyllabusNotesPage() {
     );
   }
 
-  // 3. EXAM BOARD SELECTOR VIEW
+  // 4. EXAM BOARD SELECTOR VIEW
   if (selectedSubject && view === "boards") {
     return (
       <DashboardLayout
         crumbs={[
-          { label: "Courses" },
+          { label: "IGCSE" },
           { label: selectedSubject.name },
           { label: "Revision Notes" },
         ]}
       >
-        <div className="w-full max-w-5xl mx-auto py-4">
+        <div className="w-full max-w-5xl mx-auto py-4 font-sans">
           <div className="mb-6">
             <button
               type="button"
@@ -1690,16 +1801,16 @@ export function SyllabusNotesPage() {
     );
   }
 
-  // 4. SUBJECT REVISION HUB VIEW
+  // 5. SUBJECT REVISION HUB VIEW
   if (selectedSubject && view === "hub") {
     return (
       <DashboardLayout
         crumbs={[
-          { label: "Courses" },
+          { label: "IGCSE" },
           { label: selectedSubject.name },
         ]}
       >
-        <div className="w-full max-w-5xl mx-auto py-4">
+        <div className="w-full max-w-5xl mx-auto py-4 font-sans">
           <div className="mb-6">
             <button
               type="button"
@@ -1712,16 +1823,16 @@ export function SyllabusNotesPage() {
           </div>
 
           <header className="mb-8">
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               IGCSE {selectedSubject.name} Revision
             </h1>
             <p className="mt-3 text-sm text-slate-600 leading-relaxed max-w-3xl">
-              Equip yourself with comprehensive learning resources designed to build thorough subject mastery. From organized notes and practice questions to targeted flashcards and exam simulations, access everything needed for exam day.
+              Getting ready for your IGCSE {selectedSubject.name} exam? Our teacher-written revision resources are here to help, giving you all the tools and knowledge you need to face your exam with confidence.
             </p>
           </header>
 
           <section className="mb-12">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">
+            <h2 className="text-xl font-bold text-slate-900 mb-5">
               IGCSE {selectedSubject.name} Revision Resources
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1731,14 +1842,14 @@ export function SyllabusNotesPage() {
                 onClick={() => goTo(selectedSubject.id, undefined, "boards")}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
                   <BookOpen className="size-4" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
                     <h3 className="font-bold text-sm text-slate-900">Revision Notes</h3>
-                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1749,14 +1860,14 @@ export function SyllabusNotesPage() {
                 onClick={() => void navigate({ to: "/test" })}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
                   <HelpCircle className="size-4" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
                     <h3 className="font-bold text-sm text-slate-900">Exam Questions</h3>
-                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1767,14 +1878,14 @@ export function SyllabusNotesPage() {
                 onClick={() => goTo(selectedSubject.id, 1)}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
                   <Layers className="size-4" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
                     <h3 className="font-bold text-sm text-slate-900">Flashcards</h3>
-                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
@@ -1785,24 +1896,24 @@ export function SyllabusNotesPage() {
                 onClick={() => void navigate({ to: "/test" })}
                 className="group p-5 rounded-2xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
-                <div className="size-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+                <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
                   <FileText className="size-4" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-400 font-medium">IGCSE {selectedSubject.name}</p>
                   <div className="flex items-center justify-between gap-1 mt-0.5">
                     <h3 className="font-bold text-sm text-slate-900">Mock Exams</h3>
-                    <ChevronRight className="size-4 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-1 transition-all" />
+                    <ChevronRight className="size-4 text-blue-600 group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
               </button>
             </div>
           </section>
 
-          {/* Student Resource Articles */}
+          {/* Student Resource Articles Section (Real clickable guides) */}
           <section>
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-5">
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-xl font-bold text-slate-900">
                 Articles and resources for IGCSE {selectedSubject.name} students
               </h2>
               <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
@@ -1810,46 +1921,33 @@ export function SyllabusNotesPage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {[
-                {
-                  title: `IGCSE ${selectedSubject.name} Exam Resit Dates 2026/27: Key Deadlines`,
-                  tag: "Key Dates",
-                },
-                {
-                  title: `IGCSE October/November 2026 Timetable and Exam Preparation`,
-                  tag: "Timetable",
-                },
-                {
-                  title: `IGCSE ${selectedSubject.name} Core Topics: Full Syllabus Checklist`,
-                  tag: "Topic Checklist",
-                },
-                {
-                  title: `When Should You Start Revising for Your IGCSEs? Strategy Guide`,
-                  tag: "Revision Tips",
-                },
-                {
-                  title: `How Many IGCSE ${selectedSubject.name} Papers Are There? Component Breakdown`,
-                  tag: "Exam Guides",
-                },
-              ].map((article, idx) => (
-                <div
-                  key={idx}
-                  className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {STUDY_ARTICLES.map((article) => (
+                <button
+                  key={article.id}
+                  type="button"
+                  onClick={() => goTo(selectedSubject.id, undefined, "article", undefined, article.id)}
+                  className="group rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-2xs hover:border-slate-300 transition-all flex items-center gap-4 text-left cursor-pointer"
                 >
-                  <div className="space-y-2">
-                    <span className="inline-block px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 uppercase">
-                      {article.tag}
+                  <div className="size-20 rounded-xl bg-blue-600 text-white p-2.5 flex flex-col justify-between shrink-0 font-sans shadow-xs">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                      IGCSE
                     </span>
-                    <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-snug">
+                    <span className="text-[11px] font-extrabold leading-tight line-clamp-2">
+                      {article.category}
+                    </span>
+                  </div>
+
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <h3 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
                       {article.title}
                     </h3>
+                    <p className="text-xs text-slate-500 line-clamp-1">{article.snippet}</p>
+                    <span className="text-[11px] font-medium text-slate-400 block pt-0.5">
+                      {article.readTime} read · Click to view
+                    </span>
                   </div>
-                  <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-                    <span>5 min read</span>
-                    <span className="text-slate-700 font-semibold group-hover:underline">Read &rarr;</span>
-                  </div>
-                </div>
+                </button>
               ))}
             </div>
           </section>
@@ -1858,41 +1956,18 @@ export function SyllabusNotesPage() {
     );
   }
 
-  // 5. COURSES DIRECTORY VIEW (ONLY SUBJECTS)
+  // 6. COURSES DIRECTORY VIEW (ONLY SUBJECTS)
   return (
-    <DashboardLayout crumbs={[{ label: "Courses" }]}>
-      <div className="w-full py-2 max-w-6xl mx-auto">
-        {/* Hero banner */}
-        <div className="mb-8 rounded-3xl bg-white border border-slate-200/90 p-6 sm:p-8 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <span className="inline-block rounded-full bg-slate-900 text-white px-3 py-1 text-[11px] font-bold uppercase tracking-wider">
-                IGCSE & International Curriculum
-              </span>
-              <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Courses & Revision Notes
-              </h1>
-              <p className="mt-1 text-xs sm:text-sm text-slate-500">
-                Choose a subject to explore syllabus-aligned revision notes, formulas, flashcards, and exam practice.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3.5 text-center min-w-[110px]">
-                <span className="text-2xl font-black text-slate-900 block leading-tight">
-                  {SYLLABUS_NOTES.length}
-                </span>
-                <span className="text-[11px] font-semibold text-slate-400">Total Subjects</span>
-              </div>
-              <div className="rounded-2xl bg-slate-50 border border-slate-100 p-3.5 text-center min-w-[110px]">
-                <span className="text-2xl font-black text-slate-900 block leading-tight">
-                  {SYLLABUS_NOTES.reduce((acc, s) => acc + s.chapters.length, 0)}
-                </span>
-                <span className="text-[11px] font-semibold text-slate-400">Chapters</span>
-              </div>
-            </div>
-          </div>
-        </div>
+    <DashboardLayout crumbs={[{ label: "IGCSE" }]}>
+      <div className="w-full py-4 max-w-6xl mx-auto font-sans">
+        <header className="mb-8">
+          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+            IGCSE Revision Resources
+          </h1>
+          <p className="mt-2 text-sm text-slate-600">
+            Select your subject to access expert-written revision notes, topic questions, flashcards, and exam preparation guides.
+          </p>
+        </header>
 
         {/* Search + Category Filter Bar */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -1902,7 +1977,7 @@ export function SyllabusNotesPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search subject or code..."
+              placeholder="Search for a subject..."
               className="w-full rounded-full border border-slate-200 bg-white py-2 pl-9 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none"
             />
           </div>
@@ -1933,7 +2008,7 @@ export function SyllabusNotesPage() {
                 key={sub.id}
                 type="button"
                 onClick={() => goTo(sub.id)}
-                className="group p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-44 cursor-pointer"
+                className="group p-5 rounded-2xl border border-slate-200/90 bg-white hover:border-slate-400 hover:shadow-xs transition-all text-left flex flex-col justify-between h-40 cursor-pointer"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -1948,7 +2023,7 @@ export function SyllabusNotesPage() {
                     {sub.name}
                   </h3>
                   <p className="text-xs text-slate-500 mt-1">
-                    {sub.chapters.length} revision chapter{sub.chapters.length > 1 ? "s" : ""}
+                    {sub.chapters.length} revision chapters
                   </p>
                 </div>
 
