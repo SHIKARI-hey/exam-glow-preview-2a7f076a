@@ -55,7 +55,6 @@ import {
 } from "@/lib/syllabus-notes";
 import { formatMathAndMarkdown } from "@/lib/render-math";
 import { STUDY_ARTICLES, type Article } from "@/lib/articles-data";
-import { STUDY_GUIDES, type Article } from "@/lib/articles-data";
 import { sound } from "@/components/arcade/sound-fx";
 
 // Which subject row is expanded and which chapter is being read live in the URL,
