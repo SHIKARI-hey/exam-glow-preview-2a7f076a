@@ -823,16 +823,24 @@ function ChapterDoc({
   }
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = 0;
-      scrollRef.current.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    }
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }
+    const reset = () => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
+      }
+      if (typeof window !== "undefined") {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
+    };
+    reset();
+    const raf1 = requestAnimationFrame(reset);
+    const tm = setTimeout(reset, 30);
     if (progressBarRef.current) progressBarRef.current.style.transform = "scaleX(0)";
+    return () => {
+      cancelAnimationFrame(raf1);
+      clearTimeout(tm);
+    };
   }, [chapter.number]);
 
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -1072,6 +1080,9 @@ function ChapterDoc({
                                     key={ch.number}
                                     type="button"
                                     onClick={() => {
+                                      if (scrollRef.current) {
+                                        scrollRef.current.scrollTop = 0;
+                                      }
                                       if (onSelectChapter) {
                                         onSelectChapter(ch);
                                       }
@@ -1210,15 +1221,10 @@ function ChapterDoc({
 
                 {/* Figure / Diagrams (rendered clean and big without container cards) */}
                 {sub.figure ? (
-                  <ProseBlock text={sub.figure} />
-                ) : (
-                  <div
-                    className="my-8 sm:my-10 not-prose flex flex-col items-center w-full"
-                    dangerouslySetInnerHTML={{
-                      __html: getChapterDiagramSvg(subjectId, chapter.number),
-                    }}
-                  />
-                )}
+                  <div className="w-full my-8 sm:my-12">
+                    <ProseBlock text={sub.figure} />
+                  </div>
+                ) : null}
 
                 {/* Group parts (if any) */}
                 {sub.groups && sub.groups.length > 0 && (
@@ -1652,6 +1658,7 @@ export function SyllabusNotesPage() {
   if (activeChapter && selectedSubject) {
     return (
       <ChapterDoc
+        key={activeChapter.number}
         chapter={activeChapter}
         allChapters={selectedSubject.chapters}
         color={selectedSubject.color}

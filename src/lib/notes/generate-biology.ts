@@ -111,7 +111,7 @@ const specs: Spec[] = [
         title: "Cell Structure",
         rawChapter: 2,
         rawSubheadingIndexes: [1, 4],
-        customFigure: "![Ultrastructure of Animal vs Plant Cells](cell-structure.svg)", // Animal & Plant Cell Structure + Functions of Cell Parts
+        customFigure: "![Ultrastructure of Animal Cell vs Plant Cell with Organelle Labels](/notes/biology/animal-vs-plant-cell.jpg)", // Animal & Plant Cell Structure + Functions of Cell Parts
       },
       {
         title: "Cell Specialisation",
@@ -141,6 +141,7 @@ const specs: Spec[] = [
         title: "Diffusion",
         rawChapter: 3,
         rawSubheadingIndexes: [0], // Diffusion
+        customFigure: "![Mechanisms of Cellular Transport: Diffusion, Osmosis and Active Transport with Labels](/notes/biology/diffusion-osmosis-active-transport.jpg)",
       },
       {
         title: "Factors Influencing Diffusion",
@@ -247,7 +248,7 @@ const specs: Spec[] = [
         title: "Enzyme Action & Specificity",
         rawChapter: 5,
         rawSubheadingIndexes: [0, 1],
-        customFigure: "![Lock and Key Model of Enzyme Action](biology-enzyme.svg)", // What Enzymes Are + Lock and Key
+        customFigure: "![Lock and Key Model of Enzyme Action with Labels](/notes/biology/enzyme-lock-and-key.jpg)", // What Enzymes Are + Lock and Key
       },
       {
         title: "Effect of Temperature on Enzymes",
@@ -282,7 +283,7 @@ const specs: Spec[] = [
         title: "Photosynthesis & Chlorophyll Function",
         rawChapter: 6,
         rawSubheadingIndexes: [0],
-        customFigure: "![Photosynthesis & Light Energy Absorption](biology-photosynthesis.svg)", // Photosynthesis
+        customFigure: "![Internal Structure and Anatomy of a Dicotyledonous Leaf with Labels](/notes/biology/leaf-structure-photosynthesis.jpg)", // Photosynthesis
       },
       {
         title: "Word & Chemical Equations for Photosynthesis",
@@ -645,6 +646,7 @@ const specs: Spec[] = [
         title: "Structure of the Mammalian Heart",
         rawChapter: 9,
         rawSubheadingIndexes: [1], // The Heart: Structure and Cardiac Cycle
+        customFigure: "![Internal Structure of the Human Heart and Blood Flow with Labels](/notes/biology/human-heart-circulatory.jpg)",
       },
       {
         title: "Cardiac Cycle & Heartbeat",
@@ -924,6 +926,7 @@ const specs: Spec[] = [
         title: "Respiratory System Anatomy",
         rawChapter: 11,
         rawSubheadingIndexes: [0], // Structures of Breathing System
+        customFigure: "![Human Respiratory System and Alveolar Gas Exchange with Labels](/notes/biology/human-respiratory-alveoli.jpg)",
       },
       {
         title: "Cartilage in Trachea & Bronchi",
@@ -1071,6 +1074,7 @@ const specs: Spec[] = [
         title: "Kidney Structure & Nephron Ultrafiltration",
         rawChapter: 13,
         rawSubheadingIndexes: [1], // The Nephron and Ultrafiltration
+        customFigure: "![Human Urinary System and Longitudinal Kidney Structure with Labels](/notes/biology/human-kidney-nephron.jpg)",
       },
       {
         title: "Selective Reabsorption & Dialysis vs Transplant",
