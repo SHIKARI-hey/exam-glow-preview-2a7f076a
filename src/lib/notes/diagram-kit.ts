@@ -41,13 +41,8 @@ const STYLES = `
 
 export const colors = PALETTE;
 
-export function svgDiagram(title: string, content: string, width = 900, height = 320) {
-  const safe = title.replace(/"/g, "&quot;");
-  // Text inside these diagrams is sized in viewBox units, so a 900-wide canvas
-  // squeezed into a 360px phone screen would render 14px labels at ~6px. Holding a
-  // floor width keeps them legible; the figure wrapper scrolls sideways instead.
-  const floor = Math.min(width, 620);
-  return `:::svg[${safe}]\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${safe}" style="width:100%;min-width:${floor}px;height:auto">${STYLES}<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="${PALETTE.line}"/></marker></defs><rect class="bg" width="${width}" height="${height}" rx="22"/>${content}</svg>\n:::`;
+export function svgDiagram(_title: string, _content: string, _width = 900, _height = 320) {
+  return "";
 }
 
 /** Centred box with a single line of text — the building block of flow charts. */

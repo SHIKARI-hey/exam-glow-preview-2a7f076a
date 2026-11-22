@@ -10,16 +10,12 @@ function artPanel(items: { src: string; alt: string; caption: string }[]) {
       // drawn on, so containing it loses nothing.
       const solo = items.length % 2 === 1 && i === items.length - 1;
       return `<figure class="m-0 min-w-0${solo ? " sm:col-span-2" : ""}">
-        <div class="overflow-hidden rounded-xl bg-[#f7f5f2]"><img src="${IMG}/${it.src}" alt="${it.alt}" loading="lazy" class="aspect-square w-full object-cover${solo ? " sm:aspect-[2/1] sm:object-contain" : ""}" /></div>
+        <div class="overflow-hidden rounded-xl bg-[#f7f5f2]"></div>
         <figcaption class="mt-2.5 text-center text-[13px] font-bold text-zinc-100">${it.caption}</figcaption>
       </figure>`;
     })
     .join("");
-  return `:::raw
-<div class="overflow-hidden rounded-2xl bg-[#1b1d1f] px-4 py-5 sm:px-8 sm:py-8">
-  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">${tiles}</div>
-</div>
-:::`;
+  return ``;
 }
 
 const deforestationArt = artPanel([

@@ -81,7 +81,6 @@ const specs: Spec[] = [
         title: "Concept & Uses of Classification Systems",
         rawChapter: 1,
         rawSubheadingIndexes: [1], // Concept and Uses of Classification System
-        customFigure: "![The 5 Kingdoms & Classification Hierarchy](biology-classification.svg)",
       },
       {
         title: "Concept & Uses of Classification Systems Continued",
@@ -223,7 +222,6 @@ const specs: Spec[] = [
         title: "Carbohydrates, Lipids & Proteins",
         rawChapter: 4,
         rawSubheadingIndexes: [0, 1, 2],
-        customFigure: "![Biological Molecules Overview](biological-molecules-overview.svg)\n\n![Glucose Ring Structures](glucose-ring-structures.svg)", // Four Classes + Carbohydrates + Lipids & Proteins
       },
       {
         title: "Food Tests in the Laboratory",

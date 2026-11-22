@@ -13,26 +13,19 @@ const diagramStyle = `
   </style>`;
 
 function svgDiagram(title: string, height: number, content: string) {
-  return `:::svg[${title}]\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 ${height}" width="100%" height="auto" role="img" aria-label="${title}">${diagramStyle}<rect class="bg" width="900" height="${height}" rx="22"/>${content}</svg>\n:::`;
+  return ``;
 }
 
 const IMG = "/notes/biology";
 
 /** Dark panel that mirrors the reference page: artwork sits on near-black, caption below. */
-function figurePanel(inner: string, caption = "") {
-  return `:::raw
-<div class="overflow-hidden rounded-2xl bg-[#1b1d1f] px-5 py-6 sm:px-8 sm:py-8">
-  ${inner}
-  ${caption ? `<p class="mt-5 text-center text-[12.5px] text-zinc-400">${caption}</p>` : ""}
-</div>
-:::`;
-}
+function figurePanel(_i: string, _c = "") { return ""; }
 
 const tile = (src: string, alt: string) =>
-  `<div class="overflow-hidden rounded-xl bg-[#f7f5f2]"><img src="${IMG}/${src}" alt="${alt}" loading="lazy" class="aspect-square w-full object-cover" /></div>`;
+  `<div class="overflow-hidden rounded-xl bg-[#f7f5f2]"></div>`;
 
 const captioned = (src: string, alt: string, label: string, tint: string) =>
-  `<figure class="m-0"><div class="overflow-hidden rounded-xl ${tint}"><img src="${IMG}/${src}" alt="${alt}" loading="lazy" class="aspect-square w-full object-cover" /></div><figcaption class="mt-2.5 text-center text-[13px] font-bold text-zinc-100">${label}</figcaption></figure>`;
+  `<figure class="m-0"><div class="overflow-hidden rounded-xl ${tint}"></div><figcaption class="mt-2.5 text-center text-[13px] font-bold text-zinc-100">${label}</figcaption></figure>`;
 
 const vertebrateCardRow = figurePanel(
   `<div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
@@ -62,13 +55,13 @@ const lionPanel = figurePanel(
       <p class="text-center text-[30px] font-black leading-none text-[#e0245e] sm:text-[38px]">Panthera leo</p>
       <p class="text-left text-[15px] italic leading-snug text-zinc-300">Species<br /><span class="text-[12.5px] not-italic text-zinc-500">the "first name"</span></p>
     </div>
-    <div class="overflow-hidden rounded-xl bg-[#f7f5f2]"><img src="${IMG}/binomial-lion.webp" alt="Lion" loading="lazy" class="h-40 w-40 object-cover" /></div>
+    <div class="overflow-hidden rounded-xl bg-[#f7f5f2]"></div>
   </div>`,
 );
 
 const virusPanel = figurePanel(
   `<div class="flex flex-col items-center gap-5 sm:flex-row sm:justify-center sm:gap-8">
-    <div class="overflow-hidden rounded-xl bg-[#f7f5f2]"><img src="${IMG}/virus-structure.webp" alt="Cross-section of a virus showing envelope, protein coat and genetic material" loading="lazy" class="h-56 w-56 object-cover" /></div>
+    <div class="overflow-hidden rounded-xl bg-[#f7f5f2]"></div>
     <ul class="m-0 space-y-2.5 p-0 text-[14px] list-none">
       <li class="flex items-center gap-2.5"><span class="size-2.5 shrink-0 rounded-full bg-[#54c6e8]" />DNA or RNA</li>
       <li class="flex items-center gap-2.5"><span class="size-2.5 shrink-0 rounded-full bg-[#efc263]" />Envelope</li>
@@ -86,7 +79,7 @@ const keyTreePanel = figurePanel(
     <div class="grid w-full gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)_minmax(0,1fr)]">
       <div class="flex flex-col items-center gap-2">
         <p class="text-[12.5px] italic text-zinc-400">Has fur</p>
-        <div class="size-20 overflow-hidden rounded-full ring-4 ring-[#e8b83c]"><img src="${IMG}/vert-mammal.webp" alt="" loading="lazy" class="h-full w-full object-cover object-top" /></div>
+        <div class="size-20 overflow-hidden rounded-full ring-4 ring-[#e8b83c]"></div>
         <p class="text-[13px] font-bold text-zinc-100">Mammals</p>
       </div>
       <div class="flex flex-col items-center gap-2">
@@ -94,22 +87,22 @@ const keyTreePanel = figurePanel(
         <div class="grid w-full grid-cols-2 gap-4">
           <div class="flex flex-col items-center gap-1.5">
             <p class="text-[12px] italic text-zinc-500">External fertilisation, gills in adults</p>
-            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#54c6e8]"><img src="${IMG}/vert-fish.webp" alt="" loading="lazy" class="h-full w-full object-cover" /></div>
+            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#54c6e8]"></div>
             <p class="text-[12.5px] font-bold text-zinc-100">Fish</p>
           </div>
           <div class="flex flex-col items-center gap-1.5">
             <p class="text-[12px] italic text-zinc-500">No gills in adults, moist skin</p>
-            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#ee7fa3]"><img src="${IMG}/vert-amphibian.webp" alt="" loading="lazy" class="h-full w-full object-cover" /></div>
+            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#ee7fa3]"></div>
             <p class="text-[12.5px] font-bold text-zinc-100">Amphibians</p>
           </div>
           <div class="flex flex-col items-center gap-1.5">
             <p class="text-[12px] italic text-zinc-500">Internal fertilisation, dry scales</p>
-            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#e8b83c]"><img src="${IMG}/vert-reptile.webp" alt="" loading="lazy" class="h-full w-full object-cover" /></div>
+            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#e8b83c]"></div>
             <p class="text-[12.5px] font-bold text-zinc-100">Reptiles</p>
           </div>
           <div class="flex flex-col items-center gap-1.5">
             <p class="text-[12px] italic text-zinc-500">Feathers</p>
-            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#ee7fa3]"><img src="${IMG}/vert-bird.webp" alt="" loading="lazy" class="h-full w-full object-cover object-top" /></div>
+            <div class="size-16 overflow-hidden rounded-full ring-4 ring-[#ee7fa3]"></div>
             <p class="text-[12.5px] font-bold text-zinc-100">Birds</p>
           </div>
         </div>
